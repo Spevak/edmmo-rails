@@ -13,4 +13,6 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= requrie interpreter/skulpt.main.js
+//= require interpreter/skulpt-stdlib.js
 //= require_tree .
