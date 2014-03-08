@@ -5,9 +5,9 @@ function goSuccess(response) {
 }
 
 function goFailure(response) {
-    if response.err === 1:
+    if (response.err === 1)
         return Sk.builtin.str("Can’t walk there...");
-    if response.err === 2:
+    if (response.err === 2)
         return Sk.builtin.str("Immobilized!");
 }
 
@@ -16,9 +16,9 @@ function pickupSuccess(response) {
 }
 
 function pickupFailure(response) {
-    if response.err === 1:
+    if (response.err === 1)
         return Sk.builtin.str("That item isn't there!");
-    if response.err === 2:
+    if (response.err === 2)
         return Sk.builtin.str("You can't access this tile!");
 }
 
@@ -27,7 +27,7 @@ function dropSuccess(response) {
 }
 
 function dropFailure(response) {
-    if response.err === 1:
+    if (response.err === 1)
         return Sk.builtin.str("You don't have that item!");
 }
 
@@ -36,9 +36,9 @@ function useSuccess(response) {
 }
 
 function useFailure(response) {
-    if response.err === 1:
+    if (response.err === 1)
         return Sk.builtin.str("You don't have that item!");
-    if response.err === 2:
+    if )response.err === 2)
         return Sk.builtin.str("Erm... I don't think you can do that with that item.");
 }
 
@@ -55,7 +55,7 @@ function inspectSuccess(response) {
 }
 
 function inspectFailure(response) {
-    if response.err === 1:
+    if (response.err === 1)
         return Sk.builtin.str("I don't have that item");
 }
 
