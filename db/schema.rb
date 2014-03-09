@@ -11,17 +11,61 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140214195109) do
+ActiveRecord::Schema.define(version: 20140309004800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "users", force: true do |t|
-    t.string   "user"
-    t.string   "password"
-    t.integer  "count"
+  create_table "characters", force: true do |t|
+    t.string   "name"
+    t.integer  "health"
+    t.integer  "battery"
+    t.integer  "facing"
+    t.string   "planet"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "items", force: true do |t|
+    t.boolean  "pickupable"
+    t.boolean  "walkoverable"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tiles", force: true do |t|
+    t.integer  "title_id"
+    t.integer  "x"
+    t.integer  "y"
+    t.integer  "xn_plus_y"
+    t.integer  "type"
+    t.integer  "item_id_id"
+    t.integer  "character_id_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "tiles", ["character_id_id"], name: "index_tiles_on_character_id_id", using: :btree
+  add_index "tiles", ["item_id_id"], name: "index_tiles_on_item_id_id", using: :btree
+
+  create_table "users", force: true do |t|
+    t.string   "email",                  default: "", null: false
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.boolean  "logged_in"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["logged_in"], name: "index_users_on_logged_in", using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
 end
