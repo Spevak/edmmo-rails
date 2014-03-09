@@ -2,7 +2,6 @@
 // uniquization that the compiler does for words that are reserved in
 // Javascript. This is a bit hokey.
 Sk.builtins = {
-    'foo': Sk.builtin.foo,
 'range': Sk.builtin.range,
 'round': Sk.builtin.round,
 'len': Sk.builtin.len,
