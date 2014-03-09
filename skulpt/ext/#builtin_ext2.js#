@@ -1,8 +1,7 @@
-
-/* Let's reuse the POST handler from warmup because we're fantastic like that */
+/*Let's reuse the POST handler from warmup because we're fantastic like that*/
 
 function goSuccess(response) {
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$); //Assumes is 0
+    return Sk.builtin.int(response.err); //Assumes is 0
 }
 
 function goFailure(response) {
@@ -18,68 +17,64 @@ function pickupSuccess(response) {
 
 function pickupFailure(response) {
     if (response.err === 1)
-        return new Sk.builtin.str("That item isn't there!");
+        return Sk.builtin.str("That item isn't there!");
     if (response.err === 2)
-        return new Sk.builtin.str("You can't access this tile!");
+        return Sk.builtin.str("You can't access this tile!");
 }
 
 function dropSuccess(response) {
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+    return Sk.builtin.int(response.err);
 }
 
 function dropFailure(response) {
     if (response.err === 1)
-        return new Sk.builtin.str("You don't have that item!");
+        return Sk.builtin.str("You don't have that item!");
 }
 
 function useSuccess(response) {
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+    return Sk.builtin.int(response.err);
 }
 
 function useFailure(response) {
     if (response.err === 1)
-        return new Sk.builtin.str("You don't have that item!");
+        return Sk.builtin.str("You don't have that item!");
     if (response.err === 2)
-        return new Sk.builtin.str("Erm... I don't think you can do that with that item.");
+        return Sk.builtin.str("Erm... I don't think you can do that with that item.");
 }
 
 function statusSuccess(response) {
-    return new Sk.builtin.tuple(response.hp, response.battery, response.facing);
+    return Sk.builtin.tuple(response.hp, response.battery, response.facing);
 }
 
 function statusFailure(response) {
-    return new Sk.builtin.str("Something terrible has happened to cause this.");
+    return Sk.builtin.str("Something terrible has happened to cause this.");
 }
 
 function inspectSuccess(response) {
-    return new Sk.builtin.str(response.item);
+    return Sk.builtin.str(response.item);
 }
 
 function inspectFailure(response) {
     if (response.err === 1)
-        return new Sk.builtin.str("I don't have that item");
+        return Sk.builtin.str("I don't have that item");
 }
 
 function tilesSuccess(response) {
-    var newStr = "";
-    newStr += "Here are the items we found in the specified range:" + '\n';
-    newStr += " NOT YET IMPLEMENTED"
-    //for item in response.tiles:
-    //    newStr + item.itemID + '\n';
-    return new Sk.builtin.str(newStr);
+    newStr === "";
+    newStr + "Here are the items we found in the specified range:" + '\n';
+    for item in response.tiles:
+        newStr + item.itemID + '\n';
+    return Sk.builtin.str(newStr);
 }
 
 function tilesFailure(response) {
-    if (response.err === 1)
-        return new Sk.builtin.str("Something terrible has happened to cause this.");
+    if response.err === 1:
+        return Sk.builtin.str("Something terrible has happened to cause this.");
 }
 
-/* ########################################################################## */
+/*###########################################################################*/
 
 function json_post_request(page, successFunction, failureFunction, dict) {
-    alert('got to ajax call');
-    /*
-
     $.ajax({
         type: 'POST',
         url: page,
@@ -89,7 +84,6 @@ function json_post_request(page, successFunction, failureFunction, dict) {
         success: successFunction,
         error: failureFunction
     });
-    */
 }
 
 Sk.builtin.goFunction = function(dir) {
@@ -111,11 +105,9 @@ Sk.builtin.useFunction = function(ID, args) {
                       });
 }
 
-/* ########################################################################### */
+/*###########################################################################*/
 
 function json_get_request(page, successFunction, failureFunction, dict) {
-    alert('got to json get request');
-    /* 
     $.ajax({
            type: 'GET',
            url: page,
@@ -125,9 +117,7 @@ function json_get_request(page, successFunction, failureFunction, dict) {
            success: successFunction,
            error: failureFunction
            });
-  */
 }
-
 
 Sk.builtin.statusFunction = function() {
     json_get_request("player/get", statusSuccess, statusFailure, {});
@@ -137,6 +127,6 @@ Sk.builtin.inspectFunction = function(ID) {
     json_get_request("player/pickup", inspectSuccess, inspectFailure, {'itemID': ID});
 }
 
-Sk.builtin.tilesFunction = function(n) {
-    json_get_request("world/tiles", inspectSuccess, inspectFailure, {'n': n});
+Sk.builtin.tilesFunction = function(len) {
+    json_get_request("world/tiles", inspectSuccess, inspectFailure, {'itemID': ID});
 }

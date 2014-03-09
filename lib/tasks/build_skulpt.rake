@@ -6,8 +6,8 @@ task :build_skulpt do
 
      #append our additons temporary files
      system('(cd skulpt; cp builtin_original builtin.js; cp builtindict_original builtindict.js)')
-     system('(cd skulpt; cat ext/tempext.js >> builtin.js; cat ext/tempextdict.js >> builtindict.js)')
-     system('(cd skulpt; mv builtin.js base/src/builtin.js; mv builtindict.js base/src/builtindict.js)')
+     system('(cd skulpt; cat ext/builtin_ext.js >> builtin.js; cat ext/builtindict_ext.js >> builtindict.js)')
+     system('(cd skulpt; cp builtin.js base/src/builtin.js; cp builtindict.js base/src/builtindict.js)')
 
      #build
      system('(cd skulpt/base; python m dist)')

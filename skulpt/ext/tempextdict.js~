@@ -1,7 +1,0 @@
-additions = {
-    'foo': Sk.builtin.foo
-}
-
-
-Sk.builtins.update(addtions);
-goog.exportSymbol("Sk.builtins", Sk.builtins);
