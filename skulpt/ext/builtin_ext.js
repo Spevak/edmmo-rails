@@ -59,6 +59,19 @@ function inspectFailure(response) {
         return Sk.builtin.str("I don't have that item");
 }
 
+function tilesSuccess(response) {
+    newStr === "";
+    newStr + "Here are the items we found in the specified range:" + '\n\';
+    for item in response.tiles:
+        newStr + item.itemID + '\n';
+    return Sk.builtin.str(newStr);
+}
+
+function tilesFailure(response) {
+    if response.err === 1:
+        return Sk.builtin.str("Something terrible has happened to cause this.");
+}
+
 /*###########################################################################*/
 
 function json_post_request(page, successFunction, failureFunction, dict) {
@@ -74,19 +87,22 @@ function json_post_request(page, successFunction, failureFunction, dict) {
 }
 
 Sk.builtin.goFunction = function(dir) {
-    json_post_request("player/move", goSuccess, goFailure);
+    json_post_request("player/move", goSuccess, goFailure, {'direction': dir});
 }
 
 Sk.builtin.pickupFunction = function(x, y, ID) {
-    json_post_request("player/pickup", pickupSuccess, pickupFailure);
+    json_post_request("player/pickup", pickupSuccess, pickupFailure, {'x': x, 'y': y, 'itemID': ID});
 }
 
 Sk.builtin.dropFunction = function(ID) {
-    json_post_request("player/drop", dropSuccess, dropFailure);
+    json_post_request("player/drop", dropSuccess, dropFailure, {'itemID': ID});
 }
 
 Sk.builtin.useFunction = function(ID, args) {
-    json_post_request("player/use", useSuccess, useFailure);
+    json_post_request("player/use", useSuccess, useFailure, {
+                      'itemID': ID,
+                      'args': args // Assumes args is already in an array
+                      });
 }
 
 /*###########################################################################*/
@@ -104,9 +120,13 @@ function json_get_request(page, successFunction, failureFunction, dict) {
 }
 
 Sk.builtin.statusFunction = function() {
-    json_get_request("player/get", statusSuccess, statusFailure);
+    json_get_request("player/get", statusSuccess, statusFailure, {});
 }
 
 Sk.builtin.inspectFunction = function(ID) {
-    json_get_request("player/pickup", inspectSuccess, inspectFailure);
+    json_get_request("player/pickup", inspectSuccess, inspectFailure, {'itemID': ID});
+}
+
+Sk.builtin.tilesFunction = function(len) {
+    json_get_request("world/tiles", inspectSuccess, inspectFailure, {'itemID': ID});
 }
