@@ -35,8 +35,9 @@ end
 # Authentication library, etc: https://github.com/plataformatec/devise
 gem 'devise'
 
-# Rspec
+# Unit testing
 gem 'rspec-rails'
+gem 'factory_girl'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
