@@ -1,7 +1,7 @@
 class CreateTiles < ActiveRecord::Migration
   def change
     create_table :tiles do |t|
-      t.integer :title_id
+      t.integer :tile_id
       t.integer :x
       t.integer :y
       t.integer :xn_plus_y
