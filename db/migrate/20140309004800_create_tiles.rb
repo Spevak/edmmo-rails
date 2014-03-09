@@ -6,8 +6,8 @@ class CreateTiles < ActiveRecord::Migration
       t.integer :y
       t.integer :xn_plus_y
       t.integer :type
-      t.references :item_id, index: true
-      t.references :character_id, index: true
+      t.belongs_to :item, index: true
+      t.belongs_to :character, index: true
 
       t.timestamps
     end

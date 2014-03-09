@@ -1,6 +1,6 @@
 class Item < ActiveRecord::Base
-    belongs_to :character
-    belongs_to :tile
+    has_many :characters
+    has_one :tile
 
     def use(character_id, x, y)
     end

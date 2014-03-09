@@ -39,14 +39,14 @@ ActiveRecord::Schema.define(version: 20140309004800) do
     t.integer  "y"
     t.integer  "xn_plus_y"
     t.integer  "type"
-    t.integer  "item_id_id"
-    t.integer  "character_id_id"
+    t.integer  "item_id"
+    t.integer  "character_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "tiles", ["character_id_id"], name: "index_tiles_on_character_id_id", using: :btree
-  add_index "tiles", ["item_id_id"], name: "index_tiles_on_item_id_id", using: :btree
+  add_index "tiles", ["character_id"], name: "index_tiles_on_character_id", using: :btree
+  add_index "tiles", ["item_id"], name: "index_tiles_on_item_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false

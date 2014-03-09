@@ -1,6 +1,7 @@
 class Character < ActiveRecord::Base
-  has_one :item
+  belongs_to :item
   belongs_to :user
+  belongs_to :tile
 
   def pick_up(item_id)
     self.item = Item.find_by_id(item_id)
