@@ -23,7 +23,7 @@ class Api::Test::PlayerController < ApplicationController
 
   def drop
     id = request[:itemID]
-    if myID
+    if id
       render :json => {:err => 0}
     else
       render :json => {:err => 1}

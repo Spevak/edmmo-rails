@@ -10,67 +10,42 @@ function failureFunction(path) {
  * @suppress {missingProperties}
  */
 function goSuccess(response) {
+    //if (response.err === 1)
+    //    return new Sk.builtin.str("Can’t walk there...");
+    //if (response.err === 2)
+    //    return new Sk.builtin.str("Immobilized!");
     return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$); 
-}
-
-
-/**
- * @suppress {missingProperties}
- */
-function goFailure(response) {
-    if (response.err === 1)
-        return new Sk.builtin.str("Can’t walk there...");
-    if (response.err === 2)
-        return new Sk.builtin.str("Immobilized!");
 }
 
 /**
  * @suppress {missingProperties}
  */
 function pickupSuccess(response) {
+    //if (response.err === 1)
+    //    return new Sk.builtin.str("That item isn't there!");
+    //if (response.err === 2)
+    //    return new Sk.builtin.str("You can't access this tile!");
     return new Sk.builtin.nmber(response, Sk.builtin.nmber.int$);
 }
 
 /**
  * @suppress {missingProperties}
  */
-function pickupFailure(response) {
-    if (response.err === 1)
-        return new Sk.builtin.str("That item isn't there!");
-    if (response.err === 2)
-        return new Sk.builtin.str("You can't access this tile!");
-}
-
-/**
- * @suppress {missingProperties}
- */
 function dropSuccess(response) {
+    //if (response.err === 1)
+    //    return new Sk.builtin.str("You don't have that item!");
     return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
-}
-
-/**
- * @suppress {missingProperties}
- */
-function dropFailure(response) {
-    if (response.err === 1)
-        return new Sk.builtin.str("You don't have that item!");
 }
 
 /**
  * @suppress {missingProperties}
  */
 function useSuccess(response) {
+    //if (response.err === 1)
+    //    return new Sk.builtin.str("You don't have that item!");
+    //if (response.err === 2)
+    //    return new Sk.builtin.str("Erm... I don't think you can do that with that item.");
     return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
-}
-
-/**
- * @suppress {missingProperties}
- */
-function useFailure(response) {
-    if (response.err === 1)
-        return new Sk.builtin.str("You don't have that item!");
-    if (response.err === 2)
-        return new Sk.builtin.str("Erm... I don't think you can do that with that item.");
 }
 
 /**
@@ -91,15 +66,9 @@ function statusFailure(response) {
  * @suppress {missingProperties}
  */
 function inspectSuccess(response) {
+    //if (response.err === 1)
+    //    return new Sk.builtin.str("I don't have that item");
     return new Sk.builtin.str(response.item);
-}
-
-/**
- * @suppress {missingProperties}
- */
-function inspectFailure(response) {
-    if (response.err === 1)
-        return new Sk.builtin.str("I don't have that item");
 }
 
 /**
@@ -117,34 +86,22 @@ function tilesSuccess(response) {
 /**
  * @suppress {missingProperties}
  */
-function tilesFailure(response) {
-    if (response.err === 1)
-        return new Sk.builtin.str("Something terrible has happened to cause this.");
-}
+function charactersSuccess(response) {
+    return new Sk.builtin.str("charactersSuccess response handling not yet implemented");
+  
 
+}
 /* ########################################################################## */
 
 /**
  * @suppress {missingProperties}
  */
 function json_request(type, page, successFunction, failureFunction, dict) {
-
-    /* $.ajax({
-        type: 'POST',
-        url: page,
-        data: JSON.stringify(dict),
-        contentType: "application/json",
-        dataType: "json",
-        success: successFunction,
-        error: failureFunction
-    }); */
-
-    //Jquery-free implimentation of above ajax request
-
+ 
+   //Jquery-free implimentation of ajax request since Skulpt is compiled without jquery
     var ajaxFinished = false;
     var result;
     var http = new XMLHttpRequest();
-
     //3rd param: set to false to make request NOT asynchronous, since we need the result before returning
     http.open(type, page, false);
     http.setRequestHeader("Content-type", "application/json");
@@ -163,9 +120,10 @@ function json_request(type, page, successFunction, failureFunction, dict) {
 Sk.builtin.goFunction = function(dir) {
     Sk.builtin.pyCheckArgs("goFunction", arguments, 1, 1);
     Sk.builtin.pyCheckType("dir", "string", Sk.builtin.checkString(dir));
-    var goFailure = failureFunction(MOVE_PATH);
     // get the string from the python representation (there may be a better way to do this)
     var direction = dir.v
+
+    var goFailure = failureFunction(MOVE_PATH);
     return json_request('POST', MOVE_PATH, goSuccess, goFailure, {'direction': direction});
 }
 
@@ -173,24 +131,51 @@ Sk.builtin.goFunction = function(dir) {
  * @suppress {missingProperties}
  */
 Sk.builtin.pickupFunction = function(x, y, ID) {
-    json_request('POST', "player/pickup", pickupSuccess, pickupFailure, {'x': x, 'y': y, 'itemID': ID});
+    //Check argument count and types
+    Sk.builtin.pyCheckArgs("pickupFunction", arguments, 3, 3);
+    Sk.builtin.pyCheckType("x", "integer", Sk.builtin.checkInt(x));
+    Sk.builtin.pyCheckType("y", "integer", Sk.builtin.checkInt(y));
+    Sk.builtin.pyCheckType("ID", "string", Sk.builtin.checkString(ID));
+
+    //Get Values from python representation
+    var x_val = Sk.builtin.asnum$(x);
+    var y_val = Sk.builtin.asnum$(y);
+    var item_id = ID.v;
+
+    var pickupFailure = failureFunction(PICKUP_PATH)
+    return json_request('POST', PICKUP_PATH, pickupSuccess, pickupFailure, {'x': x_val, 'y': y_val, 'itemID': item_id});
 }
 
 /**
  * @suppress {missingProperties}
  */
 Sk.builtin.dropFunction = function(ID) {
-    json_request('POST', "player/drop", dropSuccess, dropFailure, {'itemID': ID});
+    //Check arg count and types
+    Sk.builtin.pyCheckArgs("dropFunction", arguments, 1, 1);
+    Sk.builtin.pyCheckType("ID", "string", Sk.builtin.checkString(ID));
+
+    //get values from python representation
+    var item_id = ID.v
+
+    var dropFailure = failureFunction(DROP_PATH);
+    return json_request('POST', DROP_PATH, dropSuccess, dropFailure, {'itemID': item_id});
 }
 
 /**
  * @suppress {missingProperties}
  */
 Sk.builtin.useFunction = function(ID, args) {
-    json_request('POST', "player/use", useSuccess, useFailure, {
-                      'itemID': ID,
-                      'args': args // Assumes args is already in an array
-                      });
+    //Check arg count and types
+    Sk.builtin.pyCheckArgs("useFunction", arguments, 2, 2);
+    Sk.builtin.pyCheckType("ID", "string", Sk.builtin.checkString(ID));
+    Sk.builtin.pyCheckType("args", "string", Sk.builtin.checkString(args));
+
+    //get values from python representation
+    var item_id = ID.v;
+    var use_args = args.v;
+
+    var useFailure = failureFunction(USE_PATH);
+    return json_request('POST', USE_PATH, useSuccess, useFailure, {'itemID': item_id, 'args': use_args});
 }
 
 /* ########################################################################### */
@@ -199,20 +184,52 @@ Sk.builtin.useFunction = function(ID, args) {
  * @suppress {missingProperties}
  */
 Sk.builtin.statusFunction = function() {
-    json_request("GET", "player/status", statusSuccess, statusFailure, {});
+    //check args count and types
+    Sk.builtin.pyCheckArgs("statusFunction", arguments, 0, 0);
+
+    var statusFailure = failureFunction(STATUS_PATH);
+    return json_request("GET", STATUS_PATH, statusSuccess, statusFailure, {});
 }
 
 /**
  * @suppress {missingProperties}
  */
 Sk.builtin.inspectFunction = function(ID) {
-    json_request("GET", "player/pickup", inspectSuccess, inspectFailure, {'itemID': ID});
+    //check args count and types
+    Sk.builtin.pyCheckArgs("inspectFunction", arguments, 1, 1);
+    Sk.builtin.pyCheckType("ID", "string", Sk.builtin.checkString(ID));
+
+    //get the value from the python representation 
+    var item_id = ID.v
+
+    var inspectFailure = failureFunction(INSPECT_PATH);
+    return json_request("GET", INSPECT_PATH, inspectSuccess, inspectFailure, {'itemID': item_id});
+}
+
+/**
+ * @suppress {missingProperties}
+ */
+Sk.builtin.charactersFunction = function() {
+    //check args count and types
+    Sk.builtin.pyCheckArgs("charactersFunction", arguments, 0, 0);
+
+    var charactersFailure = failureFunction(CHARACTERS_PATH);
+    return json_request("GET", CHARACTERS_PATH, charactersSuccess, charactersFailure, {});
 }
 
 /**
  * @suppress {missingProperties}
  */
 Sk.builtin.tilesFunction = function(n) {
-    json_request("GET", "world/tiles", inspectSuccess, inspectFailure, {'n': n});
+    //check args count and types
+    Sk.builtin.pyCheckArgs("tilesFunction", arguments, 1, 1);
+    Sk.builtin.pyCheckType("n", "integer", Sk.builtin.checkInt(n));
+
+    //get the values from the python representations
+    var n_val = Sk.builtin.asnum$(n);
+
+
+    var inspectFailure = failureFunction(TILES_PATH);
+    return json_request("GET", TILES_PATH, inspectSuccess, inspectFailure, {'n': n_val});
 }
 
