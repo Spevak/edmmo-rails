@@ -8,11 +8,17 @@ EdmmoRails::Application.routes.draw do
 
   namespace :api do
     namespace :test do
-      post 'world/tiles' => 'world#tiles'
+      get 'world/tiles' => 'world#tiles'
       post 'player/move' => 'player#move'
       post 'player/pickup' => 'player#pickup'
+      post 'player/drop' => 'player#drop'
+      post 'player/use' => 'player#use'
+      get 'player/status' => 'player#status'
+      get 'player/inspect' => 'player#inspect'
+      get 'player/characters' => 'player#characters'
     end
   end
+
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
