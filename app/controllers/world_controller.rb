@@ -1,10 +1,5 @@
 class WorldController < ApplicationController
 
-    # WEBPAGE
-    def page
-        @worlds = Worlds.all
-        respond_to :html
-    end
     # MOVE
     def tiles
         # Take the user as a parameter, along with password

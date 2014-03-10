@@ -1,9 +1,4 @@
 class PlayerController < ApplicationController
-    # WEBPAGE
-    def page
-        @players = Players.all
-        respond_to :html
-    end
     # MOVE
     def move
         # Take the user as a parameter, along with password
