@@ -1,12 +1,18 @@
-
-/* Let's reuse the POST handler from warmup because we're fantastic like that */
+//Generate failure functions
+function failureFunction(path) {
+    var str = "Error on call to " + path +  ". Response: ";
+    return function(status) {
+	return new Sk.builtin.str(str + status);
+    };
+}
 
 /**
  * @suppress {missingProperties}
  */
 function goSuccess(response) {
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$); //Assumes is 0
+    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$); 
 }
+
 
 /**
  * @suppress {missingProperties}
@@ -121,11 +127,9 @@ function tilesFailure(response) {
 /**
  * @suppress {missingProperties}
  */
-function json_post_request(page, successFunction, failureFunction, dict) {
-    alert('got to ajax call');
+function json_request(type, page, successFunction, failureFunction, dict) {
 
-
-    /*$.ajax({
+    /* $.ajax({
         type: 'POST',
         url: page,
         data: JSON.stringify(dict),
@@ -133,7 +137,23 @@ function json_post_request(page, successFunction, failureFunction, dict) {
         dataType: "json",
         success: successFunction,
         error: failureFunction
-    });*/
+    }); */
+
+    //Jquery-free implimentation of above ajax request
+
+    var ajaxFinished = false;
+    var result;
+    var http = new XMLHttpRequest();
+
+    //3rd param: set to false to make request NOT asynchronous, since we need the result before returning
+    http.open(type, page, false);
+    http.setRequestHeader("Content-type", "application/json");
+    http.send(JSON.stringify(dict));
+
+    if (http.status === 200) {
+	return successFunction(JSON.parse(http.responseText));
+    }
+    return failureFunction(JSON.parse(http.responseText));		
     
 }
 
@@ -141,28 +161,33 @@ function json_post_request(page, successFunction, failureFunction, dict) {
  * @suppress {missingProperties}
  */
 Sk.builtin.goFunction = function(dir) {
-    json_post_request("player/move", goSuccess, goFailure, {'direction': dir});
+    Sk.builtin.pyCheckArgs("goFunction", arguments, 1, 1);
+    Sk.builtin.pyCheckType("dir", "string", Sk.builtin.checkString(dir));
+    var goFailure = failureFunction(MOVE_PATH);
+    // get the string from the python representation (there may be a better way to do this)
+    var direction = dir.v
+    return json_request('POST', MOVE_PATH, goSuccess, goFailure, {'direction': direction});
 }
 
 /**
  * @suppress {missingProperties}
  */
 Sk.builtin.pickupFunction = function(x, y, ID) {
-    json_post_request("player/pickup", pickupSuccess, pickupFailure, {'x': x, 'y': y, 'itemID': ID});
+    json_request('POST', "player/pickup", pickupSuccess, pickupFailure, {'x': x, 'y': y, 'itemID': ID});
 }
 
 /**
  * @suppress {missingProperties}
  */
 Sk.builtin.dropFunction = function(ID) {
-    json_post_request("player/drop", dropSuccess, dropFailure, {'itemID': ID});
+    json_request('POST', "player/drop", dropSuccess, dropFailure, {'itemID': ID});
 }
 
 /**
  * @suppress {missingProperties}
  */
 Sk.builtin.useFunction = function(ID, args) {
-    json_post_request("player/use", useSuccess, useFailure, {
+    json_request('POST', "player/use", useSuccess, useFailure, {
                       'itemID': ID,
                       'args': args // Assumes args is already in an array
                       });
@@ -173,38 +198,21 @@ Sk.builtin.useFunction = function(ID, args) {
 /**
  * @suppress {missingProperties}
  */
-function json_get_request(page, successFunction, failureFunction, dict) {
-    alert('got to json get request');
-    /* 
-    $.ajax({
-           type: 'GET',
-           url: page,
-           data: JSON.stringify(dict),
-           contentType: "application/json",
-           dataType: "json",
-           success: successFunction,
-           error: failureFunction
-           });
-  */
-}
-
-/**
- * @suppress {missingProperties}
- */
 Sk.builtin.statusFunction = function() {
-    json_get_request("player/get", statusSuccess, statusFailure, {});
+    json_request("GET", "player/status", statusSuccess, statusFailure, {});
 }
 
 /**
  * @suppress {missingProperties}
  */
 Sk.builtin.inspectFunction = function(ID) {
-    json_get_request("player/pickup", inspectSuccess, inspectFailure, {'itemID': ID});
+    json_request("GET", "player/pickup", inspectSuccess, inspectFailure, {'itemID': ID});
 }
 
 /**
  * @suppress {missingProperties}
  */
 Sk.builtin.tilesFunction = function(n) {
-    json_get_request("world/tiles", inspectSuccess, inspectFailure, {'n': n});
+    json_request("GET", "world/tiles", inspectSuccess, inspectFailure, {'n': n});
 }
+
