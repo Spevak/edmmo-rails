@@ -12,6 +12,9 @@ EdmmoRails::Application.routes.draw do
       post 'player/pickup' => 'player#pickup'
     end
     namespace :v1 do
+      post 'world/tiles' => 'world#tiles'
+      post 'player/:id/move' => 'player#move'
+      post 'player/:id/pickup' => 'player#pickup'
     end
   end
 
