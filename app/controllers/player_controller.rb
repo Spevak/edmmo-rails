@@ -8,15 +8,11 @@ class PlayerController < ApplicationController
     def move
         # Take the user as a parameter, along with password
         mydir = params[:direction]
-        returncode = Players.move(mydir)
-        # Make a JSON for error and successful execution
-        errJSON = {:err => returncode}
-        returnJSON = {:err => $SUCCESS}
-        
-        # We can get away with this because 1 is the only successful error code
-        if returncode == -1
-            render :json => errJSON
-            else
+        if mydir.nil?
+            returnJSON = {:err => 1}
+            render :json => returnJSON
+        else
+            returnJSON = {:err => 0}
             render :json => returnJSON
         end
     end
@@ -27,14 +23,11 @@ class PlayerController < ApplicationController
         myy = params[:y]
         myID = params[:itemID]
         # The return value of the method call login()
-        returncode = Players.pickup(myx, myy, myID)
-        
-        errJSON = {:err => returncode}
-        returnJSON = {:err => $SUCCESS}
-        
-        if returncode == -1
-            render :json => errJSON
+        if myx.nil? or myy.nil? or myID.nil?
+            returnJSON = {:err => 1}
+            render :json => returnJSON
             else
+            returnJSON = {:err => 0}
             render :json => returnJSON
         end
     end
@@ -43,14 +36,11 @@ class PlayerController < ApplicationController
         # Take the user as a parameter, along with password
         myID = params[:itemID]
         # The return value of the method call login()
-        returncode = Players.drop(myID)
-        
-        errJSON = {:err => returncode}
-        returnJSON = {:err => $SUCCESS}
-        
-        if returncode == -1
-            render :json => errJSON
+        if myID.nil?
+            returnJSON = {:err => 1}
+            render :json => returnJSON
             else
+            returnJSON = {:err => 0}
             render :json => returnJSON
         end
     end
@@ -60,43 +50,35 @@ class PlayerController < ApplicationController
         myID = params[:itemID]
         myArgs = params[:args]
         # The return value of the method call login()
-        returncode = Players.use(myID, myArgs)
-        
-        errJSON = {:err => returncode}
-        returnJSON = {:err => $SUCCESS}
-        
-        if returncode == -1
-            render :json => errJSON
+        if myID.nil? or myArgs.nil?
+            returnJSON = {:err => 1}
+            render :json => returnJSON
             else
+            returnJSON = {:err => 0}
             render :json => returnJSON
         end
     end
     # STATUS
     def status
-        returncode = Players.status()
-        
-        errJSON = {:err => returncode}
-        returnJSON = {:err => $SUCCESS}
-        
-        if returncode == -1
-            render :json => errJSON
+        if params.length != 0
+            returnJSON = {:err => 1}
+            render :json => returnJSON
             else
+            returnJSON = {hp: 10,
+                battery: 10,
+                facing: 'north'}
             render :json => returnJSON
         end
     end
     # INSPECT
     def inspect
         myID = params[:itemID]
-        returncode = Players.inspect(myID)
-        
-        errJSON = {:err => returncode}
-        returnJSON = {:err => $SUCCESS}
-        
-        if returncode == -1
-            render :json => errJSON
+        if myID.nil?
+            returnJSON = {:err => 1}
+            render :json => returnJSON
             else
+            returnJSON = {:err => 0}
             render :json => returnJSON
         end
-    end
 
 end
