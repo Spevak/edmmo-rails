@@ -38,6 +38,7 @@ gem 'devise'
 # Unit testing
 gem 'rspec-rails'
 gem 'factory_girl_rails'
+gem 'database_cleaner'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
