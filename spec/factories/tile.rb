@@ -16,6 +16,15 @@ FactoryGirl.define do
     x { generate(:x) }
     y { generate(:y) }
     tile_type 0
+    item
+    character
+    after(:build) { |t| t.xn_plus_y = (t.x * side_length) + t.y }
+  end
+
+  factory :tile_empty, class: Tile do
+    x { generate(:x) }
+    y { generate(:y) }
+    tile_type 0
     item_id nil
     character_id nil
     after(:build) { |t| t.xn_plus_y = (t.x * side_length) + t.y }

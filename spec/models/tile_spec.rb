@@ -44,36 +44,28 @@ describe Tile do
   end
 
   describe ".item_at" do
-    it "returns a valid item id" do
-      item = FactoryGirl.create(:item)
+    it "returns a valid item id when there is one" do
       tile = FactoryGirl.create(:tile)
-      tile.item = item
-      tile.save!
-
-      item_at = Tile.item_at(0, 0)
+      item_at = Tile.item_at(tile.x, tile.y)
       item_at.should be_valid
     end
 
     it "returns nil when there's no item" do
-      tile = FactoryGirl.create(:tile)
-      Tile.item_at(0, 0).should eql nil
+      tile = FactoryGirl.create(:tile_empty)
+      Tile.item_at(tile.x, tile.y).should eql nil
     end
   end
 
   describe ".character_at" do
-    it "returns a valid character id" do
-      char = FactoryGirl.create(:character)
+    it "returns a valid character when there is one" do
       tile = FactoryGirl.create(:tile)
-      tile.character = char
-      tile.save!
-
-      char_at = Tile.character_at(0, 0)
+      char_at = Tile.character_at(tile.x, tile.y)
       char_at.should be_valid
     end
 
     it "returns nil when there's no character" do
-      tile = FactoryGirl.create(:tile)
-      Tile.character_at(0, 0).should eql nil
+      tile = FactoryGirl.create(:tile_empty)
+      Tile.character_at(tile.x, tile.y).should eql nil
     end
   end
 end
