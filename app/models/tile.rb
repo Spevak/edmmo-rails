@@ -5,6 +5,10 @@ class Tile < ActiveRecord::Base
   # Side length of the map.
   MAP_SIDE_LENGTH = 16
 
+  def self.MAP_SIDE_LENGTH
+    MAP_SIDE_LENGTH
+  end
+
   def self.tile_at(x, y)
     return Tile.find_by_xn_plus_y((x * MAP_SIDE_LENGTH) + y) 
   end
