@@ -2,6 +2,12 @@ require 'spec_helper'
 
 side_length = Tile.MAP_SIDE_LENGTH
 
+
+# The :tiles factory defined in /spec/factories/tile.rb generates tiles in
+# successive rows of length Tile.MAP_SIDE_LENGTH, e.g.
+# (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), ... (Tile.MAP_SIDE_LENGTH, 0),
+# (0, 1), (1, 1), (2, 1), (3, 1), ...
+# ... (Tile.MAP_SIDE_LENGTH, Tile.MAP_SIDE_LENGTH)
 describe Tile do
   pending "add some examples to (or delete) #{__FILE__}"
 
@@ -10,7 +16,6 @@ describe Tile do
     it "fetches the right number of tiles" do
       @tiles = (1..side_length ** 2).collect { FactoryGirl.create(:tile) }
       returned_tiles = Tile.tiles_at(0, 0, side_length, side_length)
-
       returned_tiles.count.should eq (side_length * side_length)
     end
 
@@ -46,7 +51,7 @@ describe Tile do
       tile.save!
 
       item_at = Tile.item_at(0, 0)
-      puts item_at
+      item_at.should be_valid
     end
 
     it "returns nil when there's no item" do
@@ -56,5 +61,19 @@ describe Tile do
   end
 
   describe ".character_at" do
+    it "returns a valid character id" do
+      char = FactoryGirl.create(:character)
+      tile = FactoryGirl.create(:tile)
+      tile.character = char
+      tile.save!
+
+      char_at = Tile.character_at(0, 0)
+      char_at.should be_valid
+    end
+
+    it "returns nil when there's no character" do
+      tile = FactoryGirl.create(:tile)
+      Tile.character_at(0, 0).should eql nil
+    end
   end
 end

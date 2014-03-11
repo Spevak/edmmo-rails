@@ -1,3 +1,5 @@
+
+# A tile on the map in BotQuest. Tiles are 0-indexed (coords begin at 0.)
 class Tile < ActiveRecord::Base
   # Side length of the map.
   MAP_SIDE_LENGTH = 16
@@ -43,6 +45,12 @@ class Tile < ActiveRecord::Base
   end
 
   def self.character_at(x, y)
-    Tile.tile_at(x, y).character
+    t = Tile.tile_at(x, y)
+    if t 
+      t.character
+    else
+      nil
+    end
   end
+
 end
