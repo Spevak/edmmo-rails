@@ -2,6 +2,11 @@ class Tile < ActiveRecord::Base
   belongs_to :item
   belongs_to :character
 
+  validates :x, numericality: { only_integer: true }
+  validates :y, numericality: { only_integer: true }
+  validates :xn_plus_y, uniqueness: true, numericality: { only_integer: true }
+  validates :tile_type, numericality: { only_integer: true }
+
   # Side length of the map.
   MAP_SIDE_LENGTH = 16
 
@@ -25,7 +30,7 @@ class Tile < ActiveRecord::Base
       return Tile.tile_at(x1, y1)
     end
 
-    return Tile.where("(x >= ? AND x <= ?) OR (y >= ? AND y <= ?)",
+    return Tile.where("(x >= ? AND x <= ?) AND (y >= ? AND y <= ?)",
                       x1, x2, y1, y2)
   end
 
