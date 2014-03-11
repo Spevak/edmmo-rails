@@ -1,5 +1,10 @@
-class Api::V1::PlayersController < ApplicationController
-  def move_to(x, y)
+class Api::V1::PlayersController < Api::V1::BaseController
+
+  before_filter :validate
+
+  def move_to(direction)
+    direction = request[:direction]
+    user_location = User.
   end
 
   def pick_up(x, y, item_id)
@@ -7,5 +12,4 @@ class Api::V1::PlayersController < ApplicationController
 
   def use_item(x, y)
   end
-
 end

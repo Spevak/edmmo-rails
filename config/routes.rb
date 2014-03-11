@@ -15,6 +15,7 @@ EdmmoRails::Application.routes.draw do
       post 'world/tiles' => 'world#tiles'
       post 'player/:id/move' => 'player#move'
       post 'player/:id/pickup' => 'player#pickup'
+      post 'test_session' => 'base#test_session' if Rails.env.development?
     end
   end
 
