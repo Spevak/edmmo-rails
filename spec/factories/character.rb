@@ -7,9 +7,4 @@ FactoryGirl.define do
     planet "Earth"
   end
 
-  factory :item do
-    pickupable true
-    walkoverable true
-  end
-
 end
