@@ -6,7 +6,7 @@ class Api::V1::BaseController < ApplicationController
   def request_valid?(request, session)
     puts "request: #{request}"
     puts "session: #{session}"
-    requested_user = request[:player_id]
+    requested_user = request[:character_id]
     session_user   = current_user
     puts "requested user: #{requested_user}"
     puts "session user: #{session_user}"
