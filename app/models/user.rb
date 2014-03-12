@@ -7,6 +7,6 @@ class User < ActiveRecord::Base
   has_many :characters
 
   def self.logged_in_users
-    User.where(logged_in: true)
+    User.where(logged_in: true).each
   end
 end

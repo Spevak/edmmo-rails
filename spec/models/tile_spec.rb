@@ -9,7 +9,6 @@ side_length = Tile.MAP_SIDE_LENGTH
 # (0, 1), (1, 1), (2, 1), (3, 1), ...
 # ... (Tile.MAP_SIDE_LENGTH, Tile.MAP_SIDE_LENGTH)
 describe Tile do
-  pending "add some examples to (or delete) #{__FILE__}"
 
   describe ".tiles_at" do
 
