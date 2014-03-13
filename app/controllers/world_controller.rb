@@ -1,16 +1,11 @@
 class WorldController < ApplicationController
-
-    # MOVE
-    def tiles
-        # Take the user as a parameter, along with password
-        myDim = params[:n]
-        if myID.n?
-            returnJSON = {:err => 1}
-            render :json => returnJSON
-            else # This is a placeholder since no access to activeRecords
-            returnJSON = {:err => 0}
-            render :json => returnJSON
-        end
-
-
+    def tile
+        character_id = request["character_id"]
+        n = request["n"]
+        tiles_to_return = []
+        character_tile = Character.find(character_id)
+        character_pos = [character_tile.x, character_tile.y]
+        tiles_to_return = Tiles.tiles_at(character_pos[0]-n, character_pos[1]-n, character_pos[0]+n, character_pos[1]+n)
+        render json: tiles_to_return
+    end
 end
