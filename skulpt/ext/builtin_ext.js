@@ -9,12 +9,22 @@ function failureFunction(path) {
 /**
  * @suppress {missingProperties}
  */
+
+function goFailure(response) {
+    if (response.err === 1)
+        return new Sk.builtin.str("Can’t walk there..."); // Unsure if want string, or to return the response.err
+    if (response.err === 2)
+        return new Sk.builtin.str("Immobilized!");
+
+/**
+* @suppress {missingProperties}
+*/
 function goSuccess(response) {
     //if (response.err === 1)
     //    return new Sk.builtin.str("Can’t walk there...");
     //if (response.err === 2)
     //    return new Sk.builtin.str("Immobilized!");
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$); 
+    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
 /**
@@ -53,7 +63,7 @@ function useSuccess(response) {
  */
 function statusSuccess(response) {
     return new Sk.builtin.tuple((response.hp, response.battery, response.facing));
-}
+} // May be better served by dict, but could not locate in builtin.js
 
 /**
  * @suppress {missingProperties}
@@ -66,21 +76,42 @@ function statusFailure(response) {
  * @suppress {missingProperties}
  */
 function inspectSuccess(response) {
-    //if (response.err === 1)
-    //    return new Sk.builtin.str("I don't have that item");
-    return new Sk.builtin.str(response.item);
+
+    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+
 }
 
 /**
  * @suppress {missingProperties}
  */
+
+function inspectFailure(response) {
+    if (response.err === 1)
+        return new Sk.builtin.str("I don't have the item: " + String(response.item.name)); //Assumes there is a name field for the JSON that is in the response for 'item'.
+}
+
+/**
+ * @suppress {missingProperties}
+ */
+
 function tilesSuccess(response) {
-    var newStr = "";
-    newStr += "Here are the items we found in the specified range:" + '\n';
-    newStr += " NOT YET IMPLEMENTED"
+    //Want to return an array of builtin arrays
+    var n = (response.tiles.length).sqrt();
+    var arrOfArrs = new Array();
+    for (var i=0;i<response.tiles.length;i+=n) {
+        var localArr = new Array();
+        for (var j=0;i<n;j++) {
+            localArr[j] = response.tiles.name[i + j];
+        }
+        var insertArr = new Sk.builtin.list(localArr);
+        arrOfArrs[(i / n)] = insertArr;
+    }
+    //var newStr = "";
+    //newStr += "Here are the items we found in the specified range:" + '\n';
+    //newStr += " NOT YET IMPLEMENTED"
     //for item in response.tiles:
     //    newStr + item.itemID + '\n';
-    return new Sk.builtin.str(newStr);
+    return new Sk.builtin.list(arrOfArrs);
 }
 
 /**
