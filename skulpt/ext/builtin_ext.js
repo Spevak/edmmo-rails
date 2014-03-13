@@ -1,4 +1,8 @@
-//Generate failure functions
+/**
+ * Generates the functions which are to be called on a non-200 response.
+ * args: path = the path of the request
+ * returns: the function to be called on a non-200 response to the request
+ */
 function failureFunction(path) {
     var str = "Error on call to " + path +  ". Response: ";
     return function(status) {
@@ -7,18 +11,12 @@ function failureFunction(path) {
 }
 
 /**
+ * Function to be called on success of a call to players/go
+ * args: response = the json response to the go request
+ * returns: python integer corresponding to the err code of the request. (this choice of return is 
+ * for iteration 1 and may be changed to a more meaningful response later on)
  * @suppress {missingProperties}
  */
-
-function goFailure(response) {
-    if (response.err === 1)
-        return new Sk.builtin.str("Can’t walk there..."); // Unsure if want string, or to return the response.err
-    if (response.err === 2)
-        return new Sk.builtin.str("Immobilized!");
-
-/**
-* @suppress {missingProperties}
-*/
 function goSuccess(response) {
     //if (response.err === 1)
     //    return new Sk.builtin.str("Can’t walk there...");
@@ -28,6 +26,10 @@ function goSuccess(response) {
 }
 
 /**
+ * Function to be called on success of a call to players/pickup
+ * args: response = the json response to the request
+ * returns: python integer corresponding to the err code of the request. (this choice of return is 
+ * for iteration 1 and may be changed to a more meaningful response later on)
  * @suppress {missingProperties}
  */
 function pickupSuccess(response) {
@@ -39,6 +41,10 @@ function pickupSuccess(response) {
 }
 
 /**
+ * Function to be called on success of a call to players/drop
+ * args: response = the json response to the request
+ * returns: python integer corresponding to the err code of the request. (this choice of return is 
+ * for iteration 1 and may be changed to a more meaningful response later on)
  * @suppress {missingProperties}
  */
 function dropSuccess(response) {
@@ -59,20 +65,21 @@ function useSuccess(response) {
 }
 
 /**
+ * Function to be called on success of a call to players/status
+ * args: response = the json response to the request
+ * returns: a python dict indicating the player's status, containing 3 keys: hp, battery, and facing
  * @suppress {missingProperties}
  */
 function statusSuccess(response) {
     return new Sk.builtin.tuple((response.hp, response.battery, response.facing));
-} // May be better served by dict, but could not locate in builtin.js
+} 
+
 
 /**
- * @suppress {missingProperties}
- */
-function statusFailure(response) {
-    return new Sk.builtin.str("Something terrible has happened to cause this.");
-}
-
-/**
+ * Function to be called on success of a call to players/inspect
+ * args: response = the json response to the request
+ * returns: python dict containing all the information about an item, or python None if the player 
+ * does not have access to that item.  
  * @suppress {missingProperties}
  */
 function inspectSuccess(response) {
@@ -82,18 +89,12 @@ function inspectSuccess(response) {
 }
 
 /**
+ * Function to be called on success of a call to world/tiles
+ * args: response = the json response to the request
+ * returns: 2d python array of cells (each cell is a python integer) corresponding to the square of
+ * terrain surrounding a character.
  * @suppress {missingProperties}
  */
-
-function inspectFailure(response) {
-    if (response.err === 1)
-        return new Sk.builtin.str("I don't have the item: " + String(response.item.name)); //Assumes there is a name field for the JSON that is in the response for 'item'.
-}
-
-/**
- * @suppress {missingProperties}
- */
-
 function tilesSuccess(response) {
     //Want to return an array of builtin arrays
     var n = (response.tiles.length).sqrt();
@@ -115,6 +116,10 @@ function tilesSuccess(response) {
 }
 
 /**
+ * Function to be called on success of a call to players/characters
+ * args: response = the json response to the request
+ * returns: python list of characters. Characters are python objects (not sure yet how they 
+ * should be represented: builtin class or dictionary?) 
  * @suppress {missingProperties}
  */
 function charactersSuccess(response) {
@@ -125,6 +130,17 @@ function charactersSuccess(response) {
 /* ########################################################################## */
 
 /**
+ * Makes a json request to the backend.
+ * args: type = the type of request, either 'GET' or 'POST'
+ *       page = the path of the request being made. e.g. api/test/player/go.  A variable for each path is
+ *              defined in paths.js; use these variables so we don't have to change code if actual paths
+ *              change.  e.g. GO_PATH
+ *       successFunction = function to be called on 200 status response.  This should contain everything the 
+ *              frontend is expected to do with the json response. 
+ *       failureFunction = the function to be called on non-200 status response.  This is more generic than
+ *              the success function, as it only needs to handle a failed request and does not have to interpret
+ *              and act on a json response.
+ *       dict = a dictionary to be converted into json format and sent along with the request.
  * @suppress {missingProperties}
  */
 function json_request(type, page, successFunction, failureFunction, dict) {
@@ -146,6 +162,8 @@ function json_request(type, page, successFunction, failureFunction, dict) {
 }
 
 /**
+ * Implementation of the built-in python funtion 'go'
+ *   args: dir = python string. Should be one of 'north', 'south', 'east', 'west'
  * @suppress {missingProperties}
  */
 Sk.builtin.goFunction = function(dir) {
@@ -159,6 +177,10 @@ Sk.builtin.goFunction = function(dir) {
 }
 
 /**
+ * Implementation of the built-in python funtion 'pickup'
+ *   args: x = python integer indicating x coordinate of item to pickup
+ *         y = python integer indicating y coordinate of item to pickup
+ *         ID = python string indicating id of item to pickup
  * @suppress {missingProperties}
  */
 Sk.builtin.pickupFunction = function(x, y, ID) {
@@ -178,6 +200,8 @@ Sk.builtin.pickupFunction = function(x, y, ID) {
 }
 
 /**
+ * Implementation of the built-in python funtion 'drop'
+ *   args: ID = python string indicating id of item to drop
  * @suppress {missingProperties}
  */
 Sk.builtin.dropFunction = function(ID) {
@@ -193,6 +217,9 @@ Sk.builtin.dropFunction = function(ID) {
 }
 
 /**
+ * Implementation of the built-in python funtion 'use'
+ *   args: ID = python string indicating id of item to use
+ *         args = python string of arguments to the item's use function 
  * @suppress {missingProperties}
  */
 Sk.builtin.useFunction = function(ID, args) {
@@ -212,6 +239,7 @@ Sk.builtin.useFunction = function(ID, args) {
 /* ########################################################################### */
 
 /**
+ * Implementation of the built-in python funtion 'status'
  * @suppress {missingProperties}
  */
 Sk.builtin.statusFunction = function() {
@@ -223,6 +251,8 @@ Sk.builtin.statusFunction = function() {
 }
 
 /**
+ * Implementation of the built-in python funtion 'inspect'
+ *   args: ID = python string containing id of item to inspect
  * @suppress {missingProperties}
  */
 Sk.builtin.inspectFunction = function(ID) {
@@ -238,6 +268,7 @@ Sk.builtin.inspectFunction = function(ID) {
 }
 
 /**
+ * Implementation of the built-in python funtion 'characters'
  * @suppress {missingProperties}
  */
 Sk.builtin.charactersFunction = function() {
@@ -249,6 +280,8 @@ Sk.builtin.charactersFunction = function() {
 }
 
 /**
+ * Implementation of the built-in python funtion 'tiles'
+ *   args: n = python integer indicating side length of square of tiles to inspect. 
  * @suppress {missingProperties}
  */
 Sk.builtin.tilesFunction = function(n) {
@@ -260,7 +293,7 @@ Sk.builtin.tilesFunction = function(n) {
     var n_val = Sk.builtin.asnum$(n);
 
 
-    var inspectFailure = failureFunction(TILES_PATH);
-    return json_request("GET", TILES_PATH, inspectSuccess, inspectFailure, {'n': n_val});
+    var tilesFailure = failureFunction(TILES_PATH);
+    return json_request("GET", TILES_PATH, tilesSuccess, tilesFailure, {'n': n_val});
 }
 
