@@ -1,15 +1,15 @@
 class Api::V1::BaseController < ApplicationController
 
   before_action :validate
-  skip_before_action :verify_authenticity_token #if Rails.env.development?
 
   def request_valid?(request, session)
-    puts "request: #{request}"
-    puts "session: #{session}"
-    requested_user = request[:character_id]
-    session_user   = current_user
-    puts "requested user: #{requested_user}"
-    puts "session user: #{session_user}"
+    #requested_user = request[:user_id]
+    #session_user   = current_user
+    #if session_user == nil or requested_user == nil then
+    #  return false
+    #end
+    #return requested_user == session_user.id
+    true
   end
   
   def test_session

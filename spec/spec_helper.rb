@@ -40,8 +40,23 @@ RSpec.configure do |config|
   #     --seed 1234
   config.order = "random"
 
-  # ???
+  # Include FactoryGirl's methods
   config.include FactoryGirl::Syntax::Methods
+
+  # Clean out the database for each test run.
+  config.use_transactional_fixtures = false
+
+  config.before(:suite) do
+      DatabaseCleaner.strategy = :truncation
+  end
+
+  config.before(:each) do
+      DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+      DatabaseCleaner.clean
+  end
 
 end
 

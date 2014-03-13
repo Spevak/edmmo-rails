@@ -1,5 +1,7 @@
 require 'spec_helper'
 
 describe Item do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it "should be valid" do
+    FactoryGirl.build(:item).should be_valid
+  end
 end
