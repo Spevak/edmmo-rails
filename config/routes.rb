@@ -1,9 +1,8 @@
 EdmmoRails::Application.routes.draw do
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
+  devise_for :users
 
-  # You can have the root of your site routed with "root"
   root 'welcome#index'
+  get "welcome/index" => 'welcome#index'
 
 
   namespace :api do
@@ -16,6 +15,12 @@ EdmmoRails::Application.routes.draw do
       get 'player/status' => 'player#status'
       get 'player/inspect' => 'player#inspect'
       get 'player/characters' => 'player#characters'
+    end
+    namespace :v1 do
+      post 'world/tiles' => 'world#tiles'
+      post 'player/:id/move' => 'player#move'
+      post 'player/:id/pickup' => 'player#pickup'
+      post 'test_session' => 'base#test_session' if Rails.env.development?
     end
   end
 
