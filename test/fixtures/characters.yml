@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  health: 1
+  battery: 1
+  facing: 1
+  planet: MyString
+
+two:
+  name: MyString
+  health: 1
+  battery: 1
+  facing: 1
+  planet: MyString
