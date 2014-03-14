@@ -2,12 +2,12 @@ EdmmoRails::Application.routes.draw do
   devise_for :users
 
   root 'welcome#index'
-  get "welcome/index" => 'welcome#index'
-
 
   namespace :api do
     namespace :test do
       get 'world/tiles' => 'world#tiles'
+      # TODO change the route to players/*. Requires collab with interpreter team.
+      # do it in v1 too.
       post 'player/move' => 'player#move'
       post 'player/pickup' => 'player#pickup'
       post 'player/drop' => 'player#drop'
@@ -16,10 +16,11 @@ EdmmoRails::Application.routes.draw do
       get 'player/inspect' => 'player#inspect'
       get 'player/characters' => 'player#characters'
     end
+    # TODO lets clean up these naming conventions so they match
     namespace :v1 do
       get 'world/tiles' => 'world#tiles'
       post 'player/move' => 'players#move'
-      post 'player/pickup' => 'players#pickup'
+      post 'player/pickup' => 'players#pick_up'
       post 'test_session' => 'base#test_session' if Rails.env.development?
     end
   end

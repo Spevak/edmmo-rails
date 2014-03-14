@@ -1,4 +1,4 @@
 class Item < ActiveRecord::Base
-  has_many :characters
+  has_one :character
   has_many :tiles
 end

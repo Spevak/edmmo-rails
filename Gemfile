@@ -39,6 +39,8 @@ gem 'devise'
 gem 'rspec-rails'
 gem 'factory_girl_rails'
 gem 'database_cleaner'
+gem 'faker'
+gem 'capybara'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
