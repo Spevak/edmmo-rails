@@ -259,5 +259,9 @@ Devise.setup do |config|
   #
 
   # ==> Make sure that logged_in is consistent between server runs
-  User.all.each do |u| u.logged_in = false ; u.save! end
+  # Fucks up when the db schema has not been loaded
+  begin
+    User.all.each do |u| u.logged_in = false ; u.save! end
+  rescue
+  end
 end
