@@ -25,6 +25,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def pick_up(x, y, item_id)
+    @user = current_user
     target_tile = Tile.tile_at(x, y)
     if target_tile == nil then
       render json: { 'err' => 1 }, status: 404
