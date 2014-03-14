@@ -100,18 +100,52 @@ function inspectSuccess(response) {
  * @suppress {missingProperties}
  */
 function tilesSuccess(response) {
-    //Want to return an array of builtin arrays
-    var n = 2 * MAP_MAX_INDEX + 1; //side length of map
-    var arrOfArrs = new Array();
-    for (var i=0;i<response.tiles.length;i+=n) {
-        var localArr = new Array();
-        for (var j=0;i<n;j++) {
-            localArr[j] = response.tiles.name[i + j];
-        }
-        var insertArr = new Sk.builtin.list(localArr);
-        arrOfArrs[(i / n)] = insertArr;
+    //side length of map
+    var n = 2 * MAP_MAX_INDEX + 1;
+
+    //Semi-jank implementation atm because iter 1 is due in 3 hours.
+    //may want to implement more elegantly later
+
+    var player_x = response.player_x;
+    var player_y = response.player_y;
+    // Coordinates of bottom left corner
+    var sw_x = player_x - MAP_MAX_INDEX;
+    var sw_y = player_y - MAP_MAX_INDEX;
+    var tiles = response.tiles;
+
+    var map  = [];
+    for (var i = 0; i < n; i++) {
+	var row = [];
+	for (var j = 0; j < n; j++) {
+	    row.push(1);
+	}
+	map.push(row);
     }
-    return new Sk.builtin.list(arrOfArrs);
+    for (i = 0; i < tiles.length; i++) {
+	var x = tiles[i].x;
+	var y = tiles[i].y;
+	if ( x-sw_x < 0 || x-sw_x > 24 || y-sw_y < 0 || y-sw_y > 24) {
+	    alert(x);
+	    alert(y);
+	}
+	map[x-sw_x][y-sw_y] = new Sk.builtin.nmber(tiles[i].tile, Sk.builtin.nmber.int$);
+    }
+
+    var pyMap = [];
+    for (var x = 0; x < n; x++) {
+	pyMap.push(new Sk.builtin.list(map[x]));
+    }
+
+
+    //for (var i=0;i<response.tiles.length;i+=n) {
+    //    var localArr = new Array();
+    //    for (var j=0;i<n;j++) {
+    //        localArr[j] = response.tiles.name[i + j];
+    //    }
+    //    var insertArr = new Sk.builtin.list(localArr);
+    //    arrOfArrs[(i / n)] = insertArr;
+    //}
+    return new Sk.builtin.list(pyMap);
 }
 
 /**
@@ -174,8 +208,8 @@ function json_request(type, page, successFunction, failureFunction, dict) {
 }
 
 //Position of the player.  Initialize to (0,0), north but update when we get data from the server.
-var character_x = 0;
-var character_y = 0;
+//var character_x = 0;
+//var character_y = 0;
 
 //////////////////////////////////////////////////////////////////////////////////////
 // ADDITIONAL BUILT-IN FUNCTION DEFINITIONS                                         //
