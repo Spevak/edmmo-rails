@@ -1,3 +1,7 @@
+//////////////////////////////////////////////////////////////////////////////////////
+//SUCCESS AND FAILURE FUNCTIONS (DEFINES HOW TO HANDLE A RESPONSE TO A JSON REQUEST //
+//////////////////////////////////////////////////////////////////////////////////////
+
 /**
  * Generates the functions which are to be called on a non-200 response.
  * args: path = the path of the request
@@ -97,7 +101,7 @@ function inspectSuccess(response) {
  */
 function tilesSuccess(response) {
     //Want to return an array of builtin arrays
-    var n = (response.tiles.length).sqrt();
+    var n = 2 * MAP_MAX_INDEX + 1; //side length of map
     var arrOfArrs = new Array();
     for (var i=0;i<response.tiles.length;i+=n) {
         var localArr = new Array();
@@ -107,11 +111,6 @@ function tilesSuccess(response) {
         var insertArr = new Sk.builtin.list(localArr);
         arrOfArrs[(i / n)] = insertArr;
     }
-    //var newStr = "";
-    //newStr += "Here are the items we found in the specified range:" + '\n';
-    //newStr += " NOT YET IMPLEMENTED"
-    //for item in response.tiles:
-    //    newStr + item.itemID + '\n';
     return new Sk.builtin.list(arrOfArrs);
 }
 
@@ -127,8 +126,9 @@ function charactersSuccess(response) {
   
 
 }
-/* ########################################################################## */
-
+//////////////////////////////////////////////////////////////////////////////////////
+// UTILITY FUNCTIONS AND GAME STATE                                                 //
+//////////////////////////////////////////////////////////////////////////////////////
 /**
  * Makes a json request to the backend.
  * args: type = the type of request, either 'GET' or 'POST'
@@ -160,6 +160,14 @@ function json_request(type, page, successFunction, failureFunction, dict) {
     return failureFunction(JSON.parse(http.responseText));		
     
 }
+
+//Position of the player.  Initialize to (0,0), north but update when we get data from the server.
+var character_x = 0;
+var character_y = 0;
+
+//////////////////////////////////////////////////////////////////////////////////////
+// ADDITIONAL BUILT-IN FUNCTION DEFINITIONS                                         //
+//////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Implementation of the built-in python funtion 'go'
@@ -236,8 +244,6 @@ Sk.builtin.useFunction = function(ID, args) {
     return json_request('POST', USE_PATH, useSuccess, useFailure, {'itemID': item_id, 'args': use_args});
 }
 
-/* ########################################################################### */
-
 /**
  * Implementation of the built-in python funtion 'status'
  * @suppress {missingProperties}
@@ -280,20 +286,14 @@ Sk.builtin.charactersFunction = function() {
 }
 
 /**
- * Implementation of the built-in python funtion 'tiles'
- *   args: n = python integer indicating side length of square of tiles to inspect. 
+ * Implementation of the built-in python funtion 'tiles' 
  * @suppress {missingProperties}
  */
-Sk.builtin.tilesFunction = function(n) {
+Sk.builtin.tilesFunction = function() {
     //check args count and types
-    Sk.builtin.pyCheckArgs("tilesFunction", arguments, 1, 1);
-    Sk.builtin.pyCheckType("n", "integer", Sk.builtin.checkInt(n));
-
-    //get the values from the python representations
-    var n_val = Sk.builtin.asnum$(n);
-
+    Sk.builtin.pyCheckArgs("tilesFunction", arguments, 0, 0);
 
     var tilesFailure = failureFunction(TILES_PATH);
-    return json_request("GET", TILES_PATH, tilesSuccess, tilesFailure, {'n': n_val});
+    return json_request("GET", TILES_PATH, tilesSuccess, tilesFailure, {});
 }
 

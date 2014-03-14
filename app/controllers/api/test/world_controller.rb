@@ -1,11 +1,12 @@
 class Api::Test::WorldController < ApplicationController
   def tiles
-    n = request[:n]
-    puts request.body()
-    if n
-      render :json => {:err => 1}
-    else
-      render :json => {:err => 0}
+    tile_list = Array.new
+    for x in 0..24 do
+      for y in 0.24 do
+        tile_list << {:x => x, :y => y, :tile => 'ground'}
+      end
     end
+    
+    render :json => {:tiles => tile_list, :player_x => 12, :player_y => 12}
   end
 end
