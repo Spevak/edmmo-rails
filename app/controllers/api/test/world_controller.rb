@@ -1,8 +1,12 @@
 class Api::Test::WorldController < ApplicationController
   def tiles
-    render :json => {:tiles => [{:x => 0, :y => 0, :tile => 'ground'},
-                                {:x => 0, :y => 1, :tile => 'ground'},
-                                {:x => 1, :y => 0, :tile => 'ground'},
-                                {:x => 1, :y => 1, :tile => 'stuff'}]}
+    tile_list = Array.new
+    for x in 0..24 do
+      for y in 0.24 do
+        tile_list << {:x => x, :y => y, :tile => 'ground'}
+      end
+    end
+    
+    render :json => {:tiles => tile_list, :player_x => 12, :player_y => 12}
   end
 end
