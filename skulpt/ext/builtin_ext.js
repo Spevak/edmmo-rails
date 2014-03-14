@@ -152,8 +152,20 @@ function json_request(type, page, successFunction, failureFunction, dict) {
     //3rd param: set to false to make request NOT asynchronous, since we need the result before returning
     http.open(type, page, false);
     http.setRequestHeader("Content-type", "application/json");
+    //get the csrf token
+    var metadata = document.getElementsByTagName('meta');
+    var token = 'no token found'
+    for (var i = 0; i < metadata.length; i++)  {
+	if (metadata[i].getAttribute('name') == 'csrf-token') {
+	    token = metadata[i].getAttribute('content');
+	}
+    }
+    http.setRequestHeader("X-CSRF-Token", token);
+
+    //Send request
     http.send(JSON.stringify(dict));
 
+    //Handle response 
     if (http.status === 200) {
 	return successFunction(JSON.parse(http.responseText));
     }
