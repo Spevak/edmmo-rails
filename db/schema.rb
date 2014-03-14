@@ -36,12 +36,7 @@ ActiveRecord::Schema.define(version: 20140314220916) do
     t.boolean  "walkoverable"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "characters_id"
-    t.integer  "character_id"
   end
-
-  add_index "items", ["character_id"], name: "index_items_on_character_id", using: :btree
-  add_index "items", ["characters_id"], name: "index_items_on_characters_id", using: :btree
 
   create_table "tiles", force: true do |t|
     t.integer  "tile_id"
