@@ -1,4 +1,3 @@
-
 # A tile on the map in BotQuest. Tiles are 0-indexed (coords begin at 0.)
 class Tile < ActiveRecord::Base
   # Side length of the map.
