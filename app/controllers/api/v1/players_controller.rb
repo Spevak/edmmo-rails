@@ -1,7 +1,7 @@
 class Api::V1::PlayersController < Api::V1::BaseController
 
   #before_filter :validate
-  def move(direction)
+  def move
     @user = current_user
     direction = request[:direction] 
 
