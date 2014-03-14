@@ -1,21 +1,19 @@
 class Api::V1::PlayersController < Api::V1::BaseController
 
   #before_filter :validate
-  def move_to(direction)
+  def move(direction)
     @user = current_user
     direction = request[:direction] 
 
-    case direction
-    when 'north'
+    dx, dy = 0, 0
+    if direction == 'north' then
       dx, dy = 0, 1
-    when 'south'
+    elsif direction == 'south'
       dx, dy = 0, -1
-    when 'east'
+    elsif direction == 'east'
       dx, dy = 1, 0
-    when 'west'
-      dx, dy = -1 0
-    else
-      dx, dy = 0, 0
+    elsif direction == 'west'
+      dx, dy = -1, 0
     end
 
     target_tile = Tile.tile_at(@user.tile.x + dx, @user.tile.y + dy)
@@ -40,4 +38,16 @@ class Api::V1::PlayersController < Api::V1::BaseController
     # do nothing lol
     render json: { 'err' => 0 }
   end
+
+  def status
+    @user = current_user
+    render json: current_user.status
+  end
+
+  def inspect
+    @user = current_user
+    render json: { 'err'  => 0,
+                   'item' => @user.item }
+  end
+
 end

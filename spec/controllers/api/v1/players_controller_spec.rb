@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Api::V1::PlayersController do
     describe "POST #move" do
-        it 
     end
 
     describe "POST #pickup" do

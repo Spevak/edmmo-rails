@@ -16,7 +16,14 @@ class Character < ActiveRecord::Base
   end
 
   def pick_up(item_id)
+    i = Item.find_by_id(item_id)
     i.character = self
+    i.save
+  end
+
+  def drop(item_id)
+    i = Item.find_by_id(item_id)
+    i.character = nil
     i.save
   end
 
@@ -31,6 +38,12 @@ class Character < ActiveRecord::Base
 
   def use_item(x, y)
     # do nothing LOL
+  end
+
+  def status
+    { :health => self.health,
+      :battery => self.battery,
+      :facing => self.facing }
   end
 
   def x
