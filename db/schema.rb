@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140314055752) do
+ActiveRecord::Schema.define(version: 20140314220916) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,8 +25,10 @@ ActiveRecord::Schema.define(version: 20140314055752) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
+    t.integer  "item_id"
   end
 
+  add_index "characters", ["item_id"], name: "index_characters_on_item_id", using: :btree
   add_index "characters", ["user_id"], name: "index_characters_on_user_id", using: :btree
 
   create_table "items", force: true do |t|
@@ -34,7 +36,12 @@ ActiveRecord::Schema.define(version: 20140314055752) do
     t.boolean  "walkoverable"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "characters_id"
+    t.integer  "character_id"
   end
+
+  add_index "items", ["character_id"], name: "index_items_on_character_id", using: :btree
+  add_index "items", ["characters_id"], name: "index_items_on_characters_id", using: :btree
 
   create_table "tiles", force: true do |t|
     t.integer  "tile_id"
