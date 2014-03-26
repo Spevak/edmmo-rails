@@ -41,6 +41,7 @@ gem 'factory_girl_rails'
 gem 'database_cleaner'
 gem 'faker'
 gem 'capybara'
+gem 'capybara-webkit'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
