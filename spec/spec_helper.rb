@@ -47,10 +47,10 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
   # Clean out the database for each test run.
-  config.use_transactional_fixtures = false
+  config.use_transactional_fixtures = true
 
   config.before(:suite) do
-      DatabaseCleaner.strategy = :truncation
+      DatabaseCleaner.strategy = :transaction
   end
 
   config.before(:each) do
