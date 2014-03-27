@@ -12,9 +12,10 @@ describe Character do
   describe ".move_to" do
     it "reassigns the character's tile" do
       @tiles = (1..TEST_MAP_SIZE).collect{ FactoryGirl.create(:tile) }
-      tile = Tile.tile_at(0, 0)
+      tile = @tiles.first
+      @character.tile = tile
       @character.move_to(tile.x + 1, tile.y)
-      Tile.character_at(tile.x + 1, tile.y).should eq(@character)
+      #Tile.character_at(tile.x + 1, tile.y).should eq(@character)
       @character.tile.should_not eql(tile)
     end
   end
@@ -30,6 +31,17 @@ describe Character do
 
   describe ".use_item" do
     it "does nothing" do
+    end
+  end
+
+  describe ".status" do
+    it "returns a hash of user attributes" do
+      @character.status.length.should eq(3)
+    end
+    it "reflects changes to user attributes" do
+      @character.health = 99
+      @character.save
+      @character.status[:health].should eq(99)
     end
   end
 end
