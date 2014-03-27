@@ -1,9 +1,20 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-ENV["RAILS_ENV"] ||= 'test'
+ENV["RAILS_ENV"] = 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
 require "capybara/rspec"
+
+# Helper to run individual tests under a specific rails environment
+def stub_env(new_env, &block)
+  original_env = Rails.env
+  Rails.instance_variable_set("@_env", ActiveSupport::StringInquirer.new(new_env))
+  block.call
+ensure
+  Rails.instance_variable_set("@_env", ActiveSupport::StringInquirer.new(original_env))
+end
+
+
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -60,6 +71,9 @@ RSpec.configure do |config|
   config.after(:each) do
       DatabaseCleaner.clean
   end
+
+  #Use capybara-webkit
+  Capybara.javascript_driver = :webkit
 
 end
 

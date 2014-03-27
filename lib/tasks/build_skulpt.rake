@@ -1,12 +1,25 @@
 desc "Builds the interpreter from skulpt source and puts the resulting javascript files into app/assets/javascritps/interpreter"
 task :build_skulpt do
+     #Check if building for test or production API
+     testing = ENV['testing']
+     if testing
+     	puts('Using test API')
+     else
+	puts('Using production API') 	
+     end
+
      #make temp versions of builtin.js and builtindict.js to whcih we will append  our additons
      system('(cd skulpt;mv base/src/builtin.js builtin_original)')
      system('(cd skulpt;mv base/src/builtindict.js builtindict_original)')
 
      #append our additons temporary files
      system('(cd skulpt; cp builtin_original builtin.js; cp builtindict_original builtindict.js)')
-     system('(cd skulpt; cat ext/paths.js >> builtin.js)')
+     #append the appropriate path file depending on if using test or production API
+     if testing
+     	system('(cd skulpt; cat ext/test_paths.js >> builtin.js)')
+     else
+	system('(cd skulpt; cat ext/paths.js >> builtin.js)')
+     end
      system('(cd skulpt; cat ext/constants.js >> builtin.js)')
      system('(cd skulpt; cat ext/builtin_ext.js >> builtin.js)')
      system('(cd skulpt; cat ext/builtindict_ext.js >> builtindict.js)')

@@ -3,3 +3,8 @@
 * push to heroku
 * run 'rake secret' and copy the generated string
 * run 'heroku config:set SECRET_TOKEN=' + paste the generated string
+
+-- Building the interpreter
+* Use the build_skulpt rake task
+* Usage: rake build_skulpt [testing=true]
+* testing=true is an optional argument that will build using the paths for the test API
