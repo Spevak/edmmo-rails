@@ -3,6 +3,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
   #before_filter :validate
   def move
     @user = current_user
+    @character = @user.character
     direction = request[:direction] 
 
     dx, dy = 0, 0
@@ -16,22 +17,34 @@ class Api::V1::PlayersController < Api::V1::BaseController
       dx, dy = -1, 0
     end
 
-    target_tile = Tile.tile_at(@user.tile.x + dx, @user.tile.y + dy)
+    target_tile = Tile.tile_at(@character.tile.x + dx, @character.tile.y + dy)
     if target_tile == nil then
       render json: { 'err' => 1 }, status: 404
     end
-    @user.move_to(target_tile)
+    @character.move_to(target_tile)
     render json: { 'err' => 0 }
   end
 
   def pick_up(x, y, item_id)
     @user = current_user
+    @character = @user.character
     target_tile = Tile.tile_at(x, y)
-    if target_tile == nil then
+    if @character.item != nil then
+      render json: { 'err' => 3 }, status: 404
+    elsif target_tile == nil then
+      render json: { 'err' => 0 }, status: 404
+    elsif target_tile.item == item then
+      @character.pick_up(item_id)
+    else
       render json: { 'err' => 1 }, status: 404
     end
-    if target_tile.item == item then
-      @user.pick_up(item.id)
+  end
+
+  def drop(item_id)
+    @user = current_user
+    @character = @user.character
+    if @character.item.id == item_id then
+      @character.item = nil
     end
   end
 
@@ -41,14 +54,13 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def status
-    @user = current_user
-    render json: current_user.status
+    render json: current_user.character.status
   end
 
   def inspect
     @user = current_user
     render json: { 'err'  => 0,
-                   'item' => @user.item }
+                   'item' => @user.character.item }
   end
 
 end

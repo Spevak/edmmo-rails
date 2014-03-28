@@ -4,7 +4,7 @@ require 'item'
 
 class Character < ActiveRecord::Base
   belongs_to :item
-  belongs_to :user
+  has_one :user
   belongs_to :tile
 
   def move_to(x, y)
