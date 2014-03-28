@@ -14,9 +14,10 @@ describe Character do
       @tiles = (1..TEST_MAP_SIZE).collect{ FactoryGirl.create(:tile) }
       tile = @tiles.first
       @character.tile = tile
-      @character.move_to(tile.x + 1, tile.y)
+      @character.move_to @tiles[1].x, @tiles[1].y
       #Tile.character_at(tile.x + 1, tile.y).should eq(@character)
       @character.tile.should_not eql(tile)
+      @character.tile.should eq @tiles[1]
     end
   end
 

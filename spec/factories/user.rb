@@ -6,7 +6,7 @@ FactoryGirl.define do
   
   factory :user do
     email { generate(:email) }
-    logged_in false
+    character
     before(:create) { |u| u.password = 'password' ; u.save! }
   end
 end
