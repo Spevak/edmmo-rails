@@ -24,11 +24,13 @@ MapData.prototype.n = 0;
  *location is out of range.
  */
 MapData.prototype.tileAt = function(x, y) {
+    //alert('Call to tileAt: x=' + x + ', y=' + y);
     if (Math.abs(x) > MAP_MAX_INDEX || Math.abs(y) > MAP_MAX_INDEX) {
 	return -1;
     }
     var x_index = x + MAP_MAX_INDEX;
     var y_index = y + MAP_MAX_INDEX;
+    //alert('got to end of tileAt');
     return this.data[x_index][y_index]
     
 }
@@ -44,8 +46,10 @@ MapData.prototype.setTile = function(x, y, tileId) {
     }
     var x_index = x + MAP_MAX_INDEX;
     var y_index = y + MAP_MAX_INDEX;
+    //alert("x_index=" + x_index+ " y_index=" + y_index);
     this.data[x_index][y_index] = tileId;
-    window.updateBotQuest(x_index, y_index);
+    window.updateBotQuest(x, y);
+    //alert("got to end of setTile");
 }
 
 var mapData = new MapData();
