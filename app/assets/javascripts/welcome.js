@@ -1,7 +1,7 @@
 $(document).ready(function() {
-	var cellWidth = 24,
+	var cellWidth = 12,
 			cellHeight = cellWidth,
-			textWidth = 24,
+			textWidth = 12,
 			textHeight = textWidth,
 			layers = [],
 			cells = [],
@@ -62,8 +62,8 @@ $(document).ready(function() {
 					y = i;
 
 			var cell = new Kinetic.Group({
-				x: (j * cellWidth),
-				y: (i * cellHeight),
+				x: (x * cellWidth),
+				y: (y * cellHeight),
 				width: cellWidth,
 				height: cellHeight,
 				id: hashCellPair(x-offset, y-offset)
