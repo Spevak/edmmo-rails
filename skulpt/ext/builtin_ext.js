@@ -88,7 +88,7 @@ function statusSuccess(response) {
     var hp = new Sk.builtin.nmber(response.hp, Sk.builtin.nmber.int$);
     var battery = new Sk.builtin.nmber(response.battery, Sk.builtin.number.int$);
     var facing = new Sk.builtin.str(response.facing);
-    return new Sk.builtin.tuple((response.hp, response.battery, response.facing));
+    return new Sk.builtin.tuple((hp, battery, facing));
 } 
 
 
@@ -115,9 +115,6 @@ function tilesSuccess(response) {
     //side length of map
     var n = mapData.n;
 
-    //Semi-jank implementation atm because iter 1 is due in 3 hours.
-    //may want to implement more elegantly later
-
     var player_x = response.player_x;
     var player_y = response.player_y;
     // Coordinates of bottom left corner
@@ -138,16 +135,11 @@ function tilesSuccess(response) {
     for (i = 0; i < tiles.length; i++) {
 	x = tiles[i].x;
 	y = tiles[i].y;
-	if ( x-sw_x < 0 || x-sw_x > 24 || y-sw_y < 0 || y-sw_y > 24) {
+	if ( x-sw_x < 0 || x-sw_x > n || y-sw_y < 0 || y-sw_y > n) {
 	    alert(x);
 	    alert(y);
 	}
 	mapData.setTile(x-sw_x, y-sw_y, tiles[i].tile);
-    }
-
-    var pyMap = [];
-    for (var x = 0; x < n; x++) {
-	pyMap.push(new Sk.builtin.list(map[x]));
     }
 
     return new Sk.builtin.nmber(0, Sk.builtin.int$);

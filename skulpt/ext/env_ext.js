@@ -35,6 +35,8 @@ MapData.prototype.tileAt = function(x, y) {
 
 /**
  *Just like tileAt, but for setting.
+ *suppress missingProperties because updateBotQuest is not defined until page loads
+ *@suppress {missingProperties}
  */
 MapData.prototype.setTile = function(x, y, tileId) {
     if (Math.abs(x) > MAP_MAX_INDEX || Math.abs(y) > MAP_MAX_INDEX) {
@@ -43,6 +45,7 @@ MapData.prototype.setTile = function(x, y, tileId) {
     var x_index = x + MAP_MAX_INDEX;
     var y_index = y + MAP_MAX_INDEX;
     this.data[x_index][y_index] = tileId;
+    window.updateBotQuest(x_index, y_index);
 }
 
 var mapData = new MapData();
