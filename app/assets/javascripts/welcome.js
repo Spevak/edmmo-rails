@@ -1,15 +1,15 @@
 $(document).ready(function() {
 	var cellWidth = 12,
-	cellHeight = cellWidth,
-	textWidth = 12,
-	textHeight = textWidth,
-	cellBgColor = 'white',
-	cellFgColor = 'red',
-	cellHighlightBgColor = 'yellow',
-	cellHighlightFgColor = 'black',
-	layers = [],
-	cells = [],
-	offset = Math.floor(mapData.n / 2); //add to coordinates s.t. player is at 0, 0
+			cellHeight = cellWidth,
+			textWidth = 12,
+			textHeight = textWidth,
+			cellBgColor = 'white',
+			cellFgColor = 'red',
+			cellHighlightBgColor = 'yellow',
+			cellHighlightFgColor = 'black',
+			layers = [],
+			cells = [],
+			offset = Math.floor(mapData.n / 2); //add to coordinates s.t. player is at 0, 0
 
 	// Holds all the cells - mapData.n**2 of them - needed to buffer
 	// half a map away on each side of the map.
@@ -37,8 +37,8 @@ $(document).ready(function() {
 
 	// Always returns a string which is unique for any pair (x, y)
 	var hashCellPair = function(x, y) {
-		x -= offset;
-		y -= offset;
+		x += offset;
+		y += offset;
 		return (x * mapData.n) + y;
 	}
 
@@ -160,7 +160,7 @@ $(document).ready(function() {
 	// im pretty sure our app isnt called "window"
 	// so i should change this pretty soon -grayson
 	window.updateBotQuest = function(x, y) {
-		var cell = getCellById(hashCellPair(x, (mapData.n - y)));
+		var cell = getCellById(hashCellPair(x - 1, (mapData.n - y)));
 		var newCellContents = mapData.tileAt(x, y);
 		cell.inner.setText(newCellContents);
 		fgLayer.draw(); // must call to update the <canvas>.
