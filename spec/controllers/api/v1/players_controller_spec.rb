@@ -96,11 +96,17 @@ describe Api::V1::PlayersController do
 
     context "valid drop" do
       it "drops an item and returns error code 0" do
+
         @item = FactoryGirl.create(:item)
         @character.item = @item
         @character.save
-        json = {x: 0, y: 0, itemID: @item.id}
-        post :drop, json
+
+        json = { 
+          :x      => 0,
+          :y      => 0,
+          :itemID => @item.id }
+        post "/drop", json
+
         @tile.item.id.should eql  @item.id
         @character.item.should eql nil
         JSON.parse(response.body)["err"].should eql 0

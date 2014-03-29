@@ -3,6 +3,10 @@ $(document).ready(function() {
 			cellHeight = cellWidth,
 			textWidth = 12,
 			textHeight = textWidth,
+			cellBgColor = 'white',
+			cellFgColor = 'red',
+			cellHighlightBgColor = 'yellow',
+			cellHighlightFgColor = 'black',
 			layers = [],
 			cells = [],
 			offset = Math.floor(mapData.n / 2); //add to coordinates s.t. player is at 0, 0
@@ -21,7 +25,13 @@ $(document).ready(function() {
 		var cell = stage.find("#" + id)[0];
 		var cellOuter = cell.getChildren()[0];
 		var cellInner = cell.getChildren()[1];
-		return { 'outer': cellOuter, 'inner': cellInner }
+		return {
+			'outer': cellOuter,
+			'inner': cellInner,
+			'alert': function() {
+				this.outer.setAttr('fill', cellHighlightBgColor)
+				this.inner.setAttr('fill', cellHighlightFgColor)
+			}}
 	}
 
 	// Set up the DOM
@@ -41,7 +51,7 @@ $(document).ready(function() {
 		height: cellHeight * mapData.n,
 		x: 0,
 		y: 0,
-		fill: 'blue'
+		fill: 'black'
 	})
 
 	bgLayer.add(bg);
@@ -72,12 +82,12 @@ $(document).ready(function() {
 			var cellBg = new Kinetic.Rect({
 				width: cellWidth,
 				height: cellHeight,
-				fill: 'red'
+				fill: cellBgColor
 			});
 
 			var cellContents = new Kinetic.Text({
 				text: hashCellPair(x, y),
-				fill: 'green',
+				fill: cellFgColor,
 				width: textWidth,
 				height: textHeight,
 				x: 0,
@@ -106,8 +116,7 @@ $(document).ready(function() {
 			var cell = getCellById(hashCellPair(x, y));
 			var newCellContents = mapData.tileAt(x, y);
 			cell.inner.setText(newCellContents);
-			cell.inner.setAttr('fill', 'white');
-			cell.outer.setAttr('fill', 'black');
+			cell.alert();
 			fgLayer.draw(); // must call to update the <canvas>.
 	}
 });

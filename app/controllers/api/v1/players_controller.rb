@@ -61,7 +61,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
   def inspect
     @user = current_user
     render json: { 'err'  => 0,
-                   'item' => @user.character.item }
+      'item' => @user.character.item }
   end
 
 end

@@ -24,7 +24,10 @@ html, body {
   margin: .5%;
   overflow: hidden;
 }
-  
+ 
+#map-container {
+  text-align: center;
+}
 
 #map {
   float: left;
@@ -32,7 +35,6 @@ html, body {
 
 #map-chars {
   font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
-
   display: block;
   margin: auto;
   overflow: hiden;
