@@ -20,9 +20,10 @@ class Api::V1::PlayersController < Api::V1::BaseController
     target_tile = Tile.tile_at(@character.tile.x + dx, @character.tile.y + dy)
     if target_tile == nil then
       render json: { 'err' => 1 }, status: 404
+    else
+      @character.move_to(target_tile.x, target_tile.y)
+      render json: { 'err' => 0 }
     end
-    @character.move_to(target_tile)
-    render json: { 'err' => 0 }
   end
 
   def pick_up(x, y, item_id)

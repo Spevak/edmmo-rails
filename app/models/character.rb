@@ -10,8 +10,8 @@ class Character < ActiveRecord::Base
   def move_to(x, y)
     if (self.tile.x - x).abs <= 1 and (self.tile.y - y).abs <= 1 then
       tile = Tile.tile_at(x, y)
-      tile.character = self
-      tile.save
+      self.tile = tile
+      self.save
     end
   end
 

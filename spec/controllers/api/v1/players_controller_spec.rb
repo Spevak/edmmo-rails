@@ -2,38 +2,31 @@ require 'spec_helper'
 
 describe Api::V1::PlayersController do
 
-  side_length = Tile.MAP_SIDE_LENGTH
-
   before(:each) do
     @user = FactoryGirl.create(:user)
-    @tile = Tile.tile_at(0, 0)
-    @character = @user.character
-    @character.tile = @tile
-    @character.save
     sign_in @user
+    @character = @user.character
+    tile = Tile.first
+    tile.character = @character
+    tile.save
   end
-
-  Tile.destroy_all
-  @tiles = (1..side_length ** 2).collect { FactoryGirl.create(:tile) }
 
   describe "POST #move" do
 
     context "valid move" do 
       it "moves the player and returns error code 0 (success)" do
+        @character.tile = Tile.tile_at(0, 0)
         json = {direction: 'east'}
         post :move, json
         @character.tile.x.should eql 1
         @character.tile.y.should eql 0
         Tile.tile_at(0, 0).character.should eql nil
+        Tile.tile_at(1, 0).character.should eql @character
         JSON.parse(response.body)["err"].should eql 0
       end 
     end
 
     context "invalid move" do
-      @tile = Tile.tile_at(0, 0)
-      @tile.character = @character
-      @tile.save
-
       it "does not move player and returns error code 1" do
         json = {direction: 'south'}
         post :move, json
@@ -48,13 +41,9 @@ describe Api::V1::PlayersController do
   describe "POST #pickup" do
 
     context "valid pickup" do
-      @item = FactoryGirl.create(:item)
-      @tile = Tile.tile_at(0, 0)
-      @tile.character = @character
-      @tile.item = @item
-      @tile.save
       it "picks up an item and put it in the player's hands. Return error code 0" do
-        json = {x: 0, y: 0, itemID: @item.id}
+        item_to_expect = Tile.item_at(@character.tile.x, @character.tile.y)
+        json = {x: @character.x, y: @character.y, itemID: @item.id}
         post :pickup, json
         @character.item.id.should eql @item.id
         @tile.item.should eql nil
@@ -63,11 +52,8 @@ describe Api::V1::PlayersController do
     end
 
     context "item not there" do
-      @item = FactoryGirl.create(:item)
-      @tile = Tile.tile_at(0, 0)
-      @tile.character = @character
-      @tile.save
       it "returns error code 1" do
+        @item = FactoryGirl.create(:item)
         json = {x: 0, y: 0, itemID: @item.id}
         post :pickup, json
         @character.item.should eql nil
@@ -160,5 +146,4 @@ describe Api::V1::PlayersController do
   describe "GET #characters" do
     it "returns all characters"
   end
-  Tile.destroy_all
 end

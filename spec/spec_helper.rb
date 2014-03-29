@@ -64,11 +64,16 @@ RSpec.configure do |config|
       DatabaseCleaner.strategy = :transaction
   end
 
-  config.before(:each) do
+  config.before(:all) do
       DatabaseCleaner.start
+
+      # Generate tiles
+      @tiles = (1..Tile.MAP_SIDE_LENGTH ** 2).collect { FactoryGirl.create(:tile) }
+      @side_length = Tile.MAP_SIDE_LENGTH
   end
 
-  config.after(:each) do
+  config.after(:all) do
+      FactoryGirl.reload
       DatabaseCleaner.clean
   end
 
