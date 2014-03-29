@@ -54,7 +54,6 @@ describe "The builtin go function" do
       visit('')
       #Have to print result to see it because skulpt doesn't use the output function for return values
       result = runPython("print(go('north'))")
-      puts "result: " + result
       expect(result).to eq("0")
     end
   end
