@@ -94,7 +94,7 @@ $(document).ready(function() {
 			});
 
 			var cellContents = new Kinetic.Text({
-				text: hashCellPair(x, y),
+				text: mapData.tileAt(x-offset, y-offset),
 				fill: cellFgColor,
 				width: textWidth,
 				height: textHeight,
@@ -121,6 +121,7 @@ $(document).ready(function() {
 		this.layer = layer;
 	}
 
+	// Flash yellow and black. For debuggin
 	Cell.prototype.alert = function() {
 		this.outer.setAttr('fill', cellHighlightBgColor)
 		this.inner.setAttr('fill', cellHighlightFgColor)
@@ -132,14 +133,33 @@ $(document).ready(function() {
 			that.outer.setAttr('fill', cellBgColor)
 			that.inner.setAttr('fill', cellFgColor)
 			that.layer.draw();
-		}, 2000);
+		}, 1500);
 	}
 
-	Cell.prototype.update = function(outer, inner) {
-		this.outer.setAttrs(outer);
-		this.inner.setAttrs(inner);
+	// Update the cell.
+	// options = {
+	//	 outer: (attributes hash for Kinetic.Rect)
+	//	 inner: (attributes hash for Kinetic.Text)
+	//	 text: (string)
+	// }
+	Cell.prototype.update = function(options) {
+		if (options['outer'])
+			this.outer.setAttrs(options['outer']);
+		if (options['inner'])
+			this.inner.setAttrs(options['inner']);
+		if (options['text'])
+			this.inner.setText(options['text']);
 		this.layer.draw();
 	};
+
+	Cell.prototype.flash = function(text) {
+		var oldText = this.inner.getText();
+		this.update({ 'text': text });
+		var that = this;
+		window.setTimeout(function() {
+			that.update({ 'text': oldText });
+		}, 1500);
+	}
 
 	var getCellById = function (id) {
 		var cell = stage.find("#" + id)[0];
@@ -162,8 +182,7 @@ $(document).ready(function() {
 	window.updateBotQuest = function(x, y) {
 		var cell = getCellById(hashCellPair(x - 1, (mapData.n - y)));
 		var newCellContents = mapData.tileAt(x, y);
-		cell.inner.setText(newCellContents);
-		fgLayer.draw(); // must call to update the <canvas>.
+		cell.flash(newCellContents);
 		cell.alert();
 	}
 });
