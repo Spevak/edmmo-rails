@@ -1,0 +1,16 @@
+//A mapdata object stores an n*n array of tiles (represented as characters)
+function MapData() {
+  //todo: instantiate with ascii art instead of zeros
+    this.data = new Array();
+    this.n = 2 * MAP_MAX_INDEX + 1;
+    var col = null;
+    for (var y = 0; y < this.n; y++) {
+	col = new Array();
+	for (var x=0; x < this.n; x++) {
+	    col.push(0);
+	}
+	this.data.push(col);
+    }
+}
+
+var mapData = new MapData();

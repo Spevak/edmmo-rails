@@ -1,6 +1,59 @@
 <html>
- <font size=5>
- Welcome to bot quest!
- </font>
- <textarea id="interactive" cols="85" rows="1"></textarea>
+  <body>
+    <!-- The dashboard is the outer container that wraps the three UI panels: map, interpreter, and output -->
+    <div id="dashboard">
+
+      <!-- The Map -->
+      <div class="half" id="map">
+	<!--Temporary implementation of map until we incorporate the front-end graphics framework.
+	    note: this looks really bad because characters are thinner than they are tall so instead of a
+	    square it's a rectangle -->
+        <br><br><br>
+        <textarea id="map-chars" cols="25" rows="25">
+██████╗  ██████╗ ████████
+██╔══██╗██╔═══██╗╚══██╔══
+██████╔╝██║   ██║   ██║  
+██╔══██╗██║   ██║   ██║  
+██████╔╝╚██████╔╝   ██║  
+╚═════╝  ╚═════╝    ╚═╝  
+  ____ _  _ ____ ____ ___
+  |  | |  | |___ [__   | 
+  |_\| |__| |___ ___]  | 
+
+                        
+           _        _
+          (_)      (_)
+           \\______//__
+           /\\    //  /|
+  _  _    /__________/ |
+ //  \\   |          | |
+||   ||   |   ^  ^   | |
+ \\ //    |    __,   | /
+  | |    /|__________|/¯/
+  \ \   /     |   |    /
+   \ \ |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
+    \ ¯| |¯¯¯¯¯¯¯¯¯¯¯| |
+     \_| |Python 2.6 | |
+       | |>>>        | |</textarea>
+	<center> Map </center>
+      </div>
+
+      <!-- The right hand side containing the two text boxes -->
+      <div class="half" id="terminals"> 
+	<!-- The area for text output from the game -->
+	<div class="terminal" id="log">
+	  <pre id="log-text">Welcome to Bot Quest! <br></pre>
+	</div>
+	<!-- The interpreter terminal -->
+	<div class="terminal" id="shell">   
+	  <textarea id="interactive" cols="85" rows="1"></textarea>
+	</div>
+      </div>
+
+    </div>
+    <!-- This is kind of jank but for now the easiest way I can find to 
+	 test the front end requires having a pre block I can print to.
+	 May want find a cleaner way to do it later -->
+    <pre id="output"></pre>
+  </body>
 </html>
