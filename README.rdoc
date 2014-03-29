@@ -1,6 +1,7 @@
 == README
 -- Deployment
 * push to heroku
+* run 'heroku run rake db:migrate'
 * run 'rake secret' and copy the generated string
 * run 'heroku config:set SECRET_TOKEN=' + paste the generated string
 
