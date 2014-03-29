@@ -132,6 +132,8 @@ function tilesSuccess(response) {
     }
     var x;
     var y;
+    //A list of cells to update on the display
+    var toUpdate = []
     for (i = 0; i < tiles.length; i++) {
 	x = tiles[i].x;
 	y = tiles[i].y;
@@ -139,9 +141,10 @@ function tilesSuccess(response) {
 	    alert(x);
 	    alert(y);
 	}
+	toUpdate.push([x-player_x, y-player_y]);
 	mapData.setTile(x-player_x, y-player_y, tiles[i].tile);
     }
-
+    window.renderMap(toUpdate);
     return new Sk.builtin.nmber(0, Sk.builtin.int$);
 }
 
