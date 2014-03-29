@@ -44,6 +44,9 @@ MapData.prototype.setTile = function(x, y, tileId) {
     var x_index = x + MAP_MAX_INDEX;
     var y_index = y + MAP_MAX_INDEX;
     this.data[x_index][y_index] = tileId;
+    if (y_index == 0) {
+	alert('yo');
+    }
     window.updateBotQuest(x, y);
 }
 
