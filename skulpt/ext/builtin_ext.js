@@ -139,7 +139,7 @@ function tilesSuccess(response) {
 	    alert(x);
 	    alert(y);
 	}
-	mapData.setTile(x-sw_x, y-sw_y, tiles[i].tile);
+	mapData.setTile(x-player_x, y-player_y, tiles[i].tile);
     }
 
     return new Sk.builtin.nmber(0, Sk.builtin.int$);

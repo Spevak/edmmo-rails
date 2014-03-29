@@ -181,8 +181,9 @@ $(document).ready(function() {
 	// so i should change this pretty soon -grayson
 	window.updateBotQuest = function(x, y) {
 		var cell = getCellById(hashCellPair(x - 1, (mapData.n - y)));
-		var newCellContents = mapData.tileAt(x, y);
-		cell.flash(newCellContents);
-		cell.alert();
+	    //use tileChars to get the character representation from the tile ID
+		var newCellContents = tileChars[mapData.tileAt(x, y)];
+	    cell.update({"text": newCellContents});
+	//cell.alert();
 	}
 });
