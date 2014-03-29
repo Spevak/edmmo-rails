@@ -41,8 +41,12 @@ gem 'factory_girl_rails'
 gem 'database_cleaner'
 gem 'faker'
 gem 'capybara'
-gem 'capybara-webkit'
 
+#Heroku will reject if we put capybara webkit in production
+
+group :test, :development do
+  gem 'capybara-webkit'
+end
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
 
