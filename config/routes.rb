@@ -2,6 +2,7 @@ EdmmoRails::Application.routes.draw do
   devise_for :users
 
   root 'welcome#index'
+  get 'kinetic_test' => 'welcome#kinetic_test'
 
   namespace :api do
     namespace :test do
