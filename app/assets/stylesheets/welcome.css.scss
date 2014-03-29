@@ -38,8 +38,12 @@ html, body {
 }
 
 #map-chars {
+  font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+
   display: block;
   margin: auto;
+  overflow: hiden;
+  resize: none;
 }
 
 #terminals {
