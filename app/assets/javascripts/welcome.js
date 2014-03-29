@@ -5,7 +5,7 @@ $(document).ready(function() {
 			textHeight = textWidth,
 			layers = [],
 			cells = [],
-			offset = Math.floor(mapData.n / 2);
+			offset = Math.floor(mapData.n / 2); //add to coordinates s.t. player is at 0, 0
 
 
 	// Always returns a string which is unique for any pair (x, y)
@@ -24,8 +24,9 @@ $(document).ready(function() {
 		return { 'outer': cellOuter, 'inner': cellInner }
 	}
 
+	// Set up the DOM
 	var stage = new Kinetic.Stage({
-		container: 'map-container',
+		container: 'map-container', // refers to a DOM node's id
 		width: mapData.n * cellWidth,
 		height: mapData.n * cellWidth,
 	});
@@ -45,15 +46,16 @@ $(document).ready(function() {
 
 	bgLayer.add(bg);
 
+	// Layers are set up; now let's make some cells.
+
 	// Create a 2d array of cells.
 	// A cell is a Group, containing a Rect (bg) at index 0 and a Text (fg) at i=1.
 	// Later we can replace the Text object with a Sprite object if we want images.
-
-	// This is for transforming the map coordinate space
-	// By default, (0, 0) would be at the top-left corner
-	// So instead we'll set it to be the center tile,
-	// and tiles to the left will have negative x values (above, negative y)
 	for (var i = 0; i < mapData.n; i++) {
+
+		if (!cells[i]) // This is gross but why loop again?
+			cells[i] = [];
+
 		for (var j = 0; j < mapData.n; j++) {
 			// Just trust me
 			var x = j,
@@ -85,7 +87,6 @@ $(document).ready(function() {
 			cell.add(cellBg);
 			cell.add(cellContents);
 
-			if (!cells[i]) { cells[i] = []; }
 			cells[i].push(cell);
 		}
 	}
@@ -99,13 +100,14 @@ $(document).ready(function() {
 	stage.add(bgLayer);
 	stage.add(fgLayer);
 
-	// polluting the global namespace is like polluting the globe itself.
+	// im pretty sure our app isnt called "window"
+	// so i should change this pretty soon -grayson
 	window.updateBotQuest = function(x, y) {
 			var cell = getCellById(hashCellPair(x, y));
 			var newCellContents = mapData.tileAt(x, y);
 			cell.inner.setText(newCellContents);
 			cell.inner.setAttr('fill', 'white');
 			cell.outer.setAttr('fill', 'black');
-			fgLayer.draw();
+			fgLayer.draw(); // must call to update the <canvas>.
 	}
 });
