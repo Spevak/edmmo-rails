@@ -25,7 +25,7 @@ describe "The splash page" do
     stub_env "development" do
       #navigate to welcome page
       visit('')
-      expect(page).to have_content 'Welcome to bot quest!'
+      expect(page).to have_content 'Welcome to Bot Quest!'
     end
   end
 end

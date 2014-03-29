@@ -1,11 +1,15 @@
 $(document).ready(function() {
-	var cellWidth = 24,
+	var cellWidth = 12,
 			cellHeight = cellWidth,
-			textWidth = 24,
+			textWidth = 12,
 			textHeight = textWidth,
+			cellBgColor = 'white',
+			cellFgColor = 'red',
+			cellHighlightBgColor = 'yellow',
+			cellHighlightFgColor = 'black',
 			layers = [],
 			cells = [],
-			offset = Math.floor(mapData.n / 2);
+			offset = Math.floor(mapData.n / 2); //add to coordinates s.t. player is at 0, 0
 
 
 	// Always returns a string which is unique for any pair (x, y)
@@ -21,11 +25,18 @@ $(document).ready(function() {
 		var cell = stage.find("#" + id)[0];
 		var cellOuter = cell.getChildren()[0];
 		var cellInner = cell.getChildren()[1];
-		return { 'outer': cellOuter, 'inner': cellInner }
+		return {
+			'outer': cellOuter,
+			'inner': cellInner,
+			'alert': function() {
+				this.outer.setAttr('fill', cellHighlightBgColor)
+				this.inner.setAttr('fill', cellHighlightFgColor)
+			}}
 	}
 
+	// Set up the DOM
 	var stage = new Kinetic.Stage({
-		container: 'map-container',
+		container: 'map-container', // refers to a DOM node's id
 		width: mapData.n * cellWidth,
 		height: mapData.n * cellWidth,
 	});
@@ -40,28 +51,29 @@ $(document).ready(function() {
 		height: cellHeight * mapData.n,
 		x: 0,
 		y: 0,
-		fill: 'blue'
+		fill: 'black'
 	})
 
 	bgLayer.add(bg);
 
+	// Layers are set up; now let's make some cells.
+
 	// Create a 2d array of cells.
 	// A cell is a Group, containing a Rect (bg) at index 0 and a Text (fg) at i=1.
 	// Later we can replace the Text object with a Sprite object if we want images.
-
-	// This is for transforming the map coordinate space
-	// By default, (0, 0) would be at the top-left corner
-	// So instead we'll set it to be the center tile,
-	// and tiles to the left will have negative x values (above, negative y)
 	for (var i = 0; i < mapData.n; i++) {
+
+		if (!cells[i]) // This is gross but why loop again?
+			cells[i] = [];
+
 		for (var j = 0; j < mapData.n; j++) {
 			// Just trust me
 			var x = j,
 					y = i;
 
 			var cell = new Kinetic.Group({
-				x: (j * cellWidth),
-				y: (i * cellHeight),
+				x: (x * cellWidth),
+				y: (y * cellHeight),
 				width: cellWidth,
 				height: cellHeight,
 				id: hashCellPair(x-offset, y-offset)
@@ -70,12 +82,12 @@ $(document).ready(function() {
 			var cellBg = new Kinetic.Rect({
 				width: cellWidth,
 				height: cellHeight,
-				fill: 'red'
+				fill: cellBgColor
 			});
 
 			var cellContents = new Kinetic.Text({
 				text: hashCellPair(x, y),
-				fill: 'green',
+				fill: cellFgColor,
 				width: textWidth,
 				height: textHeight,
 				x: 0,
@@ -85,7 +97,6 @@ $(document).ready(function() {
 			cell.add(cellBg);
 			cell.add(cellContents);
 
-			if (!cells[i]) { cells[i] = []; }
 			cells[i].push(cell);
 		}
 	}
@@ -99,13 +110,13 @@ $(document).ready(function() {
 	stage.add(bgLayer);
 	stage.add(fgLayer);
 
-	// polluting the global namespace is like polluting the globe itself.
+	// im pretty sure our app isnt called "window"
+	// so i should change this pretty soon -grayson
 	window.updateBotQuest = function(x, y) {
 			var cell = getCellById(hashCellPair(x, y));
 			var newCellContents = mapData.tileAt(x, y);
 			cell.inner.setText(newCellContents);
-			cell.inner.setAttr('fill', 'white');
-			cell.outer.setAttr('fill', 'black');
-			fgLayer.draw();
+			cell.alert();
+			fgLayer.draw(); // must call to update the <canvas>.
 	}
 });

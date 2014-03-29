@@ -4,14 +4,14 @@ require 'item'
 
 class Character < ActiveRecord::Base
   belongs_to :item
-  belongs_to :user
+  has_one :user
   belongs_to :tile
 
   def move_to(x, y)
     if (self.tile.x - x).abs <= 1 and (self.tile.y - y).abs <= 1 then
       tile = Tile.tile_at(x, y)
-      tile.character = self
-      tile.save
+      self.tile = tile
+      self.save
     end
   end
 
