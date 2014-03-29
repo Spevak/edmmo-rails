@@ -10,6 +10,8 @@
 function failureFunction(path) {
     var str = "Error on call to " + path +  ". Response: ";
     return function(status) {
+        log(str + status);
+	//todo: throw python error instead of printing string
 	return new Sk.builtin.str(str + status);
     };
 }
@@ -22,10 +24,12 @@ function failureFunction(path) {
  * @suppress {missingProperties}
  */
 function goSuccess(response) {
-    //if (response.err === 1)
-    //    return new Sk.builtin.str("Can’t walk there...");
-    //if (response.err === 2)
-    //    return new Sk.builtin.str("Immobilized!");
+    if (response.err === 0)
+	log('Took a step. <br>');
+    if (response.err === 1)
+        log("Can’t walk there...");
+    if (response.err === 2)
+        log("Immobilized!");
     return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
@@ -37,10 +41,12 @@ function goSuccess(response) {
  * @suppress {missingProperties}
  */
 function pickupSuccess(response) {
-    //if (response.err === 1)
-    //    return new Sk.builtin.str("That item isn't there!");
-    //if (response.err === 2)
-    //    return new Sk.builtin.str("You can't access this tile!");
+    if (response.err === 0)
+	log('Picked up item!');
+    if (response.err === 1)
+        log("That item isn't there!");
+    if (response.err === 2)
+        log("You can't access this tile!");
     return new Sk.builtin.nmber(response, Sk.builtin.nmber.int$);
 }
 
@@ -52,8 +58,10 @@ function pickupSuccess(response) {
  * @suppress {missingProperties}
  */
 function dropSuccess(response) {
-    //if (response.err === 1)
-    //    return new Sk.builtin.str("You don't have that item!");
+    if (response.err === 0)
+	log("Dropped item");
+    if (response.err === 1)
+        log("You don't have that item!");
     return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
@@ -61,10 +69,12 @@ function dropSuccess(response) {
  * @suppress {missingProperties}
  */
 function useSuccess(response) {
-    //if (response.err === 1)
-    //    return new Sk.builtin.str("You don't have that item!");
-    //if (response.err === 2)
-    //    return new Sk.builtin.str("Erm... I don't think you can do that with that item.");
+    if (response.err === 0)
+	log("Used item.")
+    if (response.err === 1)
+        log("You don't have that item!");
+    if (response.err === 2)
+        log("Erm... I don't think you can do that with that item.");
     return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
@@ -75,6 +85,9 @@ function useSuccess(response) {
  * @suppress {missingProperties}
  */
 function statusSuccess(response) {
+    var hp = new Sk.builtin.nmber(response.hp, Sk.builtin.nmber.int$);
+    var battery = new Sk.builtin.nmber(response.battery, Sk.builtin.number.int$);
+    var facing = new Sk.builtin.str(response.facing);
     return new Sk.builtin.tuple((response.hp, response.battery, response.facing));
 } 
 
@@ -87,9 +100,8 @@ function statusSuccess(response) {
  * @suppress {missingProperties}
  */
 function inspectSuccess(response) {
-
+    //todo: should log result of inspect instead.
     return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
-
 }
 
 /**
@@ -101,7 +113,7 @@ function inspectSuccess(response) {
  */
 function tilesSuccess(response) {
     //side length of map
-    var n = 2 * MAP_MAX_INDEX + 1;
+    var n = mapData.n;
 
     //Semi-jank implementation atm because iter 1 is due in 3 hours.
     //may want to implement more elegantly later
@@ -117,18 +129,20 @@ function tilesSuccess(response) {
     for (var i = 0; i < n; i++) {
 	var row = [];
 	for (var j = 0; j < n; j++) {
-	    row.push(1);
+	    row.push(-1);
 	}
 	map.push(row);
     }
+    var x;
+    var y;
     for (i = 0; i < tiles.length; i++) {
-	var x = tiles[i].x;
-	var y = tiles[i].y;
+	x = tiles[i].x;
+	y = tiles[i].y;
 	if ( x-sw_x < 0 || x-sw_x > 24 || y-sw_y < 0 || y-sw_y > 24) {
 	    alert(x);
 	    alert(y);
 	}
-	map[x-sw_x][y-sw_y] = new Sk.builtin.nmber(tiles[i].tile, Sk.builtin.nmber.int$);
+	mapData.setTile(x-sw_x, y-sw_y, tiles[i].tile);
     }
 
     var pyMap = [];
@@ -136,16 +150,7 @@ function tilesSuccess(response) {
 	pyMap.push(new Sk.builtin.list(map[x]));
     }
 
-
-    //for (var i=0;i<response.tiles.length;i+=n) {
-    //    var localArr = new Array();
-    //    for (var j=0;i<n;j++) {
-    //        localArr[j] = response.tiles.name[i + j];
-    //    }
-    //    var insertArr = new Sk.builtin.list(localArr);
-    //    arrOfArrs[(i / n)] = insertArr;
-    //}
-    return new Sk.builtin.list(pyMap);
+    return new Sk.builtin.nmber(0, Sk.builtin.int$);
 }
 
 /**
@@ -157,7 +162,6 @@ function tilesSuccess(response) {
  */
 function charactersSuccess(response) {
     return new Sk.builtin.str("charactersSuccess response handling not yet implemented");
-  
 
 }
 //////////////////////////////////////////////////////////////////////////////////////
