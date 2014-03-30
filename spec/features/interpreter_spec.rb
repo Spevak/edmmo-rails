@@ -25,7 +25,7 @@ describe "The splash page" do
     stub_env "development" do
       #navigate to welcome page
       visit('')
-      expect(page).to have_content 'Welcome to bot quest!'
+      expect(page).to have_css('div#dashboard')
     end
   end
 end
@@ -62,8 +62,6 @@ end
 
 # NOTE: All quotes in Python script MUST be in single quotes
 # TODO: Test the other functions
-
-# Uncomment these tests as map response completed:
 
 describe "The builtin go function - illegal move" do
     it "runs and returns a 1 err code", :js => true do
