@@ -35,7 +35,7 @@ $(document).ready(function() {
 		direction = options['direction'];
 	}
 
-	// Always returns a string which is unique for any pair (x, y)
+	// Always returns a string which is unique for any unique pair (x, y)
 	var hashCellPair = function(x, y) {
 		x += offset;
 		y += offset;
@@ -149,15 +149,15 @@ $(document).ready(function() {
 			this.inner.setAttrs(options['inner']);
 		if (options['text'])
 			this.inner.setText(options['text']);
-		this.layer.draw();
 	};
 
 	Cell.prototype.flash = function(text) {
 		var oldText = this.inner.getText();
 		this.update({ 'text': text });
-		var that = this;
+		var that = this; // gross
 		window.setTimeout(function() {
 			that.update({ 'text': oldText });
+			that.layer.draw();
 		}, 1500);
 	}
 
@@ -182,7 +182,7 @@ $(document).ready(function() {
 	window.updateBotQuest = function(x, y) {
 		var cell = getCellById(hashCellPair(x - 1, (mapData.n - y)));
 		var newCellContents = mapData.tileAt(x, y);
-		cell.flash(newCellContents);
-		cell.alert();
+		cell.update({ 'text' : newCellContents });
+		fgLayer.draw();
 	}
 });
