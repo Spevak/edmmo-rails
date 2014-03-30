@@ -133,23 +133,70 @@ describe Api::V1::PlayersController do
         JSON.parse(response.body)["err"].should eql 1
       end
     end
-
   end
 
   describe "POST #use" do
-    it "uses an item"
+    #TODO test to be improved when use_item is fully functional
+    context "valid use" do
+      it "uses an item and returns error code 0" do
+        @item = FactoryGirl.create(:item)
+        @character.item = @item
+        @character.save
+        json = {itemID: @item.id, args: nil}
+        post :use, json
+        @character.should_receive(:use_item)
+        JSON.parse(response.body)["err"].should eql 0
+      end
+    end
+    context "does not have item" do
+      it "returns error code 1" do
+        @item = FactoryGirl.create(:item)
+        @item2 = FactoryGirl.create(:item)
+        @character.item = @item
+        @character.save
+        json = {itemID: @item2.id, args: nil}
+        post :use, json
+        @character.should_not_receive(:use_item)
+        JSON.parse(response.body)["err"].should eql 1
+      end
+    end
+    context "bad arguments" do
+      it "returns error code 2" do
+        #TODO
+      end
+    end
   end
 
   describe "GET #status" do
-    it "reports player status" do
+    it "reports player status, hp, battery" do
+      post :status
+      JSON.parse(response.body)["health"].should eql 100
+      JSON.parse(response.body)["battery"].should eql 100
     end
   end
 
   describe "GET #inspect" do
-    it "inspects an item"
+    context "valid item" do
+      it "inspects an item" do
+        @item = FactoryGirl.create(:item)
+        json = {item_id: @item.id}
+        post :inspect, json
+        JSON.parse(response.body)["err"].should eql 0
+        JSON.parse(response.body)["item"].should eql @item.to_json
+      end
+    end
+    context "does not have that item" do
+      it "returns error code 1" do
+        #TODO implement after inventory is done
+      end
+    end
   end
 
   describe "GET #characters" do
-    it "returns all characters"
+    it "returns all characters in json objects" do
+      get :characters
+      JSON.parse(response.body).length.should eql Character.count
+      end
+    end
   end
 end
