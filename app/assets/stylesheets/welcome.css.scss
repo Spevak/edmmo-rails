@@ -18,7 +18,7 @@ html, body {
 }
 
 .half {
-  background: #446644;
+  background: #444466;
   width: 49%;
   height: 98%;
   margin: .5%;
@@ -27,19 +27,17 @@ html, body {
  
 #map-container {
   text-align: center;
-  margin: 20px auto;
+  margin: 30px auto;
 }
+
 
 #map {
   float: left;
 }
 
-#map-chars {
-  font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
-  display: block;
-  margin: auto;
-  overflow: hiden;
-  resize: none;
+#map-label {
+  align: center;
+  font-size: 2.5em;
 }
 
 #terminals {

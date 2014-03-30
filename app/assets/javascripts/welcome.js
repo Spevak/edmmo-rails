@@ -1,10 +1,10 @@
 $(document).ready(function() {
-    var cellWidth = 12,
+    var cellWidth = 14,
     cellHeight = cellWidth,
-    textWidth = 12,
+    textWidth = 14,
     textHeight = textWidth,
-    cellBgColor = 'white',
-    cellFgColor = 'red',
+    cellBgColor = 'black',
+    cellFgColor = 'green',
     cellHighlightBgColor = 'yellow',
     cellHighlightFgColor = 'black',
     layers = [],
@@ -98,10 +98,14 @@ $(document).ready(function() {
 		fill: cellFgColor,
 		width: textWidth,
 		height: textHeight,
-		fontFamily:'Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace',
+		align: "center",
+                //strokeWidth: 5,
+                //scaleX: .5,
+		fontFamily:'Lucida Console,Monaco,Courier New,Consolas,Liberation Mono,Bitstream Vera Sans Mono, DejaVu Sans Mono, monospace',
 		x: 0,
 		y: 0
 	    });
+	    //cellContents.skewX(2);
 	    
 	    cell.add(cellBg);
 	    cell.add(cellContents);
@@ -194,4 +198,27 @@ $(document).ready(function() {
 	//draw after updating all the tiles for efficiency when drawing updating entire map at once.
 	fgLayer.draw();
     }
+
+    //print tiles to screen from 2d array of tile IDs
+    window.displayTileArray= function(arr) {
+	indeces = []
+	for (i = 0; i < mapData.n; i++) {
+	    var row = arr[i];
+	    //Start at top of splashart array, so y starts at max value
+	    var y = MAP_MAX_INDEX - i;
+	    for (j=0; j<mapData.n; j++) {
+		//x starts from right so min value first
+		x = j - MAP_MAX_INDEX;
+		indeces.push([x, y]);
+		mapData.setTile(x,y,row[j]);
+	    }
+	}
+	renderMap(indeces);
+    }
+
+    //Set up the splash page content
+    displayTileArray(splashArt);
+    log("<font size=4> Welcome to Bot Quest! <br> </font>" +
+         "<font size=3> &nbsp &nbsp Try typing a command below </font>");
+
 });
