@@ -25,11 +25,7 @@ describe "The splash page" do
     stub_env "development" do
       #navigate to welcome page
       visit('')
-<<<<<<< HEAD
       expect(page).to have_css('div#dashboard')
-=======
-      expect(page).to have_content 'Welcome to Bot Quest!'
->>>>>>> ui
     end
   end
 end
