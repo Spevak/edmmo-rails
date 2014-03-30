@@ -25,6 +25,8 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
 
 RSpec.configure do |config|
+
+  config.include Devise::TestHelpers, :type => :controller
   # ## Mock Framework
   #
   # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
@@ -56,17 +58,22 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
   # Clean out the database for each test run.
-  config.use_transactional_fixtures = false
+  config.use_transactional_fixtures = true
 
   config.before(:suite) do
-      DatabaseCleaner.strategy = :truncation
+      DatabaseCleaner.strategy = :deletion
   end
 
-  config.before(:each) do
+  config.before(:all) do
       DatabaseCleaner.start
+
+      # Generate tiles
+      @tiles = (1..Tile.MAP_SIDE_LENGTH ** 2).collect { FactoryGirl.create(:tile) }
+      @side_length = Tile.MAP_SIDE_LENGTH
   end
 
-  config.after(:each) do
+  config.after(:all) do
+      FactoryGirl.reload
       DatabaseCleaner.clean
   end
 

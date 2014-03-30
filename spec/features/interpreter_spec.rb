@@ -25,7 +25,11 @@ describe "The splash page" do
     stub_env "development" do
       #navigate to welcome page
       visit('')
+<<<<<<< HEAD
       expect(page).to have_css('div#dashboard')
+=======
+      expect(page).to have_content 'Welcome to Bot Quest!'
+>>>>>>> ui
     end
   end
 end
@@ -54,7 +58,6 @@ describe "The builtin go function" do
       visit('')
       #Have to print result to see it because skulpt doesn't use the output function for return values
       result = runPython("print(go('north'))")
-      puts "result: " + result
       expect(result).to eq("0")
     end
   end

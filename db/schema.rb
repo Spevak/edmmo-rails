@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140314220916) do
+ActiveRecord::Schema.define(version: 20140328015151) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,12 +24,10 @@ ActiveRecord::Schema.define(version: 20140314220916) do
     t.string   "planet"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id"
     t.integer  "item_id"
   end
 
   add_index "characters", ["item_id"], name: "index_characters_on_item_id", using: :btree
-  add_index "characters", ["user_id"], name: "index_characters_on_user_id", using: :btree
 
   create_table "items", force: true do |t|
     t.boolean  "pickupable"
@@ -67,8 +65,10 @@ ActiveRecord::Schema.define(version: 20140314220916) do
     t.boolean  "logged_in"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "character_id"
   end
 
+  add_index "users", ["character_id"], name: "index_users_on_character_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["logged_in"], name: "index_users_on_logged_in", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
