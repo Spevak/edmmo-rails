@@ -17,7 +17,7 @@ $(function () {
         //test for empty line.
         emptyline = new RegExp("^\\s*$");
 
-    repl.print("Try typing a command below.");
+    repl.print("This is a terminal. You can enter commands here.");
 
     repl.isBalanced = function (code) {
         var lines = code.split('\n'),

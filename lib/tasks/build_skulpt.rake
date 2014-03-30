@@ -32,9 +32,10 @@ task :build_skulpt do
      #build
      system('(cd skulpt/base; python m dist)')
 
-     #grab interpreter files and move them to assets 
+     #grab interpreter files and constants file and move them to assets.
      system('(cp skulpt/base/dist/skulpt.min.js app/assets/javascripts/interpreter/skulpt.min.js)')
      system('(cp skulpt/base/dist/skulpt-stdlib.js app/assets/javascripts/interpreter/skulpt-stdlib.js)')
+     system('(cp skulpt/ext/constants.js app/assets/javascripts)')
 
      #move original files back into base folder
      system('(cd skulpt/base/src; rm env.js builtin.js builtindict.js)')
