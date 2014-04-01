@@ -34,7 +34,7 @@ end
 def getTile(x,y) 
   call = 'document.getElementById("output").innerHTML = mapData.tileAt(' +x.to_s+','+y.to_s+');'
   page.execute_script(call)
-  return find('#output', :visible=>false)
+  return find('#output', :visible=>false).text
 end
  
 ################################################################
@@ -237,6 +237,7 @@ describe "The builtin tiles function" do
   it "loads the correct tile in the center", :js => true do
     stub_env "development" do
       visit('')
+      runPython('tiles()')
       result = getTile(0,0)
       expect(result).to eq(TILES[:center])
     end
@@ -245,6 +246,7 @@ describe "The builtin tiles function" do
   it "loads the correct tile in the northwest corner", :js => true do
     stub_env "development" do
       visit('')
+      runPython('tiles()')
       result = getTile(-MAP_MAX_INDEX, MAP_MAX_INDEX)
       expect(result).to eq(TILES[:nw])
     end
@@ -253,6 +255,7 @@ describe "The builtin tiles function" do
   it "loads the correct tile in the northeast corner", :js => true do
     stub_env "development" do
       visit('')
+      runPython('tiles()')
       result = getTile(MAP_MAX_INDEX, MAP_MAX_INDEX)
       expect(result).to eq(TILES[:ne])
     end
@@ -261,6 +264,7 @@ describe "The builtin tiles function" do
   it "loads the correct tile in the southwest corner", :js => true do
     stub_env "development" do
       visit('')
+      runPython('tiles()')
       result = getTile(-MAP_MAX_INDEX, -MAP_MAX_INDEX)
       expect(result).to eq(TILES[:sw])
     end
@@ -269,6 +273,7 @@ describe "The builtin tiles function" do
   it "loads the correct tile in the southeast corner", :js => true do
     stub_env "development" do
       visit('')
+      runPython('tiles()')
       result = getTile(MAP_MAX_INDEX, -MAP_MAX_INDEX)
       expect(result).to eq(TILES[:se])
     end

@@ -86,9 +86,9 @@ function useSuccess(response) {
  */
 function statusSuccess(response) {
     var hp = new Sk.builtin.nmber(response.hp, Sk.builtin.nmber.int$);
-    var battery = new Sk.builtin.nmber(response.battery, Sk.builtin.number.int$);
-    var facing = new Sk.builtin.str(response.facing);
-    return new Sk.builtin.tuple((hp, battery, facing));
+    var battery = new Sk.builtin.nmber(response.battery, Sk.builtin.nmber.int$);
+    //var facing = new Sk.builtin.str(response.facing);
+    return new Sk.builtin.tuple((hp, battery));
 } 
 
 
