@@ -24,10 +24,12 @@ ActiveRecord::Schema.define(version: 20140328015151) do
     t.string   "planet"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "user_id"
     t.integer  "item_id"
   end
 
   add_index "characters", ["item_id"], name: "index_characters_on_item_id", using: :btree
+  add_index "characters", ["user_id"], name: "index_characters_on_user_id", using: :btree
 
   create_table "items", force: true do |t|
     t.boolean  "pickupable"

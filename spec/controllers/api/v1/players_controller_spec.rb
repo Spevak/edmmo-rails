@@ -6,9 +6,9 @@ describe Api::V1::PlayersController do
     @user = FactoryGirl.create(:user)
     sign_in @user
     @character = @user.character
-    tile = Tile.first
-    tile.character = @character
-    tile.save
+    @tile = Tile.first
+    @tile.character = @character
+    @tile.save
   end
 
   describe "POST #move" do
@@ -20,8 +20,8 @@ describe Api::V1::PlayersController do
         post :move, json
         @character.tile.x.should eql 1
         @character.tile.y.should eql 0
-        Tile.tile_at(0, 0).character.should eql nil
         Tile.tile_at(1, 0).character.should eql @character
+        Tile.tile_at(0, 0).character.should eql nil
         JSON.parse(response.body)["err"].should eql 0
       end 
     end
@@ -43,9 +43,9 @@ describe Api::V1::PlayersController do
     context "valid pickup" do
       it "picks up an item and put it in the player's hands. Return error code 0" do
         item_to_expect = Tile.item_at(@character.tile.x, @character.tile.y)
-        json = {x: @character.x, y: @character.y, itemID: @item.id}
+        json = {x: @character.x, y: @character.y, item_id: item_to_expect.id}
         post :pickup, json
-        @character.item.id.should eql @item.id
+        @character.item.id.should eql item_to_expect
         @tile.item.should eql nil
         JSON.parse(response.body)["err"].should eql 0
       end
@@ -54,7 +54,7 @@ describe Api::V1::PlayersController do
     context "item not there" do
       it "returns error code 1" do
         @item = FactoryGirl.create(:item)
-        json = {x: 0, y: 0, itemID: @item.id}
+        json = {x: 0, y: 0, item_id: @item.id}
         post :pickup, json
         @character.item.should eql nil
         JSON.parse(response.body)["err"].should eql 1
@@ -67,8 +67,10 @@ describe Api::V1::PlayersController do
         tile2 = Tile.tile_at(1, 0)
         tile2.item = @item
         tile2.save
-        json = {x: 1, y: 0, itemID: @item.id}
+        json = {x: 1, y: 0, item_id: @item.id}
         post :pickup, json
+        @character.tile.x.should eql 0
+        @character.tile.y.should eql 0
         @character.item.should eql nil
         JSON.parse(response.body)["err"].should eql 2
       end
@@ -82,7 +84,7 @@ describe Api::V1::PlayersController do
         @item2 = FactoryGirl.create(:item)
         @character.item = @item2
         @character.save
-        json = {x: 0, y: 0, itemID: @item.id}
+        json = {x: 0, y: 0, item_id: @item.id}
         post :pickup, json
         @character.item.id.should eql @item2.id
         @tile.item.id.should eql @item.id
@@ -115,6 +117,19 @@ describe Api::V1::PlayersController do
     
     context "does not have such item" do
       it "returns error code 1" do
+          @item = FactoryGirl.create(:item)
+          @character.item = @item
+          @character.save
+          
+          json = {
+              :x      => 0,
+              :y      => 0,
+              :itemID => @item.id + 1}
+          post "/drop", json
+          
+          @tile.item.id.should eql nil
+          @character.item.should eql @item.id
+          JSON.parse(response.body)["err"].should eql 1
       end
     end
 
@@ -130,7 +145,8 @@ describe Api::V1::PlayersController do
         post :drop, json
         @tile.item.id.should eql @item.id
         @character.item.id.should eql @item2.id
-        JSON.parse(response.body)["err"].should eql 1
+        
+        JSON.parse(response.body)["err"].should eql 2
       end
     end
   end

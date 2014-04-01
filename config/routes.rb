@@ -21,7 +21,7 @@ EdmmoRails::Application.routes.draw do
     namespace :v1 do
       get 'world/tiles' => 'world#tiles'
       post 'player/move' => 'players#move'
-      post 'player/pickup' => 'players#pick_up'
+      post 'player/pickup' => 'players#pickup'
       post 'test_session' => 'base#test_session' if Rails.env.development?
     end
   end
