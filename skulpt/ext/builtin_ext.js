@@ -47,7 +47,7 @@ function pickupSuccess(response) {
         log("That item isn't there!");
     if (response.err === 2)
         log("You can't access this tile!");
-    return new Sk.builtin.nmber(response, Sk.builtin.nmber.int$);
+    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
 /**
@@ -101,6 +101,17 @@ function statusSuccess(response) {
  */
 function inspectSuccess(response) {
     //todo: should log result of inspect instead.
+    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+}
+
+
+/**
+ * Function to be called on success of a call to player/dig
+ * args: response = the json response to the request
+ * returns: a python number indicating success(0) or failure(1) 
+ * @suppress {missingProperties}
+ */
+function digSuccess(response) {
     return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
@@ -302,6 +313,18 @@ Sk.builtin.statusFunction = function() {
 }
 
 /**
+ * Implementation of the built-in python funtion 'dig'
+ * @suppress {missingProperties}
+ */
+Sk.builtin.digFunction = function() {
+    //check args count and types
+    Sk.builtin.pyCheckArgs("digFunction", arguments, 0, 0);
+
+    var digFailure = failureFunction(DIG_PATH);
+    return json_request("POST", DIG_PATH, digSuccess, digFailure, {});
+}
+
+/**
  * Implementation of the built-in python funtion 'inspect'
  *   args: ID = python string containing id of item to inspect
  * @suppress {missingProperties}
@@ -315,7 +338,7 @@ Sk.builtin.inspectFunction = function(ID) {
     var item_id = ID.v
 
     var inspectFailure = failureFunction(INSPECT_PATH);
-    return json_request("GET", INSPECT_PATH, inspectSuccess, inspectFailure, {'itemID': item_id});
+    return json_request("POST", INSPECT_PATH, inspectSuccess, inspectFailure, {'itemID': item_id});
 }
 
 /**

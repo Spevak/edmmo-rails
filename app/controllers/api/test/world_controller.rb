@@ -11,7 +11,7 @@ class Api::Test::WorldController < ApplicationController
         #nw
         if x == 1 and y == 26 then tile = 1 end
         #se
-        if x == 25 and y == 1 then tile = 4 end
+        if x == 25 and y == 2 then tile = 4 end
         #ne
         if x == 25 and y == 26 then tile = 2 end
 

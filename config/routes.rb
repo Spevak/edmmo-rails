@@ -13,8 +13,9 @@ EdmmoRails::Application.routes.draw do
       post 'player/pickup' => 'player#pickup'
       post 'player/drop' => 'player#drop'
       post 'player/use' => 'player#use'
+      post 'player/dig' => 'player#dig'
       get 'player/status' => 'player#status'
-      get 'player/inspect' => 'player#inspect'
+      post 'player/inspect' => 'player#inspect'
       get 'player/characters' => 'player#characters'
     end
     # TODO lets clean up these naming conventions so they match

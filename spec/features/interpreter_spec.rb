@@ -1,5 +1,17 @@
 require 'spec_helper'
 
+#Some configuration values which we should sparate from the test logic so
+#we can change the frontend spec without changing the test code
+MAP_MAX_INDEX = 12
+GO_RESPONSES = {:legal => "0", :illegal => "1", :immobilized => '2'}
+PICKUP_RESPONSES = {:success => "0", :no_item => "1", :no_access => '2', :no_space => '3'}
+DROP_RESPONSES = {:success => "0", :no_item => "1", :occupied => "2"}
+DIG_RESPONSES = {:success => "0", :failure => "1"}
+USE_RESPONSES = {:success => "0", :no_item => "1", :bad_args => "2"}
+INSPECT_RESPONSES = {:success => "0", :no_item => "1"}
+STATUS_RESPONSES = {:success => "{'hp': 100, 'battery': 100}"}
+TILES = {:center => '0', :nw => '1', :ne => '2', :sw => '3', :se => '4'}
+
 #Helper for executing python code and getting the result
 #Javascript calls are separated to facilitate debugging
 def runPython(code)
@@ -18,12 +30,30 @@ def runPython(code)
   return out.text
 end
 
+#helper to get id of tile at position (x,y) on map
+def getTile(x,y) 
+  call = 'document.getElementById("output").innerHTML = mapData.tileAt(' +x.to_s+','+y.to_s+');'
+  page.execute_script(call)
+  return find('#output', :visible=>false)
+end
+ 
+################################################################
+# TESTS ARE BELOW
+#
+# -In all tests, use the stub_env helper defined in spec_helper to
+#  specify environment (use development to bypass login page)
+#
+# -If python code contains a string, it must be in single quotes
+#  because runPython will concat it with a double-quoted string
+# -These tests are designed to be run in the test backend, which is
+#  designed to send each possible response given the right argument.
+#  This is so we can separate the front and back end for unit testing
+#  Therefore these tests should not pass on the production back end.
+################################################################
+
 describe "The splash page" do
-  it "loads" do
-    #Run this test in development environment using the stub_env helper method defined in spec_helper
-    #this allows us to bypass the login page
+  it "loads the dashboard" do
     stub_env "development" do
-      #navigate to welcome page
       visit('')
       expect(page).to have_css('div#dashboard')
     end
@@ -33,291 +63,215 @@ end
 #sort of a smoke test to make sure skulpt is working on our page
 describe "Skulpt" do
   it "works (runs a print statement)", :js => true do
-    #run in development env to bypass login
     stub_env "development" do
-      #load splash page
       visit('')
-      #note: inner quotes in python line below MUST be single quotes, as the line will be inserted directly
-      #into a javascript string delimited by double quotes
       result = runPython("print('Hello World')")
       expect(result).to eq("Hello World")
     end
   end
 end
 
-
 describe "The builtin go function" do
-  it "runs and returns a 0 err code", :js => true do
-    #run in dev env to bypass login
+  it "retuns " + GO_RESPONSES[:legal] + " on legal move", :js => true do
     stub_env "development" do
-      #load home page
       visit('')
-      #Have to print result to see it because skulpt doesn't use the output function for return values
       result = runPython("print(go('north'))")
-      expect(result).to eq("0")
+      expect(result).to eq(GO_RESPONSES[:legal])
+    end
+  end
+
+  it "returns " + GO_RESPONSES[:illegal] + " on illegal move" , :js => true do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(go('west'))")
+      expect(result).to eq(GO_RESPONSES[:illegal])
+    end
+  end
+
+  it "returns " + GO_RESPONSES[:immobilized] + " when immobilized", :js => true do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(go('south'))")
+      expect(result).to eq(GO_RESPONSES[:immobilized])
     end
   end
 end
 
-# NOTE: All quotes in Python script MUST be in single quotes
-# TODO: Test the other functions
-
-describe "The builtin go function - illegal move" do
-    it "runs and returns a 1 err code", :js => true do
-        #run in dev env to bypass login
-        stub_env "development" do
-            #load home page
-            visit('')
-            #Have to print result to see it because skulpt doesn't use the output function for return values
-            # Before this line, set the gamestate's map to be something such that go('west') runs into a boulder/wall
-            result = runPython("print(go('west'))")
-            puts "result: " + result
-            expect(result).to eq("1")
-        end
-    end
-end
-
-describe "The builtin go function - no battery" do
-    it "runs and returns a 2 err code", :js => true do
-        #run in dev env to bypass login
-        stub_env "development" do
-            #load home page
-            visit('')
-            #Have to print result to see it because skulpt doesn't use the output function for return values
-            num = 0
-            # Assumes battery value of 50, change to whatever value is
-            while num < 50
-                runPython("go('north')")
-                num = num + 1
-            end
-            result = runPython("print(go('south'))")
-            puts "result: " + result
-            expect(result).to eq("2")
-        end
-    end
-end
-
 describe "The builtin pickup function" do
-    it "runs and returns a 0 err code", :js => true do
-        #run in dev env to bypass login
-        stub_env "development" do
-            #load home page
-            visit('')
-            #Have to print result to see it because skulpt doesn't use the output function for return values
-            #Before this, initialize a potato at starting position
-            result = runPython("print(pickup(0,0,'potato'))")
-            puts "result: " + result
-            expect(result).to eq("0")
-        end
+  it "returns " + PICKUP_RESPONSES[:success] + " on success", :js => true do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(pickup(0,0,'potato'))")
+      expect(result).to eq(PICKUP_RESPONSES[:success])
     end
-end
+  end
 
-describe "The builtin pickup function - no item" do
-    it "runs and returns a 1 err code", :js => true do
-        #run in dev env to bypass login
-        stub_env "development" do
-            #load home page
-            visit('')
-            #Have to print result to see it because skulpt doesn't use the output function for return values
-            result = runPython("print(pickup(0,0,'potato'))")
-            puts "result: " + result
-            expect(result).to eq("1")
-        end
+  it "returns " + PICKUP_RESPONSES[:no_item] + " when item does not exist", :js => true do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(pickup(0,0,'cake'))")
+      expect(result).to eq(PICKUP_RESPONSES[:no_item])
     end
-end
+  end
 
-describe "The builtin pickup function - not accessible" do
-    it "runs and returns a 2 err code", :js => true do
-        #run in dev env to bypass login
-        stub_env "development" do
-            #load home page
-            visit('')
-            #Have to print result to see it because skulpt doesn't use the output function for return values
-            #Initialize a potato at 10,10 just to be a dick
-            result = runPython("print(pickup(10,10,'potato'))")
-            puts "result: " + result
-            expect(result).to eq("2")
+  it "returns " + PICKUP_RESPONSES[:no_access] + " when item is not accessible", :js => true do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(pickup(10,0,'potato'))")
+            expect(result).to eq(PICKUP_RESPONSES[:no_access])
         end
     end
-end
 
-describe "The builtin pickup function - full hands" do
-    it "runs and returns a 3 err code", :js => true do
-        #run in dev env to bypass login
-        stub_env "development" do
-            #load home page
-            visit('')
-            #Have to print result to see it because skulpt doesn't use the output function for return values
-            # Initialize potatos at 0,0 and 0,1
-            runPython("pickup(0,0,'potato')")
-            runPython("(go('north')")
-            result =runPython("print(pickup(0,1,'potato'))")
-            puts "result: " + result
-            expect(result).to eq("3")
-        end
+  it "returns " + PICKUP_RESPONSES[:no_space] + "when hands are full.", :js => true do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(pickup(0,1,'potato'))")
+      expect(result).to eq(PICKUP_RESPONSES[:no_space])
     end
+  end
 end
 
 describe "The builtin drop function" do
-    it "runs and returns a 0 err code", :js => true do
-#run in dev env to bypass login
-        stub_env "development" do
-#load home page
-            visit('')
-#Have to print result to see it because skulpt doesn't use the output function for return values
-#Before this, initialize a potato at starting position and 0,1
-            runPython("pickup(0,0,'potato')")
-            result = runPython("print(drop('potato'))")
-            puts "result: " + result
-            expect(result).to eq("0")
-        end
+  it "returns " + DROP_RESPONSES[:success] + " on success", :js => true do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(drop('potato'))")
+      expect(result).to eq(DROP_RESPONSES[:success])
     end
+  end
+
+  it "returns " + DROP_RESPONSES[:no_item] + " when the item doesn't exist", :js => true do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(drop('nothing'))")
+      expect(result).to eq(DROP_RESPONSES[:no_item])
+    end
+  end  
+
+  it "returns " + DROP_RESPONSES[:occupied] + " when the tile is occupied.", :js => true do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(drop('occupied'))")
+      expect(result).to eq(DROP_RESPONSES[:occupied])
+    end
+  end
 end
 
-describe "The builtin drop function - no item" do
-    it "runs and returns a 1 err code", :js => true do
-#run in dev env to bypass login
-        stub_env "development" do
-#load home page
-            visit('')
-#Have to print result to see it because skulpt doesn't use the output function for return values
-#Before this, initialize a potato at starting position and 0,1
-            runPython("pickup(0,0,'potato')")
-            result = runPython("print(drop('rock'))")
-            puts "result: " + result
-            expect(result).to eq("1")
-        end
-    end
-end
-
-describe "The builtin drop function - no space" do
-    it "runs and returns a 2 err code", :js => true do
-#run in dev env to bypass login
-        stub_env "development" do
-#load home page
-            visit('')
-#Have to print result to see it because skulpt doesn't use the output function for return values
-#Before this, initialize a potato at starting position and 0,1
-            runPython("pickup(0,0,'potato')")
-            runPython("go('north')")
-            result = runPython("print(drop('potato'))")
-            puts "result: " + result
-            expect(result).to eq("2")
-        end
-    end
-end
-
+#This one is hard because we can't send an argument to tell the test backend which response to give
+#for now just have the backend return 0
 describe "The builtin dig function" do
-    it "runs and eventually returns 0 err code", :js => true do
-#run in dev env to bypass login
-        stub_env "development" do
-#load home page
-            visit('')
-#Have to print result to see it because skulpt doesn't use the output function for return values
-#Before this, initialize a potato at starting position and 0,1
-            result = -1
-            while result != 0
-               if result != 0
-                    result = runPython("(dig()")
-                else
-                    result = runPython("print(dig())")
-                end
-            end
-            puts "result: " + result
-            expect(result).to eq("0")
-        end
+    it "returns " + DIG_RESPONSES[:success] + " on success", :js => true do
+    stub_env "development" do
+      visit('')
+      #result = -1
+      #while result != 0
+      #  if result != 0
+      #    result = runPython("(dig()")
+      #  else
+      #    result = runPython("print(dig())")
+      #  end
+      #end
+      result = runPython("print(dig())")
+      expect(result).to eq(DIG_RESPONSES[:success])
     end
+  end
 end
 
 describe "The builtin use function" do
-    it "runs and returns a 0 err code", :js => true do
-        #run in dev env to bypass login
-        stub_env "development" do
-            #load home page
-            visit('')
-            #Have to print result to see it because skulpt doesn't use the output function for return values
-            #Before this, initialize a potato at starting position
-            runPython("pickup(0,0,'potato')")
-            result = runPython("print(use('potato', 'battery'))")
-            puts "result: " + result
-            expect(result).to eq("0")
-        end
+  it "returns " + USE_RESPONSES[:success] + " on success", :js => true do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(useItem('potato', 'battery'))")
+      puts "result: " + result
+      expect(result).to eq(USE_RESPONSES[:success])
     end
-end
+  end
 
-describe "The builtin use function - no item" do
-    it "runs and returns a 1 err code", :js => true do
-        #run in dev env to bypass login
-        stub_env "development" do
-            #load home page
-            visit('')
-            #Have to print result to see it because skulpt doesn't use the output function for return values
-            #Before this, initialize a potato at starting position
-            result = runPython("print(use('potato', 'battery'))")
-            puts "result: " + result
-            expect(result).to eq("1")
-        end
+  it "returns " + USE_RESPONSES[:no_item] + " when the item does not exist", :js => true do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(useItem('cake', 'battery'))")
+      puts "result: " + result
+      expect(result).to eq(USE_RESPONSES[:no_item])
     end
-end
+  end
 
-describe "The builtin use function - bad args" do
-    it "runs and returns a 2 err code", :js => true do
-        #run in dev env to bypass login
-        stub_env "development" do
-            #load home page
-            visit('')
-            #Have to print result to see it because skulpt doesn't use the output function for return values
-            #Before this, initialize a potato at starting position
-            runPython("pickup(0,0,'potato')")
-            result = runPython("print(use('potato', 'love'))")
-            puts "result: " + result
-            expect(result).to eq("2")
-        end
+  it "returns " + USE_RESPONSES[:bad_args] + " when passed a bad argument string", :js => true do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(useItem('potato', 'bad'))")
+      expect(result).to eq(USE_RESPONSES[:bad_args])
     end
+  end
 end
 
 describe "The builtin inspect function" do
-    it "runs and returns a 0 err code", :js => true do
-        #run in dev env to bypass login
-        stub_env "development" do
-            #load home page
-            visit('')
-            #Have to print result to see it because skulpt doesn't use the output function for return values
-            #Before this, initialize a potato at starting position
-            runPython("pickup(0,0,'potato')")
-            result = runPython("print(inspect('potato'))")
-            puts "result: " + result
-            expect(result).to eq("0")
+  it "returns " + INSPECT_RESPONSES[:success] +  " on success", :js => true do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(inspect('potato'))")
+      expect(result).to eq(INSPECT_RESPONSES[:success])
+    end
+  end
+  it "returns " + INSPECT_RESPONSES[:no_item] + " when item does not exist", :js => true do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(inspect('cake'))")
+            expect(result).to eq(INSPECT_RESPONSES[:no_item])
         end
     end
 end
 
-describe "The builtin inspect function - no item" do
-    it "runs and retuns a 1 err code", :js => true do
-        #run in dev env to bypass login
-        stub_env "development" do
-            #load home page
-            visit('')
-            #Have to print result to see it because skulpt doesn't use the output function for return values
-            #Before this, initialize a potato at starting position
-            result = runPython("print(inspect('potato'))")
-            puts "result: " + result
-            expect(result).to eq("1")
-        end
+describe 'the builtin status function' do
+  it 'retuns a dict of hp and battery' do
+    stub_env "development" do
+      visit('')
+      result = runPython("print(status())")
+      expect(result).to eq(STATUS_RESPONSES[:success])
     end
+  end
 end
+
 
 describe "The builtin tiles function" do
-    it "runs and retuns a 0 err code", :js => true do
-        #run in dev env to bypass login
-        stub_env "development" do
-            #load home page
-            visit('')
-            #Have to print result to see it because skulpt doesn't use the output function for return values
-            #Before this, initialize a potato at starting position
-            result = runPython("print(tiles())")
-            puts "result: " + result
-            expect(result).to eq("0")
-        end
+  it "loads the correct tile in the center", :js => true do
+    stub_env "development" do
+      visit('')
+      result = getTile(0,0)
+      expect(result).to eq(TILES[:center])
     end
+  end
+
+  it "loads the correct tile in the northwest corner", :js => true do
+    stub_env "development" do
+      visit('')
+      result = getTile(-MAP_MAX_INDEX, MAP_MAX_INDEX)
+      expect(result).to eq(TILES[:nw])
+    end
+  end
+
+  it "loads the correct tile in the northeast corner", :js => true do
+    stub_env "development" do
+      visit('')
+      result = getTile(MAP_MAX_INDEX, MAP_MAX_INDEX)
+      expect(result).to eq(TILES[:ne])
+    end
+  end
+
+  it "loads the correct tile in the southwest corner", :js => true do
+    stub_env "development" do
+      visit('')
+      result = getTile(-MAP_MAX_INDEX, -MAP_MAX_INDEX)
+      expect(result).to eq(TILES[:sw])
+    end
+  end
+
+  it "loads the correct tile in the southeast corner", :js => true do
+    stub_env "development" do
+      visit('')
+      result = getTile(MAP_MAX_INDEX, -MAP_MAX_INDEX)
+      expect(result).to eq(TILES[:se])
+    end
+  end
+
 end
