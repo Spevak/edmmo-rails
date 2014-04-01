@@ -199,4 +199,3 @@ describe Api::V1::PlayersController do
       end
     end
   end
-end
