@@ -65,9 +65,19 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def inspect
+    item_id = request[:item_id]
     @user = current_user
-    render json: { 'err'  => 0,
-      'item' => @user.character.item }
+    @character = @user.character
+    if @character.item.id == item_id then
+      render json: {
+        'err'  => 0,
+        'item' => @user.character.item
+      }
+    else
+      render json: {
+        'err' => 1
+      }
+    end
   end
 
 end
