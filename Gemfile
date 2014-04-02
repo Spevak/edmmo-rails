@@ -41,6 +41,8 @@ gem 'factory_girl_rails'
 gem 'database_cleaner'
 gem 'faker'
 gem 'capybara'
+# test code coverage
+gem 'simplecov'
 
 #Heroku will reject if we put capybara webkit in production
 
