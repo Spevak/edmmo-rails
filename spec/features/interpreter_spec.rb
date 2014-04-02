@@ -182,7 +182,6 @@ describe "The builtin use function" do
     stub_env "development" do
       visit('')
       result = runPython("print(useItem('potato', 'battery'))")
-      puts "result: " + result
       expect(result).to eq(USE_RESPONSES[:success])
     end
   end
@@ -191,7 +190,6 @@ describe "The builtin use function" do
     stub_env "development" do
       visit('')
       result = runPython("print(useItem('cake', 'battery'))")
-      puts "result: " + result
       expect(result).to eq(USE_RESPONSES[:no_item])
     end
   end
@@ -222,15 +220,15 @@ describe "The builtin inspect function" do
     end
 end
 
-describe 'the builtin status function' do
-  it 'retuns a dict of hp and battery' do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(status())")
-      expect(result).to eq(STATUS_RESPONSES[:success])
-    end
-  end
-end
+#describe 'the builtin status function' do
+#  it 'retuns a dict of hp and battery' do
+#    stub_env "development" do
+#      visit('')
+#      result = runPython("print(status())")
+#      expect(result).to eq(STATUS_RESPONSES[:success])
+#    end
+#  end
+#end
 
 
 describe "The builtin tiles function" do

@@ -93,9 +93,9 @@ function useSuccess(response) {
  */
 function statusSuccess(response) {
     var hp = new Sk.builtin.nmber(response.hp, Sk.builtin.nmber.int$);
-    var battery = new Sk.builtin.nmber(response.battery, Sk.builtin.number.int$);
+    var battery = new Sk.builtin.nmber(response.battery, Sk.builtin.nmber.int$);
     //var facing = new Sk.builtin.str(response.facing);
-    log("Health: " + response.hp.to_s + "\n Battery: " + response.battery.to_s);
+    log("Health: " + response.hp.toString() + "\n Battery: " + response.battery.toString());
     playerData.facing = response.facing;
     return new Sk.builtin.tuple([hp, battery]);
 } 
