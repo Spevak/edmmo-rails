@@ -103,11 +103,8 @@ describe Api::V1::PlayersController do
         @character.item = @item
         @character.save
 
-        json = { 
-          :x      => 0,
-          :y      => 0,
-          :itemID => @item.id }
-        post "/drop", json
+        json = {:itemID => @item.id}
+        post :drop, json
 
         @tile.item.id.should eql  @item.id
         @character.item.should eql nil
@@ -121,11 +118,8 @@ describe Api::V1::PlayersController do
           @character.item = @item
           @character.save
           
-          json = {
-              :x      => 0,
-              :y      => 0,
-              :itemID => @item.id + 1}
-          post "/drop", json
+          json = {:itemID => @item.id + 1}
+          post :drop, json
           
           @tile.item.id.should eql nil
           @character.item.should eql @item.id
@@ -191,7 +185,7 @@ describe Api::V1::PlayersController do
     end
   end
 
-  describe "GET #inspect" do
+  describe "POST #inspect" do
     context "valid item" do
       it "inspects an item" do
         @item = FactoryGirl.create(:item)
