@@ -172,53 +172,113 @@ $(document).ready(function() {
 	var cellInner = cell.getChildren()[1];
 	return new Cell(cellOuter, cellInner, fgLayer);
     }
-    
-    for (var i = 0; i < cells.length; i++) {
-	for (var j = 0; j < cells[i].length; j++) {
-	    fgLayer.add(cells[i][j]);
-	}
-    }
-    
-    stage.add(bgLayer);
-    stage.add(fgLayer);
-    
-    // im pretty sure our app isnt called "window"
-    // so i should change this pretty soon -grayson
-    /**
-     * Updates the display at the locations given in updateList
-     */
-    window.renderMap = function(toUpdate) {
-	var loc;
-	while (loc = toUpdate.pop()) {
-	    var cell = getCellById(hashCellPair(loc[0] - 1, (mapData.n - loc[1])));
-	    //use tileChars to get the character representation from the tile ID
-	    var newCellContents = tileChars[mapData.tileAt(loc[0], loc[1])];
-	    cell.update({"text": newCellContents});
-	}
-	//draw after updating all the tiles for efficiency when drawing updating entire map at once.
-	fgLayer.draw();
-    }
+  }
 
-    //print tiles to screen from 2d array of tile IDs
-    window.displayTileArray= function(arr) {
-	indeces = []
-	for (i = 0; i < mapData.n; i++) {
-	    var row = arr[i];
-	    //Start at top of splashart array, so y starts at max value
-	    var y = MAP_MAX_INDEX - i;
-	    for (j=0; j<mapData.n; j++) {
-		//x starts from right so min value first
-		x = j - MAP_MAX_INDEX;
-		indeces.push([x, y]);
-		mapData.setTile(x,y,row[j]);
-	    }
-	}
-	renderMap(indeces);
-    }
+  // Abstraction for dealing with map cells, which are composed of
+  // several Kinetic objects.
+  // outer = a Kinetic.Node object
+  // inner = a Kinetic.Node object
+  // layer = a Kinetic.Layer object
+  var Cell = function(outer, inner, layer) {
+    this.outer = outer;
+    this.inner = inner;
+    this.layer = layer;
+  }
 
-    //Set up the splash page content
-    displayTileArray(splashArt);
-    log("<font size=4> Welcome to Bot Quest! <br> </font>" +
-         "<font size=3> &nbsp &nbsp Try typing a command below </font>");
+  // Flash yellow and black. For debuggin
+  Cell.prototype.alert = function() {
+    this.outer.setAttr('fill', cellHighlightBgColor)
+    this.inner.setAttr('fill', cellHighlightFgColor)
+    this.layer.draw();
+
+    // Fucking js
+    var that = this;
+    window.setTimeout(function() {
+      that.outer.setAttr('fill', cellBgColor)
+      that.inner.setAttr('fill', cellFgColor)
+      that.layer.draw();
+    }, 1500);
+  }
+
+  // Update the cell.
+  // options = {
+  //   outer: (attributes hash for Kinetic.Rect)
+  //   inner: (attributes hash for Kinetic.Text)
+  //   text: (string)
+  // }
+  Cell.prototype.update = function(options) {
+    if (options['outer'])
+      this.outer.setAttrs(options['outer']);
+    if (options['inner'])
+      this.inner.setAttrs(options['inner']);
+    if (options['text'])
+      this.inner.setText(options['text']);
+    //inneficient to redraw everytime we update a cell if we will often update them all at the same time 
+    //this.layer.draw();
+  };
+
+  Cell.prototype.flash = function(text) {
+    var oldText = this.inner.getText();
+    this.update({ 'text': text });
+    var that = this;
+    window.setTimeout(function() {
+      that.update({ 'text': oldText });
+    }, 1500);
+  }
+
+  var getCellById = function (id) {
+    var cell = stage.find("#" + id)[0];
+    var cellOuter = cell.getChildren()[0];
+    var cellInner = cell.getChildren()[1];
+    return new Cell(cellOuter, cellInner, fgLayer);
+  }
+
+  for (var i = 0; i < cells.length; i++) {
+    for (var j = 0; j < cells[i].length; j++) {
+      fgLayer.add(cells[i][j]);
+    }
+  }
+
+  stage.add(bgLayer);
+  stage.add(fgLayer);
+
+  // im pretty sure our app isnt called "window"
+  // so i should change this pretty soon -grayson
+  /**
+   * Updates the display at the locations given in updateList
+   */
+  window.renderMap = function(toUpdate) {
+    var loc;
+    while (loc = toUpdate.pop()) {
+      var cell = getCellById(hashCellPair(loc[0] - 1, (mapData.n - loc[1])));
+      //use tileChars to get the character representation from the tile ID
+      var newCellContents = tileChars[mapData.tileAt(loc[0], loc[1])];
+      cell.update({"text": newCellContents});
+    }
+    //draw after updating all the tiles for efficiency when drawing updating entire map at once.
+    fgLayer.draw();
+  }
+
+  //print tiles to screen from 2d array of tile IDs
+  window.displayTileArray= function(arr) {
+    indices = []
+    for (i = 0; i < mapData.n; i++) {
+      var row = arr[i];
+      //Start at top of splashart array, so y starts at max value
+      var y = MAP_MAX_INDEX - i;
+      for (j=0; j<mapData.n; j++) {
+        //x starts from right so min value first
+        x = j - MAP_MAX_INDEX;
+        indices.push([x, y]);
+        mapData.setTile(x,y,row[j]);
+      }
+    }
+    renderMap(indices);
+  }
+
+  //Set up the splash page content
+  displayTileArray(splashArt);
+  log("<font size=4> Welcome to Bot Quest! <br> </font>" +
+      "<font size=3> &nbsp &nbsp Try typing a command below </font>");
 
 });
