@@ -42,12 +42,18 @@ describe Api::V1::PlayersController do
 
     context "valid pickup" do
       it "picks up an item and put it in the player's hands. Return error code 0" do
-        item_to_expect = Tile.item_at(@character.tile.x, @character.tile.y)
-        json = {x: @character.x, y: @character.y, item_id: item_to_expect.id}
+        item = FactoryGirl.create(:item)
+        @character.tile.item = item
+        @character.tile.save!
+        json = {
+          :x => @character.x,
+          :y => @character.y,
+          :item_id => item.id
+        }
         post :pickup, json
-        @character.item.id.should eql item_to_expect
-        @tile.item.should eql nil
         JSON.parse(response.body)["err"].should eql 0
+        @character.item.id.should eql item.id
+        @tile.item.should eql nil
       end
     end
 
@@ -99,9 +105,12 @@ describe Api::V1::PlayersController do
     context "valid drop" do
       it "drops an item and returns error code 0" do
 
+        @tile.item = nil
+        @tile.save!
+
         @item = FactoryGirl.create(:item)
         @character.item = @item
-        @character.save
+        @character.save!
 
         json = {:itemID => @item.id}
         post :drop, json
@@ -114,6 +123,7 @@ describe Api::V1::PlayersController do
     
     context "does not have such item" do
       it "returns error code 1" do
+          old_tile_id = @tile.item.id
           @item = FactoryGirl.create(:item)
           @character.item = @item
           @character.save
@@ -121,8 +131,8 @@ describe Api::V1::PlayersController do
           json = {:itemID => @item.id + 1}
           post :drop, json
           
-          @tile.item.id.should eql nil
-          @character.item.should eql @item.id
+          @tile.item.id.should eql old_tile_id
+          @character.item.id.should eql @item.id
           JSON.parse(response.body)["err"].should eql 1
       end
     end
@@ -131,10 +141,12 @@ describe Api::V1::PlayersController do
       it "returns error code 2" do
         @item = FactoryGirl.create(:item)
         @tile.item = @item
-        @tile.save
+        @tile.save!
+
         @item2 = FactoryGirl.create(:item)
         @character.item = @item2
-        @character.save
+        @character.save!
+
         json = {x: 0, y: 0, itemID: @item2.id}
         post :drop, json
         @tile.item.id.should eql @item.id
@@ -209,7 +221,7 @@ describe Api::V1::PlayersController do
   describe "GET #characters" do
     it "returns all characters in json objects" do
       get :characters
-      JSON.parse(response.body).length.should eql Character.count
+        JSON.parse(response.body).length.should eql Character.count
       end
     end
   end

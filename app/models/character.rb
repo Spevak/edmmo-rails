@@ -10,21 +10,27 @@ class Character < ActiveRecord::Base
   def move_to(x, y)
     if (self.tile.x - x).abs <= 1 and (self.tile.y - y).abs <= 1 then
       tile = Tile.tile_at(x, y)
-      self.tile = tile
-      self.save
+      oldTile = self.tile
+      oldTile.character = nil
+      oldTile.save!
+
+      tile.character = self
+      tile.save!
     end
   end
 
   def pick_up(item_id)
     i = Item.find_by_id(item_id)
-    i.character = self
-    i.save
+    self.item = i
+    self.save!
   end
 
   def drop(item_id)
-    i = Item.find_by_id(item_id)
-    i.character = nil
-    i.save
+    i = self.item
+    self.tile.item = i
+    self.tile.save!
+    self.item = nil
+    self.save!
   end
 
   def tile()

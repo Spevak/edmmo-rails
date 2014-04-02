@@ -59,9 +59,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
         'err' => 2
       }
     else
-      @tile.item = @character.item
-      @tile.save!
-      @character.item = nil
+      @character.drop(item_id)
       render json: {
         'err' => 0
       }
@@ -104,6 +102,10 @@ class Api::V1::PlayersController < Api::V1::BaseController
         'err' => 1
       }
     end
+  end
+
+  def characters
+    render json: Character.all
   end
 
 end
