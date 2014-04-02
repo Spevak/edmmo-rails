@@ -27,9 +27,9 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def pickup
-      x = request[:x]
-      y= request[:y]
-      item_id = request[:item_id]
+    x = request[:x]
+    y = request[:y]
+    item_id = request[:item_id]
     @user = current_user
     @character = @user.character
     target_tile = Tile.tile_at(x, y)
@@ -44,7 +44,8 @@ class Api::V1::PlayersController < Api::V1::BaseController
     end
   end
 
-  def drop(item_id)
+  def drop
+    item_id = request[:item_id]
     @user = current_user
     @character = @user.character
     if @character.item.id == item_id then
@@ -52,8 +53,10 @@ class Api::V1::PlayersController < Api::V1::BaseController
     end
   end
 
-  def use_item(x, y)
+  def use_item
     # do nothing lol
+    x = request[:x]
+    y = request[:y]
     render json: { 'err' => 0 }
   end
 
