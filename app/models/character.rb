@@ -26,10 +26,12 @@ class Character < ActiveRecord::Base
   end
 
   def drop(item_id)
-    i = Item.find_by_id(self.item.id)
-    t = Tile.tile_at(self.tile.x, self.tile.y)
+    i = self.item
+    t = self.tile
     t.item = i
-    t.save!
+    t.save
+
+    self.item = nil
   end
 
   def tile()

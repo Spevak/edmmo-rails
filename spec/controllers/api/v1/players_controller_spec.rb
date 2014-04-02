@@ -115,10 +115,10 @@ describe Api::V1::PlayersController do
         json = {:item_id => @item.id}
         post :drop, json
 
-        @tile = @character.tile
         JSON.parse(response.body)["err"].should eql 0
-        @tile.item.id.should eql @item.id
+
         @character.item.should eql nil
+        @character.tile.item.id.should eql @item.id
       end
     end
     
