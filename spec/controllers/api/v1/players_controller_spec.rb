@@ -189,6 +189,8 @@ describe Api::V1::PlayersController do
     context "valid item" do
       it "inspects an item" do
         @item = FactoryGirl.create(:item)
+        @character.item = @item
+        @character.save
         json = {item_id: @item.id}
         post :inspect, json
         JSON.parse(response.body)["err"].should eql 0
