@@ -46,11 +46,11 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def drop
-    item_id = request[:item_id]
-    @user = current_user
+    item_id    = request[:item_id]
+    @user      = current_user
     @character = @user.character
-    @tile = @character.tile
-    if @character.item.id != item_id then
+    @tile      = @character.tile
+    if @character.item.id != item_id.to_i then
       render json: {
         'err' => 1
       }
