@@ -26,7 +26,10 @@ class Api::V1::PlayersController < Api::V1::BaseController
     end
   end
 
-  def pick_up(x, y, item_id)
+  def pickup
+      x = request[:x]
+      y= request[:y]
+      item_id = request[:item_id]
     @user = current_user
     @character = @user.character
     target_tile = Tile.tile_at(x, y)
