@@ -2,6 +2,7 @@ EdmmoRails::Application.routes.draw do
   devise_for :users
 
   root 'welcome#index'
+  get 'kinetic_test' => 'welcome#kinetic_test'
 
   namespace :api do
     namespace :test do
@@ -12,16 +13,22 @@ EdmmoRails::Application.routes.draw do
       post 'player/pickup' => 'player#pickup'
       post 'player/drop' => 'player#drop'
       post 'player/use' => 'player#use'
+      post 'player/dig' => 'player#dig'
       get 'player/status' => 'player#status'
-      get 'player/inspect' => 'player#inspect'
+      post 'player/inspect' => 'player#inspect'
       get 'player/characters' => 'player#characters'
     end
     # TODO lets clean up these naming conventions so they match
     namespace :v1 do
       get 'world/tiles' => 'world#tiles'
       post 'player/move' => 'players#move'
-      post 'player/pickup' => 'players#pick_up'
+      post 'player/pickup' => 'players#pickup'
       post 'test_session' => 'base#test_session' if Rails.env.development?
+      post 'player/status' => 'players#status'
+      post 'player/inspect' => 'players#inspect'
+      post 'player/drop' => 'players#drop'
+      get 'player/characters' => 'players#characters'
+      post 'player/use' => 'players#use'
     end
   end
 

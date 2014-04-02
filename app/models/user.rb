@@ -4,9 +4,6 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :characters
+  belongs_to :character
 
-  def self.logged_in_users
-    User.where(logged_in: true).each
-  end
 end

@@ -7,5 +7,5 @@ Sk.builtins['status'] = Sk.builtin.statusFunction;
 Sk.builtins['inspect'] = Sk.builtin.inspectFunction;
 Sk.builtins['characters'] = Sk.builtin.charactersFunction;
 Sk.builtins['tiles'] = Sk.builtin.tilesFunction;
-
+Sk.builtins['dig'] = Sk.builtin.digFunction;
 goog.exportSymbol("Sk.builtins", Sk.builtins);

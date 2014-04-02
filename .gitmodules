@@ -1,0 +1,3 @@
+[submodule "kinetic"]
+    path = vendor/assets/javascripts/kinetic
+    url = git://github.com/ericdrowell/KineticJs.git

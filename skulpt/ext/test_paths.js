@@ -8,3 +8,4 @@ var STATUS_PATH = "api/test/player/status";
 var INSPECT_PATH = "api/test/player/inspect";
 var CHARACTERS_PATH = "api/test/player/characters";
 var TILES_PATH = "api/test/world/tiles";
+var DIG_PATH = "api/test/player/dig";

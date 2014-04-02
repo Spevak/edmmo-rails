@@ -3,6 +3,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
   #before_filter :validate
   def move
     @user = current_user
+    @character = @user.character
     direction = request[:direction] 
 
     dx, dy = 0, 0
@@ -16,39 +17,95 @@ class Api::V1::PlayersController < Api::V1::BaseController
       dx, dy = -1, 0
     end
 
-    target_tile = Tile.tile_at(@user.tile.x + dx, @user.tile.y + dy)
+    target_tile = Tile.tile_at(@character.tile.x + dx, @character.tile.y + dy)
     if target_tile == nil then
       render json: { 'err' => 1 }, status: 404
+    else
+      @character.move_to(target_tile.x, target_tile.y)
+      render json: { 'err' => 0 }
     end
-    @user.move_to(target_tile)
-    render json: { 'err' => 0 }
   end
 
-  def pick_up(x, y, item_id)
+  def pickup
+    x = request[:x]
+    y = request[:y]
+    item_id = request[:item_id]
     @user = current_user
+    @character = @user.character
     target_tile = Tile.tile_at(x, y)
-    if target_tile == nil then
+    if @character.item != nil then
+      render json: { 'err' => 3 }, status: 404
+    elsif target_tile == nil then
+      render json: { 'err' => 2 }, status: 404
+    elsif target_tile.item.id != item_id.to_i then
       render json: { 'err' => 1 }, status: 404
-    end
-    if target_tile.item == item then
-      @user.pick_up(item.id)
+    else
+      @character.pick_up(item_id.to_i)
+      render json: { 'err' => 0 }
     end
   end
 
-  def use_item(x, y)
+  def drop
+    item_id   = request[:item_id]
+    user      = current_user
+    character = user.character
+    tile      = character.tile
+    if character.item.id != item_id.to_i then
+      render json: {
+        'err' => 1
+      }
+    elsif tile.item != nil then
+      render json: {
+        'err' => 2
+      }
+    else
+      character.drop(item_id)
+      render json: {
+        'err' => 0
+      }
+    end
+  end
+
+  def use
     # do nothing lol
-    render json: { 'err' => 0 }
+    x = request[:x]
+    y = request[:y]
+    item_id = request[:item_id]
+    @user = current_user
+    @character = @user.character
+    if @character.item.id == item_id.to_i then
+      render json: {
+        'err' => 0
+      }
+    else
+      render json: {
+        'err' => 1
+      }
+    end
   end
 
   def status
-    @user = current_user
-    render json: current_user.status
+    render json: current_user.character.status
   end
 
   def inspect
+    item_id = request[:item_id]
     @user = current_user
-    render json: { 'err'  => 0,
-                   'item' => @user.item }
+    @character = @user.character
+    if @character.item.id == item_id.to_i then
+      render json: {
+        'err'  => 0,
+        'item' => @user.character.item
+      }
+    else
+      render json: {
+        'err' => 1
+      }
+    end
+  end
+
+  def characters
+    render json: Character.all
   end
 
 end

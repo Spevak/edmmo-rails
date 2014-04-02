@@ -10,6 +10,8 @@
 function failureFunction(path) {
     var str = "Error on call to " + path +  ". Response: ";
     return function(status) {
+        log(str + status);
+	//todo: throw python error instead of printing string
 	return new Sk.builtin.str(str + status);
     };
 }
@@ -21,12 +23,21 @@ function failureFunction(path) {
  * for iteration 1 and may be changed to a more meaningful response later on)
  * @suppress {missingProperties}
  */
-function goSuccess(response) {
-    //if (response.err === 1)
-    //    return new Sk.builtin.str("Can’t walk there...");
-    //if (response.err === 2)
-    //    return new Sk.builtin.str("Immobilized!");
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+//Change for iter 2: replace goSuccess with function that takes a direction as an arg and returns a success
+//function for going that direction 
+function goSuccessFunction(dir) {
+    return function(response) {
+	if (response.err === 0)
+	    log('Took a step ' + dir + '.');
+	if (response.err === 1)
+            log("Can’t walk there...");
+	if (response.err === 2)
+            log("Immobilized!");
+	playerData.facing = dir;
+	//For now, reload map every time we take a step
+	Sk.builtin.tilesFunction();
+	return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+    };
 }
 
 /**
@@ -37,11 +48,13 @@ function goSuccess(response) {
  * @suppress {missingProperties}
  */
 function pickupSuccess(response) {
-    //if (response.err === 1)
-    //    return new Sk.builtin.str("That item isn't there!");
-    //if (response.err === 2)
-    //    return new Sk.builtin.str("You can't access this tile!");
-    return new Sk.builtin.nmber(response, Sk.builtin.nmber.int$);
+    if (response.err === 0)
+	log('Picked up item!');
+    if (response.err === 1)
+        log("That item isn't there!");
+    if (response.err === 2)
+        log("You can't access this tile!");
+    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
 /**
@@ -52,8 +65,10 @@ function pickupSuccess(response) {
  * @suppress {missingProperties}
  */
 function dropSuccess(response) {
-    //if (response.err === 1)
-    //    return new Sk.builtin.str("You don't have that item!");
+    if (response.err === 0)
+	log("Dropped item");
+    if (response.err === 1)
+        log("You don't have that item!");
     return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
@@ -61,10 +76,12 @@ function dropSuccess(response) {
  * @suppress {missingProperties}
  */
 function useSuccess(response) {
-    //if (response.err === 1)
-    //    return new Sk.builtin.str("You don't have that item!");
-    //if (response.err === 2)
-    //    return new Sk.builtin.str("Erm... I don't think you can do that with that item.");
+    if (response.err === 0)
+	log("Used item.")
+    if (response.err === 1)
+        log("You don't have that item!");
+    if (response.err === 2)
+        log("Erm... I don't think you can do that with that item.");
     return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
@@ -75,7 +92,12 @@ function useSuccess(response) {
  * @suppress {missingProperties}
  */
 function statusSuccess(response) {
-    return new Sk.builtin.tuple((response.hp, response.battery, response.facing));
+    var hp = new Sk.builtin.nmber(response.hp, Sk.builtin.nmber.int$);
+    var battery = new Sk.builtin.nmber(response.battery, Sk.builtin.nmber.int$);
+    //var facing = new Sk.builtin.str(response.facing);
+    log("Health: " + response.hp.toString() + "\n Battery: " + response.battery.toString());
+    playerData.facing = response.facing;
+    return new Sk.builtin.tuple([hp, battery]);
 } 
 
 
@@ -87,9 +109,19 @@ function statusSuccess(response) {
  * @suppress {missingProperties}
  */
 function inspectSuccess(response) {
-
+    //todo: should log result of inspect instead.
     return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+}
 
+
+/**
+ * Function to be called on success of a call to player/dig
+ * args: response = the json response to the request
+ * returns: a python number indicating success(0) or failure(1) 
+ * @suppress {missingProperties}
+ */
+function digSuccess(response) {
+    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
 /**
@@ -101,10 +133,7 @@ function inspectSuccess(response) {
  */
 function tilesSuccess(response) {
     //side length of map
-    var n = 2 * MAP_MAX_INDEX + 1;
-
-    //Semi-jank implementation atm because iter 1 is due in 3 hours.
-    //may want to implement more elegantly later
+    var n = mapData.n;
 
     var player_x = response.player_x;
     var player_y = response.player_y;
@@ -117,35 +146,26 @@ function tilesSuccess(response) {
     for (var i = 0; i < n; i++) {
 	var row = [];
 	for (var j = 0; j < n; j++) {
-	    row.push(1);
+	    row.push(-1);
 	}
 	map.push(row);
     }
+    var x;
+    var y;
+    //A list of cells to update on the display
+    var toUpdate = []
     for (i = 0; i < tiles.length; i++) {
-	var x = tiles[i].x;
-	var y = tiles[i].y;
-	if ( x-sw_x < 0 || x-sw_x > 24 || y-sw_y < 0 || y-sw_y > 24) {
+	x = tiles[i].x;
+	y = tiles[i].y;
+	if ( x-sw_x < 0 || x-sw_x > n || y-sw_y < 0 || y-sw_y > n) {
 	    alert(x);
 	    alert(y);
 	}
-	map[x-sw_x][y-sw_y] = new Sk.builtin.nmber(tiles[i].tile, Sk.builtin.nmber.int$);
+	toUpdate.push([x-player_x, y-player_y]);
+	mapData.setTile(x-player_x, y-player_y, tiles[i].tile);
     }
-
-    var pyMap = [];
-    for (var x = 0; x < n; x++) {
-	pyMap.push(new Sk.builtin.list(map[x]));
-    }
-
-
-    //for (var i=0;i<response.tiles.length;i+=n) {
-    //    var localArr = new Array();
-    //    for (var j=0;i<n;j++) {
-    //        localArr[j] = response.tiles.name[i + j];
-    //    }
-    //    var insertArr = new Sk.builtin.list(localArr);
-    //    arrOfArrs[(i / n)] = insertArr;
-    //}
-    return new Sk.builtin.list(pyMap);
+    window.renderMap(toUpdate);
+    return new Sk.builtin.nmber(0, Sk.builtin.int$);
 }
 
 /**
@@ -157,7 +177,6 @@ function tilesSuccess(response) {
  */
 function charactersSuccess(response) {
     return new Sk.builtin.str("charactersSuccess response handling not yet implemented");
-  
 
 }
 //////////////////////////////////////////////////////////////////////////////////////
@@ -227,6 +246,8 @@ Sk.builtin.goFunction = function(dir) {
     var direction = dir.v
 
     var goFailure = failureFunction(MOVE_PATH);
+    var goSuccess = goSuccessFunction(direction);
+
     return json_request('POST', MOVE_PATH, goSuccess, goFailure, {'direction': direction});
 }
 
@@ -303,6 +324,18 @@ Sk.builtin.statusFunction = function() {
 }
 
 /**
+ * Implementation of the built-in python funtion 'dig'
+ * @suppress {missingProperties}
+ */
+Sk.builtin.digFunction = function() {
+    //check args count and types
+    Sk.builtin.pyCheckArgs("digFunction", arguments, 0, 0);
+
+    var digFailure = failureFunction(DIG_PATH);
+    return json_request("POST", DIG_PATH, digSuccess, digFailure, {});
+}
+
+/**
  * Implementation of the built-in python funtion 'inspect'
  *   args: ID = python string containing id of item to inspect
  * @suppress {missingProperties}
@@ -316,7 +349,7 @@ Sk.builtin.inspectFunction = function(ID) {
     var item_id = ID.v
 
     var inspectFailure = failureFunction(INSPECT_PATH);
-    return json_request("GET", INSPECT_PATH, inspectSuccess, inspectFailure, {'itemID': item_id});
+    return json_request("POST", INSPECT_PATH, inspectSuccess, inspectFailure, {'itemID': item_id});
 }
 
 /**

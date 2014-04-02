@@ -1,3 +1,16 @@
+require 'simplecov'
+SimpleCov.start do
+  add_filter '/spec/'
+  add_filter '/config/'
+  add_filter '/lib/'
+  add_filter '/vendor/'
+
+  add_group 'Controllers', 'app/controllers'
+  add_group 'Models', 'app/models'
+  add_group 'Helpers', 'app/helpers'
+  add_group 'Views', 'app/views'
+end
+
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV["RAILS_ENV"] = 'test'
 require File.expand_path("../../config/environment", __FILE__)
@@ -25,6 +38,8 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 ActiveRecord::Migration.check_pending! if defined?(ActiveRecord::Migration)
 
 RSpec.configure do |config|
+
+  config.include Devise::TestHelpers, :type => :controller
   # ## Mock Framework
   #
   # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
@@ -56,18 +71,27 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
   # Clean out the database for each test run.
-  config.use_transactional_fixtures = false
+  config.use_transactional_fixtures = true
 
   config.before(:suite) do
-      DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.strategy = :deletion
   end
 
-  config.before(:each) do
-      DatabaseCleaner.start
+  # Before each TOP-LEVEL describe block, generate a NEW set of tiles
+  # which is a square 2d map with side length Tile.MAP_SIDE_LENGTH
+  config.before(:all) do
+    DatabaseCleaner.start
+
+      # Generate tiles.
+      @tiles = (1..Tile.MAP_SIDE_LENGTH ** 2).collect { FactoryGirl.create(:tile) }
+      @side_length = Tile.MAP_SIDE_LENGTH
   end
 
-  config.after(:each) do
-      DatabaseCleaner.clean
+  # After each top level block reset the sequence FactoryGirl uses to make tiles
+  # and delete everything
+  config.after(:all) do
+    FactoryGirl.reload
+    DatabaseCleaner.clean
   end
 
   #Use capybara-webkit

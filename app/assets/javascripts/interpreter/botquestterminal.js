@@ -1,3 +1,5 @@
+//Modified from Skulpt's repl.js 
+//By Kevin Spevak
 $(function () {
     var repl = new CodeMirrorREPL('interactive', {
             mode: "python",
@@ -15,9 +17,7 @@ $(function () {
         //test for empty line.
         emptyline = new RegExp("^\\s*$");
 
-    repl.print("Python 2.6(ish) (skulpt, " + new Date() + ")");
-    repl.print("[" + navigator.userAgent + "] on " + navigator.platform);
-    repl.print('Don\'t type "help", "copyright", "credits" or "license" unless you\'ve assigned something to them');
+    repl.print("This is a terminal. You can enter commands here.");
 
     repl.isBalanced = function (code) {
         var lines = code.split('\n'),

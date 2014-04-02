@@ -2,18 +2,17 @@
   <body>
     <!-- The dashboard is the outer container that wraps the three UI panels: map, interpreter, and output -->
     <div id="dashboard">
-
       <!-- The Map -->
       <div class="half" id="map">
 	<div id="map-container"></div>
-	<div id="map-label"> <center> Map </center> </div>
+	<center> Map </center>
       </div>
 
       <!-- The right hand side containing the two text boxes -->
       <div class="half" id="terminals"> 
 	<!-- The area for text output from the game -->
 	<div class="terminal" id="log">
-	  <ul id="log-text"></ul>
+	  <pre id="log-text">Welcome to Bot Quest! <br></pre>
 	</div>
 	<!-- The interpreter terminal -->
 	<div class="terminal" id="shell">   
