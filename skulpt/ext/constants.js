@@ -20,6 +20,12 @@ var tileChars = {
     9:'9',
     10:'0',
 
+    //Player character representations (one for each direction)
+    11: '^',
+    12: 'v',
+    13: '>',
+    14: '<',
+
     //Use ascii values for Letters:
     65: 'A',
     66: 'B',

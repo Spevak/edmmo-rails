@@ -47,14 +47,19 @@ MapData.prototype.setTile = function(x, y, tileId) {
     //window.updateBotQuest(x, y);
 }
 
+
 var mapData = new MapData();
 goog.exportSymbol("mapData", mapData);
+
+//Initialize player stats
+var playerData = {'health': 0, 'battery': 0, 'facing':'north'} 
+goog.exportSymbol("playerData", playerData);
 
 /**
  * Prints a message to the output log
  */
 function log(msg) {
     var logPre = document.getElementById('log');
-    logPre.innerHTML += msg;
+    logPre.innerHTML = msg;
 }
 goog.exportSymbol("log", log);

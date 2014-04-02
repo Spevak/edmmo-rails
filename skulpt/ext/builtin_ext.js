@@ -23,14 +23,21 @@ function failureFunction(path) {
  * for iteration 1 and may be changed to a more meaningful response later on)
  * @suppress {missingProperties}
  */
-function goSuccess(response) {
-    if (response.err === 0)
-	log('Took a step. <br>');
-    if (response.err === 1)
-        log("Can’t walk there...");
-    if (response.err === 2)
-        log("Immobilized!");
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+//Change for iter 2: replace goSuccess with function that takes a direction as an arg and returns a success
+//function for going that direction 
+function goSuccessFunction(dir) {
+    return function(response) {
+	if (response.err === 0)
+	    log('Took a step ' + dir + '.');
+	if (response.err === 1)
+            log("Can’t walk there...");
+	if (response.err === 2)
+            log("Immobilized!");
+	playerData.facing = dir;
+	//For now, reload map every time we take a step
+	Sk.builtin.tilesFunction();
+	return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+    };
 }
 
 /**
@@ -88,7 +95,9 @@ function statusSuccess(response) {
     var hp = new Sk.builtin.nmber(response.hp, Sk.builtin.nmber.int$);
     var battery = new Sk.builtin.nmber(response.battery, Sk.builtin.number.int$);
     var facing = new Sk.builtin.str(response.facing);
-    return new Sk.builtin.tuple((hp, battery, facing));
+    log("Health: " + response.hp.to_s + "\n Battery: " + response.battery.to_s);
+    playerData.facing = response.facing;
+    return new Sk.builtin.tuple([hp, battery, facing]);
 } 
 
 
@@ -226,6 +235,8 @@ Sk.builtin.goFunction = function(dir) {
     var direction = dir.v
 
     var goFailure = failureFunction(MOVE_PATH);
+    var goSuccess = goSuccessFunction(direction);
+
     return json_request('POST', MOVE_PATH, goSuccess, goFailure, {'direction': direction});
 }
 

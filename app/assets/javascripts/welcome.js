@@ -172,7 +172,6 @@ $(document).ready(function() {
 	var cellInner = cell.getChildren()[1];
 	return new Cell(cellOuter, cellInner, fgLayer);
     }
-  }
 
   // Abstraction for dealing with map cells, which are composed of
   // several Kinetic objects.
@@ -251,9 +250,22 @@ $(document).ready(function() {
     var loc;
     while (loc = toUpdate.pop()) {
       var cell = getCellById(hashCellPair(loc[0] - 1, (mapData.n - loc[1])));
+      //Initialize newcellcontents to F so the cell will display as F if the correct char fails to load
+      //For some reason
+      var newContents = tileChars[70]
       //use tileChars to get the character representation from the tile ID
-      var newCellContents = tileChars[mapData.tileAt(loc[0], loc[1])];
-      cell.update({"text": newCellContents});
+      //if loc = (0, 0) display the player's character
+	if (loc[0] === 0 && loc[1] === 0) {
+	    var dir = playerData.facing;
+	    if (dir === 'north') newContents = tileChars[11];
+	    if (dir === 'south') newContents = tileChars[12];
+	    if (dir === 'east') newContents = tileChars[13];
+	    if (dir === 'west') newContents = tileChars[14];
+	}
+	else {   
+	    newContents = tileChars[mapData.tileAt(loc[0], loc[1])];
+	}
+      cell.update({"text": newContents});
     }
     //draw after updating all the tiles for efficiency when drawing updating entire map at once.
     fgLayer.draw();
