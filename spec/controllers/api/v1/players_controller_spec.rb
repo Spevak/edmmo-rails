@@ -152,7 +152,7 @@ describe Api::V1::PlayersController do
         @item = FactoryGirl.create(:item)
         @character.item = @item
         @character.save
-        json = {itemID: @item.id, args: nil}
+        json = {item_id: @item.id, args: nil}
         post :use, json
         @character.should_receive(:use_item)
         JSON.parse(response.body)["err"].should eql 0
@@ -164,7 +164,7 @@ describe Api::V1::PlayersController do
         @item2 = FactoryGirl.create(:item)
         @character.item = @item
         @character.save
-        json = {itemID: @item2.id, args: nil}
+        json = {item_id: @item2.id, args: nil}
         post :use, json
         @character.should_not_receive(:use_item)
         JSON.parse(response.body)["err"].should eql 1
@@ -190,11 +190,13 @@ describe Api::V1::PlayersController do
       it "inspects an item" do
         @item = FactoryGirl.create(:item)
         @character.item = @item
-        @character.save
-        json = {item_id: @item.id}
+        @character.save!
+        json = {
+          item_id: @item.id
+        }
         post :inspect, json
         JSON.parse(response.body)["err"].should eql 0
-        JSON.parse(response.body)["item"].should eql @item.to_json
+        JSON.parse(response.body)["item"].should eql JSON.parse(@item.to_json)
       end
     end
     context "does not have that item" do

@@ -36,11 +36,12 @@ class Api::V1::PlayersController < Api::V1::BaseController
     if @character.item != nil then
       render json: { 'err' => 3 }, status: 404
     elsif target_tile == nil then
-      render json: { 'err' => 0 }, status: 404
-    elsif target_tile.item == item then
-      @character.pick_up(item_id)
-    else
+      render json: { 'err' => 2 }, status: 404
+    elsif target_tile.item.id != item_id then
       render json: { 'err' => 1 }, status: 404
+    else
+      @character.pick_up(item_id)
+      render json: { 'err' => 0 }
     end
   end
 
@@ -53,11 +54,22 @@ class Api::V1::PlayersController < Api::V1::BaseController
     end
   end
 
-  def use_item
+  def use
     # do nothing lol
     x = request[:x]
     y = request[:y]
-    render json: { 'err' => 0 }
+    item_id = request[:item_id]
+    @user = current_user
+    @character = @user.character
+    if @character.item.id == item_id.to_i then
+      render json: {
+        'err' => 0
+      }
+    else
+      render json: {
+        'err' => 1
+      }
+    end
   end
 
   def status
@@ -68,7 +80,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
     item_id = request[:item_id]
     @user = current_user
     @character = @user.character
-    if @character.item.id == item_id then
+    if @character.item.id == item_id.to_i then
       render json: {
         'err'  => 0,
         'item' => @user.character.item

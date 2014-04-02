@@ -64,14 +64,18 @@ RSpec.configure do |config|
       DatabaseCleaner.strategy = :deletion
   end
 
+  # Before each TOP-LEVEL describe block, generate a NEW set of tiles
+  # which is a square 2d map with side length Tile.MAP_SIDE_LENGTH
   config.before(:all) do
       DatabaseCleaner.start
 
-      # Generate tiles
+      # Generate tiles.
       @tiles = (1..Tile.MAP_SIDE_LENGTH ** 2).collect { FactoryGirl.create(:tile) }
       @side_length = Tile.MAP_SIDE_LENGTH
   end
 
+  # After each top level block reset the sequence FactoryGirl uses to make tiles
+  # and delete everything
   config.after(:all) do
       FactoryGirl.reload
       DatabaseCleaner.clean
