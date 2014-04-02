@@ -2,11 +2,20 @@ class Api::V1::WorldController < Api::V1::BaseController
   def tiles
     if user_signed_in? then
       character = current_user.character
+      if !character then
+        c = Character.new(health: 100, battery: 100, facing: 'north', name: nil)
+        c.save
+        t = Tile.tile_at(15, 15)
+        t.character = c
+        t.save
+        current_user.character = c
+        current_user.save
+      end
     else
       render json: {}, status: :forbidden
     end
 
-    character_tile = Character.find(character.tile)
+    character_tile = current_user.character.tile
     tiles_to_return = Tile.tiles_at(character_tile.x - n,
                                     character_tile.y - n, #lower left
                                     character_tile.x + n,
