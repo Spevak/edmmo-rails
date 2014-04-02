@@ -49,8 +49,22 @@ class Api::V1::PlayersController < Api::V1::BaseController
     item_id = request[:item_id]
     @user = current_user
     @character = @user.character
-    if @character.item.id == item_id then
+    @tile = @character.tile
+    if @character.item.id != item_id then
+      render json: {
+        'err' => 1
+      }
+    elsif @tile.item != nil then
+      render json: {
+        'err' => 2
+      }
+    else
+      @tile.item = @character.item
+      @tile.save!
       @character.item = nil
+      render json: {
+        'err' => 0
+      }
     end
   end
 
