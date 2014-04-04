@@ -29,9 +29,10 @@ class Character < ActiveRecord::Base
     i = self.item
     t = self.tile
     t.item = i
-    t.save
+    t.save!
 
     self.item = nil
+    self.save!
   end
 
   def tile()
