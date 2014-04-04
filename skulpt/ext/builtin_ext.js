@@ -155,6 +155,7 @@ function tilesSuccess(response) {
     //A list of cells to update on the display
     var toUpdate = []
     for (i = 0; i < tiles.length; i++) {
+	alert(tiles[i])
 	x = tiles[i].x;
 	y = tiles[i].y;
 	if ( x-sw_x < 0 || x-sw_x > n || y-sw_y < 0 || y-sw_y > n) {
@@ -162,7 +163,7 @@ function tilesSuccess(response) {
 	    alert(y);
 	}
 	toUpdate.push([x-player_x, y-player_y]);
-	mapData.setTile(x-player_x, y-player_y, tiles[i].tile);
+	mapData.setTile(x-player_x, y-player_y, tiles[i].tile_type);
     }
     window.renderMap(toUpdate);
     return new Sk.builtin.nmber(0, Sk.builtin.int$);

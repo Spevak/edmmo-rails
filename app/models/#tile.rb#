@@ -30,7 +30,6 @@ class Tile < ActiveRecord::Base
     if x1 > x2 then x1, x2 = x2, x1 end
     if y1 > y2 then y1, y2 = y2, y1 end
 
-    puts "############################################"
     return Tile.where("(x >= ? AND x <= ?) AND (y >= ? AND y <= ?)",
                       x1, x2, y1, y2)
   end

@@ -39,7 +39,7 @@ class Character < ActiveRecord::Base
     Tile.find_by_character_id(self.id)
   end
 
-  def tile=(tile)
+  def setTile(tile)
     tile.character = self
     tile.save!
   end
