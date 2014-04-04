@@ -142,30 +142,37 @@ function tilesSuccess(response) {
     var sw_y = player_y - MAP_MAX_INDEX;
     var tiles = response.tiles;
 
-    var map  = [];
-    for (var i = 0; i < n; i++) {
-	var row = [];
-	for (var j = 0; j < n; j++) {
-	    row.push(-1);
-	}
-	map.push(row);
-    }
+    //var map  = [];
+    //for (var i = 0; i < n; i++) {
+//	var row = [];
+//	for (var j = 0; j < n; j++) {
+//	    row.push(-1);
+//	}
+//	map.push(row);
+//    }
     var x;
     var y;
-    //A list of cells to update on the display
-    var toUpdate = []
-    for (i = 0; i < tiles.length; i++) {
-	alert(tiles[i])
+ 
+    //If we are at the edge of the map, only existing tiles will be returned
+    //In this case, we need to fill in the remaining locations with the off-the-map tile
+   if (tiles.length < (2 * MAP_MAX_INDEX + 1) * (2 * MAP_MAX_INDEX + 1)) {
+	for (var x = -MAP_MAX_INDEX; x <= MAP_MAX_INDEX; x++) {
+	    for (var y = -MAP_MAX_INDEX; y <= MAP_MAX_INDEX; y++) {
+		mapData.setTile(x,y, 15);
+	    }
+	}
+    }
+
+    //Go through tiles returned and save them to mapData
+    for (var i = 0; i < tiles.length; i++) {
 	x = tiles[i].x;
 	y = tiles[i].y;
 	if ( x-sw_x < 0 || x-sw_x > n || y-sw_y < 0 || y-sw_y > n) {
-	    alert(x);
-	    alert(y);
+	    alert('tile indices out of range');
 	}
-	toUpdate.push([x-player_x, y-player_y]);
 	mapData.setTile(x-player_x, y-player_y, tiles[i].tile_type);
     }
-    window.renderMap(toUpdate);
+    window.renderMap(window.getMapIndices());
     return new Sk.builtin.nmber(0, Sk.builtin.int$);
 }
 

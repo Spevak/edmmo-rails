@@ -278,7 +278,7 @@ $(document).ready(function() {
 
   //print tiles to screen from 2d array of tile IDs
   window.displayTileArray= function(arr) {
-    indices = []
+    //indices = []
     for (i = 0; i < mapData.n; i++) {
       var row = arr[i];
       //Start at top of splashart array, so y starts at max value
@@ -286,12 +286,24 @@ $(document).ready(function() {
       for (j=0; j<mapData.n; j++) {
         //x starts from right so min value first
         x = j - MAP_MAX_INDEX;
-        indices.push([x, y]);
+        //indices.push([x, y]);
         mapData.setTile(x,y,row[j]);
       }
     }
-    renderMap(indices);
+      renderMap(window.getMapIndices());
   }
+
+    //a list of all valid indeces on map
+    window.getMapIndices = function() {
+	var mapIndices = [];
+	for (var x = -MAP_MAX_INDEX; x <= MAP_MAX_INDEX; x++) {
+	    for (var y = -MAP_MAX_INDEX; y <= MAP_MAX_INDEX; y++) {
+		mapIndices.push([x,y]);
+	    }
+	}
+	return mapIndices;
+    }
+
 
   //Set up the splash page content
   displayTileArray(splashArt);
