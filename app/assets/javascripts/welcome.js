@@ -262,8 +262,13 @@ $(document).ready(function() {
 	    if (dir === 'east') newContents = tileChars[13];
 	    if (dir === 'west') newContents = tileChars[14];
 	}
-	else {   
-	    newContents = tileChars[mapData.tileAt(loc[0], loc[1])];
+	else {
+	    tileId = mapData.tileAt(loc[0], loc[1]);
+	    if (tileId === -1) {
+		//Tile id of non-existant location (off the map)
+		tileId = 15;
+	    }
+	    newContents = tileChars[tileId];
 	}
       cell.update({"text": newContents});
     }

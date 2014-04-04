@@ -26,6 +26,9 @@ var tileChars = {
     13: '>',
     14: '<',
 
+    //Representation of non-existant tile (off the map)
+    15: '#',
+
     //Use ascii values for Letters:
     65: 'A',
     66: 'B',
