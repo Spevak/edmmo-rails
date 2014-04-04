@@ -52,7 +52,7 @@ var mapData = new MapData();
 goog.exportSymbol("mapData", mapData);
 
 //Initialize player stats
-var playerData = {'health': 0, 'battery': 0, 'facing':'north'} 
+var playerData = {'health': 0, 'battery': 0, 'facing':'north', 'display': false} 
 goog.exportSymbol("playerData", playerData);
 
 /**

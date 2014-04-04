@@ -1,3 +1,66 @@
-// Place all the styles related to the World controller here.
+// Place all the styles related to the welcome controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+html, body {
+  height:100%;
+  width:100%;
+  background: #505050;
+}
+
+#dashboard {
+  //boarder: 2px solid black;
+  background: #909090;
+  width: 95%;
+  height: 80%;
+  //boarder: 5px solid #000000;
+  margin: 15px auto;
+  //padding: 10px;
+}
+
+.half {
+  background: #444466;
+  width: 49%;
+  height: 98%;
+  margin: .5%;
+  overflow: hidden;
+}
+ 
+#map-container {
+  text-align: center;
+  margin: 30px auto;
+}
+
+
+#map {
+  float: left;
+}
+
+#map-label {
+  align: center;
+  font-size: 2.5em;
+}
+
+#terminals {
+  float: right;
+}
+
+#log {
+  height:40%;
+  padding: 15px;
+  //margin: auto;
+  background: #eeeeee
+}
+
+#hiddenShell {
+  height:60%;
+  font-size: 80%;
+  overflow: hidden;
+  //margin:auto
+}
+
+#tools {
+  height:100%;
+  padding: 15px;
+  //margin: auto;
+  background: #eeeeee
+}

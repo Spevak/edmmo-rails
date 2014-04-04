@@ -3,6 +3,7 @@ EdmmoRails::Application.routes.draw do
 
   root 'welcome#index'
   get 'kinetic_test' => 'welcome#kinetic_test'
+  get 'world/editor' => 'world#editor'
 
   namespace :api do
     namespace :test do

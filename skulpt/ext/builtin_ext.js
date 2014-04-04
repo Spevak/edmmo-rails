@@ -164,6 +164,8 @@ function tilesSuccess(response) {
 	toUpdate.push([x-player_x, y-player_y]);
 	mapData.setTile(x-player_x, y-player_y, tiles[i].tile);
     }
+    //Make sure player character's sprite shows up
+    playerData["display"]=true;
     window.renderMap(toUpdate);
     return new Sk.builtin.nmber(0, Sk.builtin.int$);
 }

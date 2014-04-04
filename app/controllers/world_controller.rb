@@ -8,4 +8,9 @@ class WorldController < ApplicationController
         tiles_to_return = Tiles.tiles_at(character_pos[0]-n, character_pos[1]-n, character_pos[0]+n, character_pos[1]+n)
         render json: tiles_to_return
     end
+    def editor
+      unless Rails.env.development? then
+        raise ActionController::RoutingError.new('Not Found')
+      end
+    end
 end

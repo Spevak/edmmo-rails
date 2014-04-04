@@ -255,7 +255,7 @@ $(document).ready(function() {
       var newContents = tileChars[70]
       //use tileChars to get the character representation from the tile ID
       //if loc = (0, 0) display the player's character
-	if (loc[0] === 0 && loc[1] === 0 && playerData["display"]) {
+	if (loc[0] === 0 && loc[1] === 0) {
 	    var dir = playerData.facing;
 	    if (dir === 'north') newContents = tileChars[11];
 	    if (dir === 'south') newContents = tileChars[12];
@@ -288,10 +288,7 @@ $(document).ready(function() {
     renderMap(indices);
   }
 
-  //Set up the splash page content
-  displayTileArray(splashArt);
-  log("<font size=4> Welcome to Bot Quest! <br> </font>" +
-      "<font size=3> &nbsp &nbsp Try typing a command below </font>");
+//
 
-    //playerData["display"]=true;
+
 });
