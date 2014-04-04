@@ -8,7 +8,7 @@ describe Api::V1::PlayersController do
     @character = @user.character
     @tile = Tile.first
     @tile.character = @character
-    @tile.save
+    @tile.save!
   end
 
   describe "POST #move" do
@@ -42,17 +42,19 @@ describe Api::V1::PlayersController do
 
     context "valid pickup" do
       it "picks up an item and put it in the player's hands. Return error code 0" do
-        item = FactoryGirl.create(:item)
-        @character.tile.item = item
-        @character.tile.save!
+        @item = FactoryGirl.create(:item)
+        @tile.item = @item
+        @tile.save!
         json = {
           :x => @character.x,
           :y => @character.y,
-          :item_id => item.id
+          :item_id => @item.id
         }
         post :pickup, json
+        @character.reload
+        @tile.reload
         JSON.parse(response.body)["err"].should eql 0
-        @character.item.id.should eql item.id
+        @character.item.id.should eql @item.id
         @tile.item.should eql nil
       end
     end
@@ -115,8 +117,8 @@ describe Api::V1::PlayersController do
         json = {:item_id => @item.id}
         post :drop, json
 
+        @character.reload
         JSON.parse(response.body)["err"].should eql 0
-
         @character.item.should eql nil
         @character.tile.item.id.should eql @item.id
       end
@@ -129,7 +131,7 @@ describe Api::V1::PlayersController do
           @character.item = @item
           @character.save
           
-          json = {:itemID => @item.id + 1}
+          json = {:item_id => @item.id + 1}
           post :drop, json
           
           @tile.item.id.should eql old_tile_id
@@ -148,7 +150,7 @@ describe Api::V1::PlayersController do
         @character.item = @item2
         @character.save!
 
-        json = {x: 0, y: 0, itemID: @item2.id}
+        json = {x: 0, y: 0, item_id: @item2.id}
         post :drop, json
         @tile.item.id.should eql @item.id
         @character.item.id.should eql @item2.id
