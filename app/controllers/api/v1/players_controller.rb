@@ -27,30 +27,32 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def pickup
-    x = request[:x]
-    y = request[:y]
-    item_id = request[:item_id]
+    x = request[:x].to_i
+    y = request[:y].to_i
+    item_id = request[:item_id].to_i
     @user = current_user
     @character = @user.character
     target_tile = Tile.tile_at(x, y)
     if @character.item != nil then
       render json: { 'err' => 3 }, status: 404
-    elsif target_tile == nil then
+    elsif target_tile.id != @character.tile.id then
       render json: { 'err' => 2 }, status: 404
-    elsif target_tile.item.id != item_id.to_i then
+    elsif target_tile.item.id != item_id then
       render json: { 'err' => 1 }, status: 404
     else
-      @character.pick_up(item_id.to_i)
+      @character.pick_up(item_id)
+      target_tile.item = nil
+      target_tile.save!
       render json: { 'err' => 0 }
     end
   end
 
   def drop
-    item_id   = request[:item_id]
+    item_id   = request[:item_id].to_i
     user      = current_user
     character = user.character
     tile      = character.tile
-    if character.item.id != item_id.to_i then
+    if character.item.id !=  item_id then
       render json: {
         'err' => 1
       }
