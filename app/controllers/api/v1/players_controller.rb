@@ -23,7 +23,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
 
     target_tile = Tile.tile_at(@character.tile.x + dx, @character.tile.y + dy)
     if target_tile == nil then
-      render json: { 'err' => 1 }, status: 404
+      render json: { 'err' => 1 }, status: 200
     else
       @character.move_to(target_tile.x, target_tile.y)
       render json: { 'err' => 0 }
@@ -38,11 +38,11 @@ class Api::V1::PlayersController < Api::V1::BaseController
     @character = @user.character
     target_tile = Tile.tile_at(x, y)
     if @character.item != nil then
-      render json: { 'err' => 3 }, status: 404
+      render json: { 'err' => 3 }, status: 200
     elsif target_tile.id != @character.tile.id then
-      render json: { 'err' => 2 }, status: 404
-    elsif target_tile.item.id != item_id then
-      render json: { 'err' => 1 }, status: 404
+      render json: { 'err' => 2 }, status: 200
+    elsif (target_tile.item == nil) || target_tile.item.id != item_id then
+      render json: { 'err' => 1 }, status: 200
     else
       @character.pick_up(item_id)
       target_tile.item = nil
@@ -56,7 +56,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
     user      = current_user
     character = user.character
     tile      = character.tile
-    if character.item.id !=  item_id then
+    if (character.item == nil) or character.item.id !=  item_id then
       render json: {
         'err' => 1
       }
@@ -79,13 +79,13 @@ class Api::V1::PlayersController < Api::V1::BaseController
     item_id = request[:item_id]
     @user = current_user
     @character = @user.character
-    if @character.item.id == item_id.to_i then
+    if (@character.item == nil) or @character.item.id != item_id.to_i then
       render json: {
-        'err' => 0
+        'err' => 1
       }
     else
       render json: {
-        'err' => 1
+        'err' => 0
       }
     end
   end
@@ -98,14 +98,14 @@ class Api::V1::PlayersController < Api::V1::BaseController
     item_id = request[:item_id]
     @user = current_user
     @character = @user.character
-    if @character.item.id == item_id.to_i then
+    if (@character.item == nil) or @character.item.id != item_id.to_i then
       render json: {
-        'err'  => 0,
-        'item' => @user.character.item
+        'err'  => 1,
       }
     else
       render json: {
-        'err' => 1
+        'err' => 0,
+        'item' => @user.character.item
       }
     end
   end
@@ -114,4 +114,15 @@ class Api::V1::PlayersController < Api::V1::BaseController
     render json: Character.all
   end
 
+  def dig
+    #for now digging is always successful
+    success = true
+    if success then
+      current_user.character.battery += 10
+      current_user.character.save!
+      render json: {err: 0}
+    else
+      render json: {err: 1}
+    end
+  end
 end

@@ -27,15 +27,19 @@ function failureFunction(path) {
 //function for going that direction 
 function goSuccessFunction(dir) {
     return function(response) {
-	if (response.err === 0)
-	    log('Took a step ' + dir + '.');
+	//For now, reload map and player data every time we take a step
+	Sk.builtin.statusFunction();
+	Sk.builtin.tilesFunction();
+
+	if (response.err === 0) {
+            var x = playerData.x.toString();
+	    var y = playerData.y.toString();
+	    log('Took a step '+dir+'. Now at position (' + x + ', ' + y + ')' );
+	}
 	if (response.err === 1)
             log("Can’t walk there...");
 	if (response.err === 2)
             log("Immobilized!");
-	playerData.facing = dir;
-	//For now, reload map every time we take a step
-	Sk.builtin.tilesFunction();
 	return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
     };
 }
@@ -94,9 +98,15 @@ function useSuccess(response) {
 function statusSuccess(response) {
     var hp = new Sk.builtin.nmber(response.hp, Sk.builtin.nmber.int$);
     var battery = new Sk.builtin.nmber(response.battery, Sk.builtin.nmber.int$);
-    //var facing = new Sk.builtin.str(response.facing);
-    log("Health: " + response.hp.toString() + "\n Battery: " + response.battery.toString());
-    playerData.facing = response.facing;
+    //var facing = new Sk.builtin.str(reshellsponse.facing);
+    var logMsg = "Health: " + response.hp.toString() + " Battery: " + response.battery.toString();
+    logMsg = logMsg + " Position: (" + response.x.toString() + ", " + response.y.toString() + ")";
+    log(logMsg);
+    playerData.facing = direction[response.facing];
+    playerData.health = response.hp;
+    playerData.battery = response.battery;
+    playerData.x = response.x;
+    playerData.y = response.y;
     return new Sk.builtin.tuple([hp, battery]);
 } 
 
@@ -134,6 +144,9 @@ function digSuccess(response) {
 function tilesSuccess(response) {
     //side length of map
     var n = mapData.n;
+
+    //make sure character is displayed
+    playerData.display = true;
 
     var player_x = response.player_x;
     var player_y = response.player_y;
@@ -261,62 +274,62 @@ Sk.builtin.goFunction = function(dir) {
 
 /**
  * Implementation of the built-in python funtion 'pickup'
- *   args: x = python integer indicating x coordinate of item to pickup
- *         y = python integer indicating y coordinate of item to pickup
- *         ID = python string indicating id of item to pickup
+ *   args:  name = python string indicating name of item to pickup
  * @suppress {missingProperties}
  */
-Sk.builtin.pickupFunction = function(x, y, ID) {
+Sk.builtin.pickupFunction = function(name) {
     //Check argument count and types
-    Sk.builtin.pyCheckArgs("pickupFunction", arguments, 3, 3);
-    Sk.builtin.pyCheckType("x", "integer", Sk.builtin.checkInt(x));
-    Sk.builtin.pyCheckType("y", "integer", Sk.builtin.checkInt(y));
-    Sk.builtin.pyCheckType("ID", "string", Sk.builtin.checkString(ID));
+    Sk.builtin.pyCheckArgs("pickupFunction", arguments, 1, 1);
+    //Sk.builtin.pyCheckType("x", "integer", Sk.builtin.checkInt(x));
+    //Sk.builtin.pyCheckType("y", "integer", Sk.builtin.checkInt(y));
+    Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
 
     //Get Values from python representation
-    var x_val = Sk.builtin.asnum$(x);
-    var y_val = Sk.builtin.asnum$(y);
-    var item_id = ID.v;
+    //var x_val = Sk.builtin.asnum$(x);
+    //var y_val = Sk.builtin.asnum$(y);
+    var x_val = playerData.x;
+    var y_val = playerData.y;
+    var item_id = itemId[name.v];
 
     var pickupFailure = failureFunction(PICKUP_PATH)
-    return json_request('POST', PICKUP_PATH, pickupSuccess, pickupFailure, {'x': x_val, 'y': y_val, 'itemID': item_id});
+    return json_request('POST', PICKUP_PATH, pickupSuccess, pickupFailure, {'x': x_val, 'y': y_val, 'item_id': item_id});
 }
 
 /**
  * Implementation of the built-in python funtion 'drop'
- *   args: ID = python string indicating id of item to drop
+ *   args: name = python string indicating name of item to drop
  * @suppress {missingProperties}
  */
-Sk.builtin.dropFunction = function(ID) {
+Sk.builtin.dropFunction = function(name) {
     //Check arg count and types
     Sk.builtin.pyCheckArgs("dropFunction", arguments, 1, 1);
-    Sk.builtin.pyCheckType("ID", "string", Sk.builtin.checkString(ID));
+    Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
 
     //get values from python representation
-    var item_id = ID.v
+    var item_id = itemId[name.v];
 
     var dropFailure = failureFunction(DROP_PATH);
-    return json_request('POST', DROP_PATH, dropSuccess, dropFailure, {'itemID': item_id});
+    return json_request('POST', DROP_PATH, dropSuccess, dropFailure, {'item_id': item_id});
 }
 
 /**
  * Implementation of the built-in python funtion 'use'
- *   args: ID = python string indicating id of item to use
+ *   args: name = python string indicating name of item to use
  *         args = python string of arguments to the item's use function 
  * @suppress {missingProperties}
  */
-Sk.builtin.useFunction = function(ID, args) {
+Sk.builtin.useFunction = function(name, args) {
     //Check arg count and types
     Sk.builtin.pyCheckArgs("useFunction", arguments, 2, 2);
-    Sk.builtin.pyCheckType("ID", "string", Sk.builtin.checkString(ID));
+    Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
     Sk.builtin.pyCheckType("args", "string", Sk.builtin.checkString(args));
 
     //get values from python representation
-    var item_id = ID.v;
+    var item_id = itemId[name.v];
     var use_args = args.v;
 
     var useFailure = failureFunction(USE_PATH);
-    return json_request('POST', USE_PATH, useSuccess, useFailure, {'itemID': item_id, 'args': use_args});
+    return json_request('POST', USE_PATH, useSuccess, useFailure, {'item_id': item_id, 'args': use_args});
 }
 
 /**
@@ -345,19 +358,19 @@ Sk.builtin.digFunction = function() {
 
 /**
  * Implementation of the built-in python funtion 'inspect'
- *   args: ID = python string containing id of item to inspect
+ *   args: name = python string containing name of item to inspect
  * @suppress {missingProperties}
  */
-Sk.builtin.inspectFunction = function(ID) {
+Sk.builtin.inspectFunction = function(name) {
     //check args count and types
     Sk.builtin.pyCheckArgs("inspectFunction", arguments, 1, 1);
-    Sk.builtin.pyCheckType("ID", "string", Sk.builtin.checkString(ID));
+    Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
 
     //get the value from the python representation 
-    var item_id = ID.v
+    var item_id = itemId[name.v]
 
     var inspectFailure = failureFunction(INSPECT_PATH);
-    return json_request("POST", INSPECT_PATH, inspectSuccess, inspectFailure, {'itemID': item_id});
+    return json_request("POST", INSPECT_PATH, inspectSuccess, inspectFailure, {'item_id': item_id});
 }
 
 /**

@@ -52,7 +52,8 @@ var mapData = new MapData();
 goog.exportSymbol("mapData", mapData);
 
 //Initialize player stats
-var playerData = {'health': 0, 'battery': 0, 'facing':0, 'display': false} 
+//x and y are absolute coordinates 
+var playerData = {'health': 0, 'battery': 0, 'facing':0, 'display': false, 'x':0, 'y':0} 
 goog.exportSymbol("playerData", playerData);
 
 /**

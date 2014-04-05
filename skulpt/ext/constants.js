@@ -6,6 +6,14 @@
 //(+/- MAP_MAX_INDEX, +/- MAP_MAX_INDEX). Therefore the side length of the map is 2*MAP_MAX_INDEX + 1
 var MAP_MAX_INDEX = 12;
 
+//conversion of integer to string direction
+var direction = {0:'north', 1:'east',2:'south',3:'west'}
+
+//A map of itemIds
+var itemId = {
+    'rubbish': 0
+}
+
 //A map of tile ids to their ascii representation
 var tileChars = {
     0:' ',
