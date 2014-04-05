@@ -15,9 +15,11 @@ describe Api::V1::PlayersController do
 
     context "valid move" do 
       it "moves the player and returns error code 0 (success)" do
-        @character.tile = Tile.tile_at(0, 0)
+        @character.setTile(Tile.tile_at(0, 0))
+        @character.save!
         json = {direction: 'east'}
         post :move, json
+        @character.reload
         @character.tile.x.should eql 1
         @character.tile.y.should eql 0
         Tile.tile_at(1, 0).character.should eql @character
@@ -28,8 +30,11 @@ describe Api::V1::PlayersController do
 
     context "invalid move" do
       it "does not move player and returns error code 1" do
+        @character.setTile(Tile.tile_at(0, 0))
+        @character.save!
         json = {direction: 'south'}
         post :move, json
+        @character.reload
         @character.tile.x.should eql 0
         @character.tile.y.should eql 0
         JSON.parse(response.body)["err"].should eql 1
@@ -63,6 +68,15 @@ describe Api::V1::PlayersController do
       it "returns error code 1" do
         @item = FactoryGirl.create(:item)
         json = {x: 0, y: 0, item_id: @item.id}
+        post :pickup, json
+        @character.item.should eql nil
+        JSON.parse(response.body)["err"].should eql 1
+      end
+    end
+
+    context "item does not exist in this world" do
+      it "returns error code 1" do
+        json = {x: 0, y: 0, item_id: 12345}
         post :pickup, json
         @character.item.should eql nil
         JSON.parse(response.body)["err"].should eql 1
@@ -195,7 +209,7 @@ describe Api::V1::PlayersController do
   describe "GET #status" do
     it "reports player status, hp, battery" do
       post :status
-      JSON.parse(response.body)["health"].should eql 100
+      JSON.parse(response.body)["hp"].should eql 100
       JSON.parse(response.body)["battery"].should eql 100
     end
   end
