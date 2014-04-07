@@ -8,12 +8,12 @@
  * returns: the function to be called on a non-200 response to the request
  */
 function failureFunction(path) {
-    var str = "Error on call to " + path +  ". Response: ";
-    return function(status) {
-        log(str + status);
-	//todo: throw python error instead of printing string
-	return new Sk.builtin.str(str + status);
-    };
+  var str = "Error on call to " + path +  ". Response: ";
+  return function(status) {
+    log(str + status);
+    //todo: throw python error instead of printing string
+    return new Sk.builtin.str(str + status);
+  };
 }
 
 /**
@@ -26,22 +26,22 @@ function failureFunction(path) {
 //Change for iter 2: replace goSuccess with function that takes a direction as an arg and returns a success
 //function for going that direction 
 function goSuccessFunction(dir) {
-    return function(response) {
-	//For now, reload map and player data every time we take a step
-	Sk.builtin.statusFunction();
-	Sk.builtin.tilesFunction();
+  return function(response) {
+    //For now, reload map and player data every time we take a step
+    Sk.builtin.statusFunction();
+    Sk.builtin.tilesFunction();
 
-	if (response.err === 0) {
-            var x = playerData.x.toString();
-	    var y = playerData.y.toString();
-	    log('Took a step '+dir+'. Now at position (' + x + ', ' + y + ')' );
-	}
-	if (response.err === 1)
-            log("Can’t walk there...");
-	if (response.err === 2)
-            log("Immobilized!");
-	return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
-    };
+    if (response.err === 0) {
+      var x = Bq.playerData.x.toString();
+      var y = Bq.playerData.y.toString();
+      log('Took a step '+dir+'. Now at position (' + x + ', ' + y + ')' );
+    }
+    if (response.err === 1)
+      log("Can’t walk there...");
+    if (response.err === 2)
+      log("Immobilized!");
+    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  };
 }
 
 /**
@@ -52,13 +52,13 @@ function goSuccessFunction(dir) {
  * @suppress {missingProperties}
  */
 function pickupSuccess(response) {
-    if (response.err === 0)
-	log('Picked up item!');
-    if (response.err === 1)
-        log("That item isn't there!");
-    if (response.err === 2)
-        log("You can't access this tile!");
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  if (response.err === 0)
+    log('Picked up item!');
+  if (response.err === 1)
+    log("That item isn't there!");
+  if (response.err === 2)
+    log("You can't access this tile!");
+  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
 /**
@@ -69,24 +69,24 @@ function pickupSuccess(response) {
  * @suppress {missingProperties}
  */
 function dropSuccess(response) {
-    if (response.err === 0)
-	log("Dropped item");
-    if (response.err === 1)
-        log("You don't have that item!");
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  if (response.err === 0)
+    log("Dropped item");
+  if (response.err === 1)
+    log("You don't have that item!");
+  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
 /**
  * @suppress {missingProperties}
  */
 function useSuccess(response) {
-    if (response.err === 0)
-	log("Used item.")
-    if (response.err === 1)
-        log("You don't have that item!");
-    if (response.err === 2)
-        log("Erm... I don't think you can do that with that item.");
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  if (response.err === 0)
+    log("Used item.")
+  if (response.err === 1)
+    log("You don't have that item!");
+  if (response.err === 2)
+    log("Erm... I don't think you can do that with that item.");
+  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
 /**
@@ -96,18 +96,18 @@ function useSuccess(response) {
  * @suppress {missingProperties}
  */
 function statusSuccess(response) {
-    var hp = new Sk.builtin.nmber(response.hp, Sk.builtin.nmber.int$);
-    var battery = new Sk.builtin.nmber(response.battery, Sk.builtin.nmber.int$);
-    //var facing = new Sk.builtin.str(reshellsponse.facing);
-    var logMsg = "Health: " + response.hp.toString() + " Battery: " + response.battery.toString();
-    logMsg = logMsg + " Position: (" + response.x.toString() + ", " + response.y.toString() + ")";
-    log(logMsg);
-    playerData.facing = direction[response.facing];
-    playerData.health = response.hp;
-    playerData.battery = response.battery;
-    playerData.x = response.x;
-    playerData.y = response.y;
-    return new Sk.builtin.tuple([hp, battery]);
+  var hp = new Sk.builtin.nmber(response.hp, Sk.builtin.nmber.int$);
+  var battery = new Sk.builtin.nmber(response.battery, Sk.builtin.nmber.int$);
+  //var facing = new Sk.builtin.str(reshellsponse.facing);
+  var logMsg = "Health: " + response.hp.toString() + " Battery: " + response.battery.toString();
+  logMsg = logMsg + " Position: (" + response.x.toString() + ", " + response.y.toString() + ")";
+  log(logMsg);
+  Bq.playerData.facing = direction[response.facing];
+  Bq.playerData.health = response.hp;
+  Bq.playerData.battery = response.battery;
+  Bq.playerData.x = response.x;
+  Bq.playerData.y = response.y;
+  return new Sk.builtin.tuple([hp, battery]);
 } 
 
 
@@ -119,8 +119,8 @@ function statusSuccess(response) {
  * @suppress {missingProperties}
  */
 function inspectSuccess(response) {
-    //todo: should log result of inspect instead.
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  //todo: should log result of inspect instead.
+  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
 
@@ -131,7 +131,7 @@ function inspectSuccess(response) {
  * @suppress {missingProperties}
  */
 function digSuccess(response) {
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
 /**
@@ -142,51 +142,51 @@ function digSuccess(response) {
  * @suppress {missingProperties}
  */
 function tilesSuccess(response) {
-    //side length of map
-    var n = mapData.n;
+  //side length of map
+  var n = Bq.mapData.n;
 
-    //make sure character is displayed
-    playerData.display = true;
+  //make sure character is displayed
+  Bq.playerData.display = true;
 
-    var player_x = response.player_x;
-    var player_y = response.player_y;
-    // Coordinates of bottom left corner
-    var sw_x = player_x - MAP_MAX_INDEX;
-    var sw_y = player_y - MAP_MAX_INDEX;
-    var tiles = response.tiles;
+  var player_x = response.player_x;
+  var player_y = response.player_y;
+  // Coordinates of bottom left corner
+  var sw_x = player_x - MAP_MAX_INDEX;
+  var sw_y = player_y - MAP_MAX_INDEX;
+  var tiles = response.tiles;
 
-    //var map  = [];
-    //for (var i = 0; i < n; i++) {
-//	var row = [];
-//	for (var j = 0; j < n; j++) {
-//	    row.push(-1);
-//	}
-//	map.push(row);
-//    }
-    var x;
-    var y;
- 
-    //If we are at the edge of the map, only existing tiles will be returned
-    //In this case, we need to fill in the remaining locations with the off-the-map tile
-   if (tiles.length < (2 * MAP_MAX_INDEX + 1) * (2 * MAP_MAX_INDEX + 1)) {
-	for (var x = -MAP_MAX_INDEX; x <= MAP_MAX_INDEX; x++) {
-	    for (var y = -MAP_MAX_INDEX; y <= MAP_MAX_INDEX; y++) {
-		mapData.setTile(x,y, 15);
-	    }
-	}
+  //var map  = [];
+  //for (var i = 0; i < n; i++) {
+  //  var row = [];
+  //  for (var j = 0; j < n; j++) {
+  //      row.push(-1);
+  //  }
+  //  map.push(row);
+  //    }
+  var x;
+  var y;
+
+  //If we are at the edge of the map, only existing tiles will be returned
+  //In this case, we need to fill in the remaining locations with the off-the-map tile
+  if (tiles.length < (2 * MAP_MAX_INDEX + 1) * (2 * MAP_MAX_INDEX + 1)) {
+    for (var x = -MAP_MAX_INDEX; x <= MAP_MAX_INDEX; x++) {
+      for (var y = -MAP_MAX_INDEX; y <= MAP_MAX_INDEX; y++) {
+        Bq.mapData.setTile(x,y, 15);
+      }
     }
+  }
 
-    //Go through tiles returned and save them to mapData
-    for (var i = 0; i < tiles.length; i++) {
-	x = tiles[i].x;
-	y = tiles[i].y;
-	if ( x-sw_x < 0 || x-sw_x > n || y-sw_y < 0 || y-sw_y > n) {
-	    alert('tile indices out of range');
-	}
-	mapData.setTile(x-player_x, y-player_y, tiles[i].tile_type);
+  //Go through tiles returned and save them to mapData
+  for (var i = 0; i < tiles.length; i++) {
+    x = tiles[i].x;
+    y = tiles[i].y;
+    if ( x-sw_x < 0 || x-sw_x > n || y-sw_y < 0 || y-sw_y > n) {
+      alert('tile indices out of range');
     }
-    window.renderMap(window.getMapIndices());
-    return new Sk.builtin.nmber(0, Sk.builtin.int$);
+    Bq.mapData.setTile(x-player_x, y-player_y, tiles[i].tile_type);
+  }
+  Bq.renderMap(Bq.Map.getIndices());
+  return new Sk.builtin.nmber(0, Sk.builtin.int$);
 }
 
 /**
@@ -197,7 +197,7 @@ function tilesSuccess(response) {
  * @suppress {missingProperties}
  */
 function charactersSuccess(response) {
-    return new Sk.builtin.str("charactersSuccess response handling not yet implemented");
+  return new Sk.builtin.str("charactersSuccess response handling not yet implemented");
 
 }
 //////////////////////////////////////////////////////////////////////////////////////
@@ -218,33 +218,33 @@ function charactersSuccess(response) {
  * @suppress {missingProperties}
  */
 function json_request(type, page, successFunction, failureFunction, dict) {
- 
-   //Jquery-free implimentation of ajax request since Skulpt is compiled without jquery
-    var ajaxFinished = false;
-    var result;
-    var http = new XMLHttpRequest();
-    //3rd param: set to false to make request NOT asynchronous, since we need the result before returning
-    http.open(type, page, false);
-    http.setRequestHeader("Content-type", "application/json");
-    //get the csrf token
-    var metadata = document.getElementsByTagName('meta');
-    var token = 'no token found'
-    for (var i = 0; i < metadata.length; i++)  {
-	if (metadata[i].getAttribute('name') == 'csrf-token') {
-	    token = metadata[i].getAttribute('content');
-	}
-    }
-    http.setRequestHeader("X-CSRF-Token", token);
 
-    //Send request
-    http.send(JSON.stringify(dict));
-
-    //Handle response 
-    if (http.status === 200) {
-	return successFunction(JSON.parse(http.responseText));
+  //Jquery-free implimentation of ajax request since Skulpt is compiled without jquery
+  var ajaxFinished = false;
+  var result;
+  var http = new XMLHttpRequest();
+  //3rd param: set to false to make request NOT asynchronous, since we need the result before returning
+  http.open(type, page, false);
+  http.setRequestHeader("Content-type", "application/json");
+  //get the csrf token
+  var metadata = document.getElementsByTagName('meta');
+  var token = 'no token found'
+  for (var i = 0; i < metadata.length; i++)  {
+    if (metadata[i].getAttribute('name') == 'csrf-token') {
+      token = metadata[i].getAttribute('content');
     }
-    return failureFunction(JSON.parse(http.responseText));		
-    
+  }
+  http.setRequestHeader("X-CSRF-Token", token);
+
+  //Send request
+  http.send(JSON.stringify(dict));
+
+  //Handle response 
+  if (http.status === 200) {
+    return successFunction(JSON.parse(http.responseText));
+  }
+  return failureFunction(JSON.parse(http.responseText));    
+
 }
 
 //Position of the player.  Initialize to (0,0), north but update when we get data from the server.
@@ -261,15 +261,15 @@ function json_request(type, page, successFunction, failureFunction, dict) {
  * @suppress {missingProperties}
  */
 Sk.builtin.goFunction = function(dir) {
-    Sk.builtin.pyCheckArgs("goFunction", arguments, 1, 1);
-    Sk.builtin.pyCheckType("dir", "string", Sk.builtin.checkString(dir));
-    // get the string from the python representation (there may be a better way to do this)
-    var direction = dir.v
+  Sk.builtin.pyCheckArgs("goFunction", arguments, 1, 1);
+  Sk.builtin.pyCheckType("dir", "string", Sk.builtin.checkString(dir));
+  // get the string from the python representation (there may be a better way to do this)
+  var direction = dir.v
 
-    var goFailure = failureFunction(MOVE_PATH);
-    var goSuccess = goSuccessFunction(direction);
+  var goFailure = failureFunction(MOVE_PATH);
+  var goSuccess = goSuccessFunction(direction);
 
-    return json_request('POST', MOVE_PATH, goSuccess, goFailure, {'direction': direction});
+  return json_request('POST', MOVE_PATH, goSuccess, goFailure, {'direction': direction});
 }
 
 /**
@@ -278,21 +278,21 @@ Sk.builtin.goFunction = function(dir) {
  * @suppress {missingProperties}
  */
 Sk.builtin.pickupFunction = function(name) {
-    //Check argument count and types
-    Sk.builtin.pyCheckArgs("pickupFunction", arguments, 1, 1);
-    //Sk.builtin.pyCheckType("x", "integer", Sk.builtin.checkInt(x));
-    //Sk.builtin.pyCheckType("y", "integer", Sk.builtin.checkInt(y));
-    Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
+  //Check argument count and types
+  Sk.builtin.pyCheckArgs("pickupFunction", arguments, 1, 1);
+  //Sk.builtin.pyCheckType("x", "integer", Sk.builtin.checkInt(x));
+  //Sk.builtin.pyCheckType("y", "integer", Sk.builtin.checkInt(y));
+  Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
 
-    //Get Values from python representation
-    //var x_val = Sk.builtin.asnum$(x);
-    //var y_val = Sk.builtin.asnum$(y);
-    var x_val = playerData.x;
-    var y_val = playerData.y;
-    var item_id = itemId[name.v];
+  //Get Values from python representation
+  //var x_val = Sk.builtin.asnum$(x);
+  //var y_val = Sk.builtin.asnum$(y);
+  var x_val = Bq.playerData.x;
+  var y_val = Bq.playerData.y;
+  var item_id = itemId[name.v];
 
-    var pickupFailure = failureFunction(PICKUP_PATH)
-    return json_request('POST', PICKUP_PATH, pickupSuccess, pickupFailure, {'x': x_val, 'y': y_val, 'item_id': item_id});
+  var pickupFailure = failureFunction(PICKUP_PATH)
+  return json_request('POST', PICKUP_PATH, pickupSuccess, pickupFailure, {'x': x_val, 'y': y_val, 'item_id': item_id});
 }
 
 /**
@@ -301,15 +301,15 @@ Sk.builtin.pickupFunction = function(name) {
  * @suppress {missingProperties}
  */
 Sk.builtin.dropFunction = function(name) {
-    //Check arg count and types
-    Sk.builtin.pyCheckArgs("dropFunction", arguments, 1, 1);
-    Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
+  //Check arg count and types
+  Sk.builtin.pyCheckArgs("dropFunction", arguments, 1, 1);
+  Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
 
-    //get values from python representation
-    var item_id = itemId[name.v];
+  //get values from python representation
+  var item_id = itemId[name.v];
 
-    var dropFailure = failureFunction(DROP_PATH);
-    return json_request('POST', DROP_PATH, dropSuccess, dropFailure, {'item_id': item_id});
+  var dropFailure = failureFunction(DROP_PATH);
+  return json_request('POST', DROP_PATH, dropSuccess, dropFailure, {'item_id': item_id});
 }
 
 /**
@@ -319,17 +319,17 @@ Sk.builtin.dropFunction = function(name) {
  * @suppress {missingProperties}
  */
 Sk.builtin.useFunction = function(name, args) {
-    //Check arg count and types
-    Sk.builtin.pyCheckArgs("useFunction", arguments, 2, 2);
-    Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
-    Sk.builtin.pyCheckType("args", "string", Sk.builtin.checkString(args));
+  //Check arg count and types
+  Sk.builtin.pyCheckArgs("useFunction", arguments, 2, 2);
+  Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
+  Sk.builtin.pyCheckType("args", "string", Sk.builtin.checkString(args));
 
-    //get values from python representation
-    var item_id = itemId[name.v];
-    var use_args = args.v;
+  //get values from python representation
+  var item_id = itemId[name.v];
+  var use_args = args.v;
 
-    var useFailure = failureFunction(USE_PATH);
-    return json_request('POST', USE_PATH, useSuccess, useFailure, {'item_id': item_id, 'args': use_args});
+  var useFailure = failureFunction(USE_PATH);
+  return json_request('POST', USE_PATH, useSuccess, useFailure, {'item_id': item_id, 'args': use_args});
 }
 
 /**
@@ -337,11 +337,11 @@ Sk.builtin.useFunction = function(name, args) {
  * @suppress {missingProperties}
  */
 Sk.builtin.statusFunction = function() {
-    //check args count and types
-    Sk.builtin.pyCheckArgs("statusFunction", arguments, 0, 0);
+  //check args count and types
+  Sk.builtin.pyCheckArgs("statusFunction", arguments, 0, 0);
 
-    var statusFailure = failureFunction(STATUS_PATH);
-    return json_request("GET", STATUS_PATH, statusSuccess, statusFailure, {});
+  var statusFailure = failureFunction(STATUS_PATH);
+  return json_request("GET", STATUS_PATH, statusSuccess, statusFailure, {});
 }
 
 /**
@@ -349,11 +349,11 @@ Sk.builtin.statusFunction = function() {
  * @suppress {missingProperties}
  */
 Sk.builtin.digFunction = function() {
-    //check args count and types
-    Sk.builtin.pyCheckArgs("digFunction", arguments, 0, 0);
+  //check args count and types
+  Sk.builtin.pyCheckArgs("digFunction", arguments, 0, 0);
 
-    var digFailure = failureFunction(DIG_PATH);
-    return json_request("POST", DIG_PATH, digSuccess, digFailure, {});
+  var digFailure = failureFunction(DIG_PATH);
+  return json_request("POST", DIG_PATH, digSuccess, digFailure, {});
 }
 
 /**
@@ -362,15 +362,15 @@ Sk.builtin.digFunction = function() {
  * @suppress {missingProperties}
  */
 Sk.builtin.inspectFunction = function(name) {
-    //check args count and types
-    Sk.builtin.pyCheckArgs("inspectFunction", arguments, 1, 1);
-    Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
+  //check args count and types
+  Sk.builtin.pyCheckArgs("inspectFunction", arguments, 1, 1);
+  Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
 
-    //get the value from the python representation 
-    var item_id = itemId[name.v]
+  //get the value from the python representation 
+  var item_id = itemId[name.v]
 
-    var inspectFailure = failureFunction(INSPECT_PATH);
-    return json_request("POST", INSPECT_PATH, inspectSuccess, inspectFailure, {'item_id': item_id});
+  var inspectFailure = failureFunction(INSPECT_PATH);
+  return json_request("POST", INSPECT_PATH, inspectSuccess, inspectFailure, {'item_id': item_id});
 }
 
 /**
@@ -378,11 +378,11 @@ Sk.builtin.inspectFunction = function(name) {
  * @suppress {missingProperties}
  */
 Sk.builtin.charactersFunction = function() {
-    //check args count and types
-    Sk.builtin.pyCheckArgs("charactersFunction", arguments, 0, 0);
+  //check args count and types
+  Sk.builtin.pyCheckArgs("charactersFunction", arguments, 0, 0);
 
-    var charactersFailure = failureFunction(CHARACTERS_PATH);
-    return json_request("GET", CHARACTERS_PATH, charactersSuccess, charactersFailure, {});
+  var charactersFailure = failureFunction(CHARACTERS_PATH);
+  return json_request("GET", CHARACTERS_PATH, charactersSuccess, charactersFailure, {});
 }
 
 /**
@@ -390,10 +390,10 @@ Sk.builtin.charactersFunction = function() {
  * @suppress {missingProperties}
  */
 Sk.builtin.tilesFunction = function() {
-    //check args count and types
-    Sk.builtin.pyCheckArgs("tilesFunction", arguments, 0, 0);
+  //check args count and types
+  Sk.builtin.pyCheckArgs("tilesFunction", arguments, 0, 0);
 
-    var tilesFailure = failureFunction(TILES_PATH);
-    return json_request("GET", TILES_PATH, tilesSuccess, tilesFailure, {});
+  var tilesFailure = failureFunction(TILES_PATH);
+  return json_request("GET", TILES_PATH, tilesSuccess, tilesFailure, {});
 }
 

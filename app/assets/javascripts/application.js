@@ -9,6 +9,10 @@
 //
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
+// 
+// Please note that require_tree excludes files which have already been required.
+// So if you want to change JS load order, which is given in here by the ordering
+// of specific files, then don't worry about require_tree!!
 //
 //= require jquery
 //= require jquery_ujs
@@ -16,4 +20,5 @@
 //= require interpreter/skulpt.min.js
 //= require interpreter/skulpt-stdlib.js
 //= require kinetic/kinetic.min
+//= require_tree ./views
 //= require_tree .
