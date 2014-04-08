@@ -6,8 +6,6 @@ class Api::V1::WorldController < Api::V1::BaseController
       render json: {}, status: :forbidden
     end
 
-    if character.tile == nil then puts '----------' end
-
     character_tile = Character.find(character.tile)
     tiles_to_return = Tile.tiles_at(character_tile.x - n,
                                     character_tile.y - n, #lower left
