@@ -20,5 +20,4 @@
 //= require interpreter/skulpt.min.js
 //= require interpreter/skulpt-stdlib.js
 //= require kinetic/kinetic.min
-//= require_tree ./views
 //= require_tree .

@@ -143,3 +143,9 @@ var splashArt = [
 [  0,  0,  0,  0,  0,211,207,208,  0,208, 80,121,116,104,111,110,  0,  2,218,  6,  0,208,  0,208,  0],
 [  0,  0,  0,  0,  0,  0,  0,208,  0,208,219,219,219,  0,  0,  0,  0,  0,  0,  0,  0,208,  0,208,  0]
 ]
+
+Bq.constants.MAP_MAX_INDEX = MAP_MAX_INDEX;
+Bq.constants.direction = direction;
+Bq.constants.itemId = itemId;
+Bq.constants.tileChars = tileChars;
+Bq.constants.splashArt = splashArt;

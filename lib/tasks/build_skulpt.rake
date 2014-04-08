@@ -4,10 +4,7 @@ task :build_skulpt do
   trap('INT') do
     puts "STOPPED rake build_skulpt: Caught SIGINT. Cleaning up skulpt directory."
     #move original files back into base folder
-    system('(cd skulpt/base/src; rm env.js builtin.js builtindict.js)')
-    system('(cd skulpt; mv env_original base/src/env.js)')
-    system('(cd skulpt; mv builtin_original base/src/builtin.js)')
-    system('(cd skulpt; mv builtindict_original base/src/builtindict.js)')
+    system('rm -rf skulpt && cp -r skulpt_backup skulpt')
     puts "Cleaning process complete."
   end
 
@@ -18,6 +15,9 @@ task :build_skulpt do
   else
     puts('Using production API') 	
   end
+
+  # backup initial directory state
+  system('cp -r skulpt skulpt_backup');
 
   #make temp versions of env.js, builtin.js, and builtindict.js to whcih we will append  our additons
   system('(cd skulpt;mv base/src/env.js env_original)')
@@ -33,6 +33,7 @@ task :build_skulpt do
   else
     system('(cd skulpt; cat ext/paths.js >> env.js)')
   end
+  system('(cd skulpt; cat ext/bq.js >> env.js)')
   system('(cd skulpt; cat ext/constants.js >> env.js)')
   system('(cd skulpt; cat ext/env_ext.js >> env.js)')
   system('(cd skulpt; cat ext/builtin_ext.js >> builtin.js)')
@@ -53,5 +54,6 @@ task :build_skulpt do
   system('(cd skulpt; mv env_original base/src/env.js)')
   system('(cd skulpt; mv builtin_original base/src/builtin.js)')
   system('(cd skulpt; mv builtindict_original base/src/builtindict.js)')
+  system('rm -rf skulpt_backup')
 
 end
