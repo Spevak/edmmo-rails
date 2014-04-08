@@ -1,9 +1,10 @@
 EdmmoRails::Application.routes.draw do
+  get "map/editor"
   devise_for :users
 
   root 'welcome#index'
   get 'kinetic_test' => 'welcome#kinetic_test'
-  get 'world/editor' => 'world#editor'
+  get 'map/editor' => 'map#editor'
 
   namespace :api do
     namespace :test do
