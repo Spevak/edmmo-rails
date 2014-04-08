@@ -3,7 +3,11 @@ class Api::V1::PlayersController < Api::V1::BaseController
   #before_filter :validate
   def move
     @user = current_user
+    puts "User == nil: " 
+    puts @user == nil
     @character = @user.character
+    puts "character == nil: "
+    puts @character == nil
     direction = request[:direction] 
 
     dx, dy = 0, 0
@@ -19,7 +23,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
 
     target_tile = Tile.tile_at(@character.tile.x + dx, @character.tile.y + dy)
     if target_tile == nil then
-      render json: { 'err' => 1 }, status: 404
+      render json: { 'err' => 1 }, status: 200
     else
       @character.move_to(target_tile.x, target_tile.y)
       render json: { 'err' => 0 }
@@ -27,34 +31,63 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def pickup
-      x = request[:x]
-      y= request[:y]
-      item_id = request[:item_id]
+    x = request[:x].to_i
+    y = request[:y].to_i
+    item_id = request[:item_id].to_i
     @user = current_user
     @character = @user.character
     target_tile = Tile.tile_at(x, y)
     if @character.item != nil then
-      render json: { 'err' => 3 }, status: 404
-    elsif target_tile == nil then
-      render json: { 'err' => 0 }, status: 404
-    elsif target_tile.item == item then
-      @character.pick_up(item_id)
+      render json: { 'err' => 3 }, status: 200
+    elsif target_tile.id != @character.tile.id then
+      render json: { 'err' => 2 }, status: 200
+    elsif (target_tile.item == nil) || target_tile.item.id != item_id then
+      render json: { 'err' => 1 }, status: 200
     else
-      render json: { 'err' => 1 }, status: 404
+      @character.pick_up(item_id)
+      target_tile.item = nil
+      target_tile.save!
+      render json: { 'err' => 0 }
     end
   end
 
-  def drop(item_id)
+  def drop
+    item_id   = request[:item_id].to_i
+    user      = current_user
+    character = user.character
+    tile      = character.tile
+    if (character.item == nil) or character.item.id !=  item_id then
+      render json: {
+        'err' => 1
+      }
+    elsif tile.item != nil then
+      render json: {
+        'err' => 2
+      }
+    else
+      character.drop(item_id)
+      render json: {
+        'err' => 0
+      }
+    end
+  end
+
+  def use
+    # do nothing lol
+    x = request[:x]
+    y = request[:y]
+    item_id = request[:item_id]
     @user = current_user
     @character = @user.character
-    if @character.item.id == item_id then
-      @character.item = nil
+    if (@character.item == nil) or @character.item.id != item_id.to_i then
+      render json: {
+        'err' => 1
+      }
+    else
+      render json: {
+        'err' => 0
+      }
     end
-  end
-
-  def use_item(x, y)
-    # do nothing lol
-    render json: { 'err' => 0 }
   end
 
   def status
@@ -62,9 +95,34 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def inspect
+    item_id = request[:item_id]
     @user = current_user
-    render json: { 'err'  => 0,
-      'item' => @user.character.item }
+    @character = @user.character
+    if (@character.item == nil) or @character.item.id != item_id.to_i then
+      render json: {
+        'err'  => 1,
+      }
+    else
+      render json: {
+        'err' => 0,
+        'item' => @user.character.item
+      }
+    end
   end
 
+  def characters
+    render json: Character.all
+  end
+
+  def dig
+    #for now digging is always successful
+    success = true
+    if success then
+      current_user.character.battery += 10
+      current_user.character.save!
+      render json: {err: 0}
+    else
+      render json: {err: 1}
+    end
+  end
 end

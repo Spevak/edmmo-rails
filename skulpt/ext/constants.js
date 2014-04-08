@@ -6,6 +6,14 @@
 //(+/- MAP_MAX_INDEX, +/- MAP_MAX_INDEX). Therefore the side length of the map is 2*MAP_MAX_INDEX + 1
 var MAP_MAX_INDEX = 12;
 
+//conversion of integer to string direction
+var direction = {0:'north', 1:'east',2:'south',3:'west'}
+
+//A map of itemIds
+var itemId = {
+    'rubbish': 0
+}
+
 //A map of tile ids to their ascii representation
 var tileChars = {
     0:' ',
@@ -25,6 +33,9 @@ var tileChars = {
     12: 'v',
     13: '>',
     14: '<',
+
+    //Representation of non-existant tile (off the map)
+    15: '#',
 
     //Use ascii values for Letters:
     65: 'A',
@@ -132,3 +143,9 @@ var splashArt = [
 [  0,  0,  0,  0,  0,211,207,208,  0,208, 80,121,116,104,111,110,  0,  2,218,  6,  0,208,  0,208,  0],
 [  0,  0,  0,  0,  0,  0,  0,208,  0,208,219,219,219,  0,  0,  0,  0,  0,  0,  0,  0,208,  0,208,  0]
 ]
+
+Bq.constants.MAP_MAX_INDEX = MAP_MAX_INDEX;
+Bq.constants.direction = direction;
+Bq.constants.itemId = itemId;
+Bq.constants.tileChars = tileChars;
+Bq.constants.splashArt = splashArt;

@@ -26,6 +26,12 @@ EdmmoRails::Application.routes.draw do
       post 'player/move' => 'players#move'
       post 'player/pickup' => 'players#pickup'
       post 'test_session' => 'base#test_session' if Rails.env.development?
+      get 'player/status' => 'players#status'
+      post 'player/inspect' => 'players#inspect'
+      post 'player/drop' => 'players#drop'
+      post 'player/dig' => 'players#dig'
+      get 'player/characters' => 'players#characters'
+      post 'player/use' => 'players#use'
     end
   end
 

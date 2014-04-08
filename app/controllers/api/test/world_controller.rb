@@ -15,7 +15,7 @@ class Api::Test::WorldController < ApplicationController
         #ne
         if x == 25 and y == 26 then tile = 2 end
 
-        tile_list << {:x => x, :y => y, :tile => tile}
+        tile_list << {:x => x, :y => y, :tile_type => tile}
       end
     end
     

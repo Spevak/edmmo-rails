@@ -48,18 +48,18 @@ MapData.prototype.setTile = function(x, y, tileId) {
 }
 
 
-var mapData = new MapData();
-goog.exportSymbol("mapData", mapData);
-
-//Initialize player stats
-var playerData = {'health': 0, 'battery': 0, 'facing':'north', 'display': false} 
-goog.exportSymbol("playerData", playerData);
-
 /**
  * Prints a message to the output log
  */
 function log(msg) {
-    var logPre = document.getElementById('log');
-    logPre.innerHTML = msg;
+    var logPre = document.getElementById('log-text');
+    logPre.innerHTML += "<li class='log-msg'>msg</li>";
 }
-goog.exportSymbol("log", log);
+
+var mapData = new MapData();
+
+//Initialize player stats
+var playerData = {'health': 0, 'battery': 0, 'facing':0, 'display': false} 
+
+Bq.setMapData(mapData);
+Bq.setPlayerData(playerData);

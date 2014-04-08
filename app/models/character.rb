@@ -8,30 +8,56 @@ class Character < ActiveRecord::Base
   belongs_to :tile
 
   def move_to(x, y)
-    if (self.tile.x - x).abs <= 1 and (self.tile.y - y).abs <= 1 then
+
+    if (self.tile.x - x).abs + (self.tile.y - y).abs <= 1 then
+      #update direction facing
+      if y > self.tile.y then
+        self.facing = 0
+      elsif y < self.tile.y then
+        self.facing = 2
+      elsif x > self.tile.x then
+        self.facing = 1
+      elsif x < self.tile.x then
+        self.facing = 3
+      end
+      #spent 1 unit of battery taking a step
+      self.battery -= 1
+
+      self.save!
+
+      #update tile
       tile = Tile.tile_at(x, y)
-      self.tile = tile
-      self.save
+      oldTile = self.tile
+      oldTile.character = nil
+      oldTile.save!
+
+      tile.character = self
+      tile.save!
+
     end
   end
 
   def pick_up(item_id)
     i = Item.find_by_id(item_id)
-    i.character = self
-    i.save
+    self.item = i
+    self.save!
   end
 
   def drop(item_id)
-    i = Item.find_by_id(item_id)
-    i.character = nil
-    i.save
+    i = self.item
+    t = self.tile
+    t.item = i
+    t.save!
+
+    self.item = nil
+    self.save!
   end
 
   def tile()
     Tile.find_by_character_id(self.id)
   end
 
-  def tile=(tile)
+  def setTile(tile)
     tile.character = self
     tile.save!
   end
@@ -41,9 +67,11 @@ class Character < ActiveRecord::Base
   end
 
   def status
-    { :health => self.health,
+    { :hp => self.health,
       :battery => self.battery,
-      :facing => self.facing }
+      :facing => self.facing,
+      :x => self.tile.x,
+      :y => self.tile.y}
   end
 
   def x
