@@ -11,6 +11,15 @@
       <!-- The right hand side containing the two text boxes -->
       <div class="half" id="terminals"> 
 	<div id="tools">
+	  <div class="tool" id="load_file">
+	    Load a map block
+	  </div>
+	  <div class="tool" id="tile_select">
+	    Select a tile to use
+	  </div>
+	  <div class="tool" id="save_file">
+	    Save as
+	  </div>
 	</div>
 
         <!-- Other javascripts that load because of how rails handles assets will fail if the log or
@@ -33,6 +42,7 @@
     $(document).ready(function() {
       $('#hiddenShell').hide();
       $('#log').hide();
+      alert('ready');
     var indices = [];
 
     for (var x=-MAP_MAX_INDEX; x<=MAP_MAX_INDEX; x++) {
@@ -44,6 +54,6 @@
 
     window.renderMap(indices);
     });
-
+    alert('hello')
   </script>
 </html>
