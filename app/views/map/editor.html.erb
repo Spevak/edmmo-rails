@@ -13,12 +13,22 @@
 	<div id="tools">
 	  <div class="tool" id="load_file">
 	    Load a map block
+	    <br>
+	    <select id="fileToLoad">
+	    </select>
+	    <button type="submit" id="load"> Load </button>
 	  </div>
 	  <div class="tool" id="tile_select">
 	    Select a tile to use
+	    <br>
+	    <select id="tile" onchange="currentTileType = + this.value">
+	    </select>
 	  </div>
 	  <div class="tool" id="save_file">
 	    Save as
+	    <br>
+	    <input type="text" id="saveAs">
+	    <button type="submit" id="save"> Save </button>
 	  </div>
 	</div>
 
@@ -33,27 +43,24 @@
       </div>
 
     </div>
-    <center>
-      <font size=5> JSON OUTPUT <br> </font>
-      <textarea id="encodedMap" cols="100" rows="20"></textarea>
-    </center>
   </body>
   <script type="text/javascript">
-    $(document).ready(function() {
+
+      //hide the elements that are used in the splash page
       $('#hiddenShell').hide();
       $('#log').hide();
-      alert('ready');
-    var indices = [];
 
-    for (var x=-MAP_MAX_INDEX; x<=MAP_MAX_INDEX; x++) {
-      for (var y=-MAP_MAX_INDEX; y<=MAP_MAX_INDEX; y++) {
-        indices.push([x,y]);
-        mapData.setTile(x,y,0);
-      }
+      //What tile we're currently drawing on the map
+      var currentTileType = -1;
+
+    //poplulate the tile options dropdown bar
+    for (tileId in tileChars) {
+      $('#tile').append("<option value='" + tileId.toString() + "'>" + tileChars[tileId] + " </option>");
     }
 
-    window.renderMap(indices);
+    //Make a request to load a file
+    $("#load").click(function() {
+      //var filename = $('')
     });
-    alert('hello')
   </script>
 </html>

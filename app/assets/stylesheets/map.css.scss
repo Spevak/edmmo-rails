@@ -13,8 +13,24 @@
 }
 
 .tool {
+  padding: 10px;
   background: #ffffff;
-  height: 30%;
-  margin: auto auto;
+  height: 25%;
+  margin: 2% auto;
   border: 2px solid black
+}
+
+button {
+  width: 50px;
+  height: auto
+}
+
+select {
+  width: 80px;
+  height: auto
+}
+
+#saveAs {
+  width: 200px;
+  height: 20px;
 }
