@@ -10,6 +10,9 @@ class WelcomeController < ApplicationController
       character.save!
       current_user.character = character
       current_user.save!
+    elsif current_user.character.tile == nil then
+      #Change this so we spawn in a meaningful location 
+      current_user.character.setTile(Tile.tile_at(0,0))
     end
   end
 end
