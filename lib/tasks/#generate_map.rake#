@@ -15,7 +15,7 @@ task :generate_map => :environment do
     end
   else
     #If not using empty map then read map initialization from json files
-    init_files = Dir["config/map/*"]
+    init_files = Dir["config/map/init/*"]
     init_files.each do |filename|
 
       #ignore stupid emacs autosave files

@@ -1,0 +1,66 @@
+<html>
+  <body>
+    <!-- The dashboard is the outer container that wraps the three UI panels: map, interpreter, and output -->
+    <div id="dashboard">
+
+      <!-- The Map -->
+      <div class="half" id="map">
+	<div id="map-container"></div>
+      </div>
+
+      <!-- The right hand side containing the two text boxes -->
+      <div class="half" id="terminals"> 
+	<div id="tools">
+	  <div class="tool" id="load_file">
+	    Load a map block
+	    <br>
+	    <select id="fileToLoad">
+	    </select>
+	    <button type="submit" id="load"> Load </button>
+	  </div>
+	  <div class="tool" id="tile_select">
+	    Select a tile to use
+	    <br>
+	    <select id="tile" onchange="currentTileType = + this.value">
+	    </select>
+	  </div>
+	  <div class="tool" id="save_file">
+	    Save as
+	    <br>
+	    <input type="text" id="saveAs">
+	    <button type="submit" id="save"> Save </button>
+	  </div>
+	</div>
+
+        <!-- Other javascripts that load because of how rails handles assets will fail if the log or
+	     interactive elements are not here, so we'll just hide them.  -->
+	<div class="terminal" id="log">
+	  <ul id="log-text"></ul>
+	</div> 
+	<div id="hiddenShell">   
+	  <textarea id="interactive" cols="85" rows="1"></textarea>
+	</div>
+      </div>
+
+    </div>
+  </body>
+  <script type="text/javascript">
+
+      //hide the elements that are used in the splash page
+      $('#hiddenShell').hide();
+      $('#log').hide();
+
+      //What tile we're currently drawing on the map
+      var currentTileType = -1;
+
+    //poplulate the tile options dropdown bar
+    for (tileId in tileChars) {
+      $('#tile').append("<option value='" + tileId.toString() + "'>" + tileChars[tileId] + " </option>");
+    }
+
+    //Make a request to load a file
+    $("#load").click(function() {
+      //var filename = $('')
+    });
+  </script>
+</html>

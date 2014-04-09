@@ -171,7 +171,7 @@ function tilesSuccess(response) {
   if (tiles.length < (2 * MAP_MAX_INDEX + 1) * (2 * MAP_MAX_INDEX + 1)) {
     for (var x = -MAP_MAX_INDEX; x <= MAP_MAX_INDEX; x++) {
       for (var y = -MAP_MAX_INDEX; y <= MAP_MAX_INDEX; y++) {
-        Bq.mapData.setTile(x,y, -1);
+        Bq.mapData.setTile(x,y, 15);
       }
     }
   }
@@ -187,8 +187,12 @@ function tilesSuccess(response) {
     Bq.mapData.setTile(x-player_x, y-player_y, tiles[i].tile_type);
   }
 
-  Bq.renderMap(Bq.Map.getIndices());
 
+    //Make sure player character's sprite shows up
+    //playerData["display"]=true;
+
+
+  Bq.renderMap(Bq.Map.getIndices());
   return new Sk.builtin.nmber(0, Sk.builtin.int$);
 }
 
