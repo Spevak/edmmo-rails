@@ -64,3 +64,6 @@ var playerData = {'health': 0, 'battery': 0, 'facing':0, 'display': false}
 
 Bq.setMapData(mapData);
 Bq.setPlayerData(playerData);
+//the definition of tileProperties is added at build time (by the rake task) from the files
+//properties.json and properties_prefix in config/map/tiles.  
+Bq.setTileProperties(tileProperties);

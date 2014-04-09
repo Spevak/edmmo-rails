@@ -26,20 +26,29 @@ Bq.Cell = function(outer, inner, layer) {
 Bq.Cell.cellCache = {};
 
 // Flash yellow and black. For debuggin
-Bq.Cell.prototype.alert = function() {
-	this.outer.setAttr('fill', cellHighlightBgColor)
-	this.inner.setAttr('fill', cellHighlightFgColor)
-	this.layer.draw();
-
+    Bq.Cell.prototype.alert = function() {
+	this.highlight()
+	
 	// Fucking js
 	var that = this;
 	window.setTimeout(function() {
-		that.outer.setAttr('fill', cellBgColor)
-		that.inner.setAttr('fill', cellFgColor)
-		that.layer.draw();
+	    that.unhighlight()
 	}, 1500);
-}
+    }
 
+    //Changes the cell to the highlighted color scheme
+    Bq.Cell.prototype.highlight = function() {
+	this.outer.setAttr('fill', cellHighlightBgColor);
+	this.inner.setAttr('fill', cellHighlightFgColor);
+	this.layer.draw();
+    }
+
+    //Returns a cell to non-highlighted color scheme
+    Bq.Cell.prototype.unhighlight = function() {
+	this.outer.setAttr('fill', cellBgColor)
+	this.inner.setAttr('fill', cellFgColor)
+	this.layer.draw();
+    }
 // Update the cell.
 // options = {
 //	 outer: (attributes hash for Kinetic.Rect)
@@ -85,5 +94,10 @@ Bq.Cell.hashCellPair = function(x, y) {
 	y += offset;
 	return (x * Bq.mapData.n) + y;
 };
+
+    //Return the cell at location (x,y)
+    Bq.Cell.getCell = function(x,y) {
+	return Bq.Cell.getCellById(Bq.Cell.hashCellPair(x - 1, (Bq.mapData.n - y)));
+    }
 
 });
