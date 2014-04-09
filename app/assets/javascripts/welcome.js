@@ -95,16 +95,16 @@ $(document).ready(function() {
 			//if loc = (0, 0) display the player's character
 			if (Bq.playerData.display && loc[0] === 0 && loc[1] === 0) {
 				var dir = Bq.playerData.facing;
-				if (dir === 'north') newContents = tileChars[11];
-				if (dir === 'south') newContents = tileChars[12];
-				if (dir === 'east') newContents = tileChars[13];
-				if (dir === 'west') newContents = tileChars[14];
+				if (dir === 'north') newContents = tileChars[51];
+				if (dir === 'south') newContents = tileChars[52];
+				if (dir === 'east') newContents = tileChars[53];
+				if (dir === 'west') newContents = tileChars[54];
 			}
 			else {
 				tileId = Bq.mapData.tileAt(loc[0], loc[1]);
 				if (tileId === -1) {
 					//Tile id of non-existant location (off the map)
-					tileId = 15;
+					tileId = 50;
 				}
 				newContents = tileChars[tileId];
 			}

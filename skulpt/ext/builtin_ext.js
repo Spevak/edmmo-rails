@@ -171,7 +171,7 @@ function tilesSuccess(response) {
   if (tiles.length < (2 * MAP_MAX_INDEX + 1) * (2 * MAP_MAX_INDEX + 1)) {
     for (var x = -MAP_MAX_INDEX; x <= MAP_MAX_INDEX; x++) {
       for (var y = -MAP_MAX_INDEX; y <= MAP_MAX_INDEX; y++) {
-        Bq.mapData.setTile(x,y, 15);
+        Bq.mapData.setTile(x,y, -1);
       }
     }
   }

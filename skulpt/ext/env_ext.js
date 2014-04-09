@@ -43,6 +43,7 @@ MapData.prototype.setTile = function(x, y, tileId) {
     }
     var x_index = x + MAP_MAX_INDEX;
     var y_index = y + MAP_MAX_INDEX;
+    //this.data[x_index][y_index] = tileId;
     this.data[x_index][y_index] = tileId;
     //window.updateBotQuest(x, y);
 }
@@ -53,7 +54,7 @@ MapData.prototype.setTile = function(x, y, tileId) {
  */
 function log(msg) {
     var logPre = document.getElementById('log-text');
-    logPre.innerHTML += "<li class='log-msg'>msg</li>";
+    logPre.innerHTML += "<li class='log-msg'>" + msg + "</li>";
 }
 
 var mapData = new MapData();

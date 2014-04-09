@@ -16,26 +16,28 @@ var itemId = {
 
 //A map of tile ids to their ascii representation
 var tileChars = {
-    0:' ',
-    1:'1',
-    2:'2',
-    3:'3',
-    4:'4',
-    5:'5',
-    6:'6',
-    7:'7',
-    8:'8',
-    9:'9',
-    10:'0',
+    0: ' ', //dirt
+    1: '…', //sand
+    2: '~', //mud
+    3: '%', //acid
+    4: '█', //wall
+    5: '¯', //north-facing ledge
+    6: ']', //west-facing ledge
+    7: '_', //south-facing ledge
+    8: '[', //east-facing ledge
+    9: '╗', //northeast-facing ledge
+    10: '╔', //northwest-facing ledge
+    11: '╚', //southwest-facing ledge
+    12: '╝', //southeast-facing ledge
 
-    //Player character representations (one for each direction)
-    11: '^',
-    12: 'v',
-    13: '>',
-    14: '<',
 
     //Representation of non-existant tile (off the map)
-    15: '#',
+    50: '#',
+    //Player character representations (one for each direction)
+    51: '^',
+    52: 'v',
+    53: '>',
+    54: '<',
 
     //Use ascii values for Letters:
     65: 'A',
@@ -113,6 +115,8 @@ var tileChars = {
     217: '¯',
     218: '.',
     219: '>'
+
+ 
 };
 
 //this could probably go in a better place but it's here for now
