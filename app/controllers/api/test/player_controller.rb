@@ -55,7 +55,7 @@ class Api::Test::PlayerController < ApplicationController
   end
 
   def status
-    render :json => {:hp => 100, :battery => 100}
+    render :json => {:x => 13, :y => 13, :hp => 100, :battery => 100, :facing =>0}
   end
 
   def inspect

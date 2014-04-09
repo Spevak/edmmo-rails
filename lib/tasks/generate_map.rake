@@ -15,7 +15,7 @@ task :generate_map => :environment do
     end
   else
     #If not using empty map then read map initialization from json files
-    init_files = Dir["config/map/*"]
+    init_files = Dir["config/map/init/*"]
     init_files.each do |filename|
 
       #ignore stupid emacs autosave files
@@ -34,7 +34,7 @@ task :generate_map => :environment do
       #x and y are the coordinates of the block of the map defined in file,
       #i.e. 0-0.json is the file describing a square of tiles in the southwest
       #corner of the map.
-      location = filename[11..filename.length-6]
+      location = filename[16..filename.length-6]
       x = location.split('-')[0].to_i
       y = location.split('-')[1].to_i
       

@@ -47,7 +47,9 @@ var Bq = (function() {
 		mapData: {},
 		setMapData: function(data) { this.mapData = data; },
 		playerData: {},
-		setPlayerData: function(data) { this.playerData = data; },
+                setPlayerData: function(data) { this.playerData = data; },
+                tileProperties: {},
+                setTileProperties: function(data) { this.tileProperties = data; },
 		log: log
   }
 })(); 

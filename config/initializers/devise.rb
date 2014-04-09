@@ -238,10 +238,10 @@ Devise.setup do |config|
     user.save!
   end
 
-  Warden::Manager.before_logout do |user,auth,opts|
-    user.logged_in = false
-    user.save!
-  end
+  #Warden::Manager.before_logout do |user,auth,opts|
+  #  user.logged_in = false
+  #  user.save!
+  #end
 
   # ==> Mountable engine configurations
   # When using Devise inside an engine, let's call it `MyEngine`, and this engine

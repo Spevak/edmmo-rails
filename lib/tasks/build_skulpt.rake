@@ -35,6 +35,8 @@ task :build_skulpt do
   end
   system('(cd skulpt; cat ext/bq.js >> env.js)')
   system('(cd skulpt; cat ext/constants.js >> env.js)')
+  system('cat config/map/tiles/properties_prefix >>  skulpt/env.js')
+  system('cat config/map/tiles/properties.json >> skulpt/env.js')
   system('(cd skulpt; cat ext/env_ext.js >> env.js)')
   system('(cd skulpt; cat ext/builtin_ext.js >> builtin.js)')
   system('(cd skulpt; cat ext/builtindict_ext.js >> builtindict.js)')

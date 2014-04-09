@@ -1,0 +1,2 @@
+// This is a file that will be concatenated before properties.json to make it valid js
+var tileProperties = 

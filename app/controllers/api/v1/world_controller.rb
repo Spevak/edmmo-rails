@@ -19,6 +19,11 @@ class Api::V1::WorldController < Api::V1::BaseController
     end
 
     character_tile = current_user.character.tile
+    if (!character_tile)
+      character_tile = Tile.first
+      character_tile.character = current_user.character
+      character_tile.save
+    end
     tiles_to_return = Tile.tiles_at(character_tile.x - n,
                                     character_tile.y - n, #lower left
                                     character_tile.x + n,

@@ -14,8 +14,10 @@
 	  <div class="tool" id="load_file">
 	    Load a map block
 	    <br>
-	    <select id="fileToLoad">
-	    </select>
+	    x:
+	    <input class="indexBox" type="text" id="load_x">
+	    y:
+	    <input class="indexBox" type="text" id="load_y">
 	    <button type="submit" id="load"> Load </button>
 	  </div>
 	  <div class="tool" id="tile_select">
@@ -27,7 +29,10 @@
 	  <div class="tool" id="save_file">
 	    Save as
 	    <br>
-	    <input type="text" id="saveAs">
+	    x:
+	    <input class="indexBox" type="text" id="save_x">
+	    y:
+	    <input class="indexBox" type="text" id="save_y">
 	    <button type="submit" id="save"> Save </button>
 	  </div>
 	</div>
@@ -43,6 +48,22 @@
       </div>
 
     </div>
+    <center>
+    <div id="readme">
+      The map is initialized by the rake task generate_map, which reads map data from json files.  To keep
+      things modular, each json file is limited to describing an n by n block of the map (right now n=25).
+      The x and y coordinates in the load tool  above indicate the relative position of the block you want
+      to load (e.g. x:0 y:0 gives the 25 by 25 block at the southwest corner of the map).  Clicking save will
+      overwrite whatever file we have in the database, so to change what we have in the database for block (0,0)
+      you load x:0, y:0, edit it, then save x:0,y:0.  If you save to a different block, it will not overwrite the
+      original, and if that block does not yet exist it will be created.  (e.g. loading x:0, y:0 then saving x:1
+      y:0 will copy that block to the next one over to the right).  
+      After you've loaded a block, chose the tile you want to use from the scrolldown bar, and then use the arrow
+      keys to move the cursor around on the map (you will have to click outside of the scrolldown bar to deselect
+      it first).  Pressing spacebar will replace the currently highlighted tile with whatever the currently 
+      selected tile type is.  
+    </div>
+    </center>
   </body>
   <script type="text/javascript">
 
@@ -54,13 +75,141 @@
       var currentTileType = -1;
 
     //poplulate the tile options dropdown bar
+      $('#tile').append("<option value=-1>" + tileChars[50] + "&nbsp&nbsp(no tile)</option>");
     for (tileId in tileChars) {
-      $('#tile').append("<option value='" + tileId.toString() + "'>" + tileChars[tileId] + " </option>");
+      var desc = "";
+      if (Bq.tileProperties[tileId]) {
+        desc = "&nbsp&nbsp(" + Bq.tileProperties[tileId]["description"] + ")";
+        $('#tile').append("<option value='" + tileId.toString() + "'>" + tileChars[tileId] + desc +" </option>");
+      }
     }
 
     //Make a request to load a file
     $("#load").click(function() {
-      //var filename = $('')
+      //var filename = $('#fileToLoad').value;
+      //var coordinates = filename.split('-');
+      var x = $('#load_x').val();
+      var y = $('#load_y').val();
+      $('#save_x').val(x);
+      $('#save_y').val(y);
+      $.ajax({
+        type:"POST",
+        url:"load",
+        data: JSON.stringify( {x:x, y:y}),
+        contentType: "application/json",
+        dataType: "json",
+        success: parseJson,
+        error: function(e){}
+      });
+      //Make the cursor show up
+      showCursor = true;
+      setCursor(0,0);
     });
+
+    // Parse the json representation of a map block and save it to mapdata
+    var parseJson = function(json) {
+      //start off by filling the map with undefined tiles to be overwritten by anything that gets returned
+      for (var i = -MAP_MAX_INDEX; i <= MAP_MAX_INDEX; i++) {
+	for (var j = -MAP_MAX_INDEX; j <= MAP_MAX_INDEX; j++) {
+          Bq.mapData.setTile(i, j, -1);
+        }
+      }
+      tiles = json.tiles;
+      for (index in tiles) {
+        tile = tiles[index];
+	//have to subtract map max index from coordinates so that (0, 0) is in bottom left corner instead of center
+        Bq.mapData.setTile(tile.x-MAP_MAX_INDEX, tile.y-MAP_MAX_INDEX, tile.id);
+        //console.log("x: " + tile.x + ", y: " + tile.y + ", id: " + tile.id);
+        alert("(" + tile.x.toString() + ", " + tile.y.toString() + ")");
+      }
+      Bq.renderMap(Bq.Map.getIndices());
+    }
+
+    $('#save').click(function() {
+      var tilesList = []
+      var id
+      for (var x = 0; x<= Bq.mapData.n; x++) {
+        for (var y = 0; y<= Bq.mapData.n; y++) {
+          //need to subtract map max index to get 0,0 in center of map
+	  id = Bq.mapData.tileAt(x-MAP_MAX_INDEX, y-MAP_MAX_INDEX);
+          //don't bother saving tiles that are undefined.
+          if (id != -1 && id != 50) {
+            tilesList.push({x:x, y:y, id:id});
+          }
+        }
+      }
+      //reuse x and y vars for the position of the block being saved
+      x = $('#save_x').val();
+      y = $('#save_y').val();
+      jsonData = JSON.stringify({x:x, y:y, tiles:tilesList});
+      
+      //make the request
+      $.ajax({
+        type: "POST",
+	url: "save",
+        data: jsonData,
+        contentType: "application/json",
+        dataType: "json",
+        success: function(result){},
+        error: function(e){}
+      });
+    });
+
+    //Handle editing the map
+    var currentTileX = 0;
+    var currentTileY = 0;
+    var showCursor = false;
+    $(document).keydown(function(e) {
+      switch(e.which) {
+        case 37: //left
+          if (currentTileX > -MAP_MAX_INDEX) setCursor(currentTileX-1, currentTileY);
+          break;
+        case 38: //up
+          if (currentTileY < MAP_MAX_INDEX) setCursor(currentTileX, currentTileY+1);
+          break;
+        case 39: //right
+          if (currentTileX < MAP_MAX_INDEX) setCursor(currentTileX+1, currentTileY);
+          break;
+        case 40: //down
+          if (currentTileY > -MAP_MAX_INDEX) setCursor(currentTileX, currentTileY-1);
+          break;
+        case 32: //space
+          replaceChar();
+      }
+      if (e.which > 36 && e.which < 41) {
+        return false;
+      }
+    });
+
+    //Show the cursor (highlighted tile) at x,y and unhighlight previous cursor location
+    function setCursor(new_x, new_y) {
+      if (!showCursor) return;
+      var x = currentTileX;
+      var y = currentTileY;
+      //var cell = Bq.Cell.getCellById(Bq.Cell.hashCellPair(x - 1, (Bq.mapData.n - y)));
+      var cell = Bq.Cell.getCell(x, y);
+      cell.unhighlight();
+      x = currentTileX = new_x;
+      y = currentTileY = new_y;
+      //cell = Bq.Cell.getCellById(Bq.Cell.hashCellPair(x - 1, (Bq.mapData.n - y)));
+      cell = Bq.Cell.getCell(x,y);
+      cell.highlight();
+    }
+
+    //Replace the value of the currently highlighted cell with the current character
+    function replaceChar() {
+      if (!showCursor) return;
+      //update map data
+      Bq.mapData.setTile(currentTileX, currentTileY, currentTileType);
+
+      //update display
+      var cell = Bq.Cell.getCell(currentTileX, currentTileY);
+      if (currentTileType == -1) {
+        cell.update({'text': tileChars[50]});
+      } else {
+        cell.update({'text': tileChars[currentTileType]});
+      }
+      cell.layer.draw();
+    }
   </script>
 </html>
