@@ -5,6 +5,8 @@ EdmmoRails::Application.routes.draw do
   root 'welcome#index'
   get 'kinetic_test' => 'welcome#kinetic_test'
   get 'map/editor' => 'map#editor'
+  post 'map/load' => 'map#load'
+  post 'map/save' => 'map#save'
 
   namespace :api do
     namespace :test do
