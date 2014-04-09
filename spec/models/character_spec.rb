@@ -37,12 +37,12 @@ describe Character do
 
   describe ".status" do
     it "returns a hash of user attributes" do
-      @character.status.length.should eq(3)
+      @character.status.length.should eq(5)
     end
     it "reflects changes to user attributes" do
       @character.health = 99
       @character.save
-      @character.status[:health].should eq(99)
+      @character.status[:hp].should eq(99)
     end
   end
 end

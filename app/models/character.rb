@@ -67,11 +67,19 @@ class Character < ActiveRecord::Base
   end
 
   def status
-    { :hp => self.health,
-      :battery => self.battery,
-      :facing => self.facing,
-      :x => self.tile.x,
-      :y => self.tile.y}
+    if self.tile then
+      tile_x = self.tile
+      tile_y = self.tile
+    else
+      tile_x = -1
+      tile_y = -1
+    end
+    
+    { :hp => self.health || 100,
+      :battery => self.battery || 100,
+      :facing => self.facing || 'north',
+      :x => tile_x,
+      :y => tile_y}
   end
 
   def x
