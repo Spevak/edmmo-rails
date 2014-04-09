@@ -68,8 +68,8 @@ class Character < ActiveRecord::Base
 
   def status
     if self.tile then
-      tile_x = self.tile
-      tile_y = self.tile
+      tile_x = self.tile.x
+      tile_y = self.tile.y
     else
       tile_x = -1
       tile_y = -1
