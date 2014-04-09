@@ -4,7 +4,8 @@ FactoryGirl.define do
     name "Mama Ghetti"
     health 100
     battery 100
-    planet "Earth"
+    facing 0
+    planet 1
   end
 
 end

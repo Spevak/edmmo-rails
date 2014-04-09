@@ -12,7 +12,8 @@ describe Character do
   describe ".move_to" do
     it "reassigns the character's tile" do
       tile = @tiles.first
-      @character.tile = tile
+      tile.character = @character
+      tle.save
       @character.move_to @tiles[1].x, @tiles[1].y
       #Tile.character_at(tile.x + 1, tile.y).should eq(@character)
       @character.tile.should_not eql(tile)
