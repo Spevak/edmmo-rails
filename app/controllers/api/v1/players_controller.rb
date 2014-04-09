@@ -3,9 +3,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
   #before_filter :validate
   def move
     @user = current_user
-    puts @user == nil
     @character = @user.character
-    puts @character == nil
     direction = request[:direction] 
 
     dx, dy = 0, 0
