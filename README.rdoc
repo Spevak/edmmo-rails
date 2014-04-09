@@ -9,3 +9,39 @@
 * Use the build_skulpt rake task
 * Usage: rake build_skulpt [testing=true]
 * testing=true is an optional argument that will build using the paths for the test API
+
+
+== Frontend Documentation
+Everything lives under the Bq namespace. Here is some stuff to look at:
+
+  Bq {                                                                                                                                                                               
+    mapData               : the MapData object. see below                                                                                                                            
+    - setMapData(data)    : obvious                                                                                                                                                  
+    playerData            : the player data object (currently anonymous).                                                                                                            
+    - setPlayerData(data) : obvious                                                                                                                                                  
+    + log(msg)            : print msg to the AI response panel.                                                                                                                      
+    map                   : the Map object. see below                                                                                                                                
+  }                                                                                                                                                                                  
+                                                                                                                                                                                     
+  MapData {                                                                                                                                                                          
+    data : array[25][25] of length-1 strings. the authoritative source of graphical info; everything else looks here for what should be rendered on a tile.                          
+    n    : the side length of data, which is always square.                                                                                                                          
+  }                                                                                                                                                                                  
+                                                                                                                                                                                     
+  Map {                                                                                                                                                                              
+    stage             : the Kinetic.Stage object used to render the map                                                                                                              
+    bgLayer           : the Kinetic.Layer object behind the foreground layer; not really used atm.                                                                                   
+    fgLayer           : the Kinetic.Layer object that the cells sit on.                                                                                                              
+    - render(indices) : render each cell described by the set of indices using data from Bq.mapData.                                                                                 
+  }                                                                                                                                                                                  
+                                                                                                                                                                                     
+  Cell {                                                                                                                                                                             
+    outer                : a Kinetic.Rect object on which the text is centered                                                                                                       
+    inner                : the Kinetic.Text object that renders the character for this tile                                                                                          
+    layer                : a reference to the layer that the cell sits on                                                                                                            
+    + getCellById(id)    : return the cell w/ id ID.                                                                                                                                 
+    + hashCellPair(x, y) : generate an id for a cell. currently (x*(Bq.mapData.n) + y)                                                                                               
+    - update(opt)        : opt has keys 'outer', 'inner', and 'text'; they correspond to the fields above. will set the values of the keys in opt as the values of the fields.       
+    - alert              : momentarily turn yellow. just for debugging coordinate stuff.                                                                                             
+    - flash(text)        : flash the given text for 1.5 sec.                                                                                                                         
+  }              
