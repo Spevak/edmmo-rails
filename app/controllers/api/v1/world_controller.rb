@@ -16,6 +16,7 @@ class Api::V1::WorldController < Api::V1::BaseController
       end
     else
       render json: {}, status: :forbidden
+      return
     end
 
     character_tile = current_user.character.tile

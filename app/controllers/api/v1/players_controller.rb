@@ -1,6 +1,14 @@
 class Api::V1::PlayersController < Api::V1::BaseController
 
-  #before_filter :validate
+  before_filter :check_signed_in
+
+  def check_signed_in
+    unless user_signed_in?
+      render json: {}, status: 404
+      return 
+    end
+  end
+
   def move
     @user = current_user
     @character = @user.character
