@@ -12,6 +12,12 @@ class Api::V1::PlayersController < Api::V1::BaseController
   def move
     @user = current_user
     @character = @user.character
+
+    if @character.battery <= 0 then
+      render json: { 'err' => 2 }, status: 403
+      return
+    end
+
     direction = request[:direction] 
 
     dx, dy = 0, 0
