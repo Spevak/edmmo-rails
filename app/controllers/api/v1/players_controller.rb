@@ -87,7 +87,11 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def status
-    render json: current_user.character.status
+    if user_signed_in?
+      render json: current_user.character.status
+    else
+      render json: {}, status: 404
+    end
   end
 
   def inspect

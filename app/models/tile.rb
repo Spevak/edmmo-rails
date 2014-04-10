@@ -20,7 +20,10 @@ class Tile < ActiveRecord::Base
   end
 
   def self.tile_at(x, y)
-    Tile.find_by_xn_plus_y((x * MAP_SIDE_LENGTH) + y) 
+    if x >= 0 and y >=0 then
+      return Tile.find_by_xn_plus_y((x * MAP_SIDE_LENGTH) + y) 
+    end
+    return nil
   end
 
   # Return the tiles with x in between x1 and x2 (inclusive)
