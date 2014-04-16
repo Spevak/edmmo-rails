@@ -24,15 +24,15 @@ ActiveRecord::Schema.define(version: 20140416080732) do
     t.string   "planet"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "inventory_id"
   end
+
+  add_index "characters", ["inventory_id"], name: "index_characters_on_inventory_id", using: :btree
 
   create_table "inventories", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "character_id"
   end
-
-  add_index "inventories", ["character_id"], name: "index_inventories_on_character_id", using: :btree
 
   create_table "items", force: true do |t|
     t.boolean  "pickupable"
