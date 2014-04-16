@@ -1,6 +1,6 @@
 class WelcomeController < ApplicationController
   def index
-    if Rails.env.production? then 
+    if Rails.env.production? or Rails.env.development? then 
       if not user_signed_in? then
         redirect_to new_user_session_path
       else

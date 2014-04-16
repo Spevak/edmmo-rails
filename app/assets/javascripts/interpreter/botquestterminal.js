@@ -17,6 +17,9 @@ $(function () {
         //test for empty line.
         emptyline = new RegExp("^\\s*$");
 
+        //matches a line containing a botquest builtin
+    bqBuiltin = /go.*|pickup.*|drop.*|useItem.*|status.*|inspect.*|characters.*|tiles.*|dig.*/g
+
     repl.print("This is a terminal. You can enter commands here.");
 
     repl.isBalanced = function (code) {
@@ -40,6 +43,7 @@ $(function () {
 
     //Loop
     repl.eval = function (code) {
+	console.log(compilableLines)
         Sk.configure({ 
             output: function(str) {
                 //strip out line-feeds
@@ -102,6 +106,11 @@ $(function () {
                     return str;
                 }
                 
+		//Remove bq builtins the same way prints are removed
+		if (bqBuiltin.test(str) && removePrints) {
+		    return str.replace(bqBuiltin, "pass");
+		}
+
                 if (re.test(str) && removePrints) {
                     //strip prints from non defining block statements.
                     return str.replace(/print.*/g, "pass");

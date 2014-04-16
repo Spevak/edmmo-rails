@@ -85,7 +85,6 @@ $(document).ready(function() {
 	 */
 	Bq.renderMap = function(toUpdate) {
 		var loc;
-		console.log(loc);
 		while (loc = toUpdate.pop()) {
 			var cell = Bq.Cell.getCellById(Bq.Cell.hashCellPair(loc[0] - 1, (Bq.mapData.n - loc[1])));
 			//Initialize newcellcontents to F so the cell will display as F if the correct char fails to load
