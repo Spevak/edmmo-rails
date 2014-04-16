@@ -13,16 +13,33 @@ class Character < ActiveRecord::Base
       #update direction facing
       if y > self.tile.y then
         self.facing = 0
+        direction = 'north'
+        dx, dy = 0, 1
       elsif y < self.tile.y then
         self.facing = 2
+        direction = 'south'
+        dx, dy = 0, -1
       elsif x > self.tile.x then
         self.facing = 1
+        direction = 'east'
+        dx, dy = 1, 0
       elsif x < self.tile.x then
         self.facing = 3
+        direction = 'west'
+        dx, dy = -1, 0
       end
-      #spent 1 unit of battery taking a step
-      self.battery -= 1
 
+      # get the tile properties from a json file
+      require 'json'
+      tile_properties_json = File.open("/Users/michelmikhail/Google Drive/Berkeley/Classes/cs 169/edmmo-rails/config/map/tiles/properties.json").read
+      tile_properties = JSON[tile_properties_json]
+
+      # the tile the character is moving to
+      target_tile = Tile.tile_at(x + dx, y + dy)
+
+      # update battery & health according to tile property
+      self.battery += tile_properties[target_tile.tile_type.to_s]["batteffect"][direction[0]]
+      self.health += tile_properties[target_tile.tile_type.to_s]["healtheffect"][direction[0]]
       self.save!
 
       #update tile
@@ -67,7 +84,7 @@ class Character < ActiveRecord::Base
   end
 
   def status
-    { :hp => self.health,
+    { :hp => self.health, # Michel: why the name change? let's try to keep things consistent when possible.
       :battery => self.battery,
       :facing => self.facing,
       :x => self.tile.x,

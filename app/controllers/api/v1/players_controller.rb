@@ -20,13 +20,32 @@ class Api::V1::PlayersController < Api::V1::BaseController
     elsif direction == 'west'
       dx, dy = -1, 0
     end
-
+    # the tile the character is moving to
     target_tile = Tile.tile_at(@character.tile.x + dx, @character.tile.y + dy)
-    if target_tile == nil then
+
+    # get the tile properties from a json file
+    require 'json'
+    tile_properties_json = File.open("/Users/michelmikhail/Google Drive/Berkeley/Classes/cs 169/edmmo-rails/config/map/tiles/properties.json").read
+    tile_properties = JSON[tile_properties_json]
+
+    # if there target tile doesn't exist 
+    if target_tile == nil
       render json: { 'err' => 1 }, status: 200
+
+    # if the target tile is not traversable
+    # Note: as of 4/16 ledges cannot be walked on so a value of 2 is nontraversable
+    elsif [1, 2].include? (tile_properties[target_tile.tile_type.to_s]["traversable"][direction[0]])
+      render json: { 'err' => 1 }, status: 200
+
+    # if the character is out of battery or health
+    elsif current_user.character.battery <= 0 or current_user.character.health <= 0
+      render json: { 'err' => 1 }, status: 200
+
+    # otherwise, move. Note: the health and battery are updated in character.move_to()
     else
-      @character.move_to(target_tile.x, target_tile.y)
-      render json: { 'err' => 0 }
+        @character.move_to(target_tile.x, target_tile.y)
+        render json: { 'err' => 0 }
+      
     end
   end
 
@@ -115,14 +134,18 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def dig
-    #for now digging is always successful
+    # for now digging is always successful
+    # consider doing something as simple as allowing digging a third of the time
+    #   success = rand(3); if success == 1 then
     success = true
     if success then
       current_user.character.battery += 10
       current_user.character.save!
-      render json: {err: 0}
+      # render json: {err: 0} - Michel: Why did this have a different json syntax?
+      render json: { 'err' => 0 }
     else
-      render json: {err: 1}
+      # render json: {err: 1}
+      render json: { 'err' => 1 }, status: 200
     end
   end
 end
