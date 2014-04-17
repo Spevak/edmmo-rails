@@ -1,11 +1,13 @@
 require 'user'
 require 'tile'
 require 'item'
+require 'inventory'
 
 class Character < ActiveRecord::Base
   belongs_to :item
   has_one :user
   belongs_to :tile
+  belongs_to :inventory
 
   def move_to(x, y)
 

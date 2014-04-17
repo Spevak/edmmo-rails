@@ -1,6 +1,7 @@
 # An item in BotQuest.
 class Item < ActiveRecord::Base
   has_one :inventory
+  has_one :character
   has_many :tiles
 
   # Modify my singleton class.
