@@ -1,7 +1,7 @@
 # A tile on the map in BotQuest. Tiles are 0-indexed (coords begin at 0.)
 class Tile < ActiveRecord::Base
   # Side length of the map.
-  MAP_SIDE_LENGTH = 16
+  MAP_SIDE_LENGTH = 25
 
   belongs_to :item
   belongs_to :character
