@@ -1,14 +1,14 @@
 var cellWidth = 14,
-    cellHeight = cellWidth,
-    textWidth = 14,
-    textHeight = textWidth,
-    cellBgColor = "#001600",//'black',
-    cellFgColor =  "#00b500", // 'green',
-    cellHighlightBgColor = 'yellow',
-    cellHighlightFgColor = 'black',
-    layers = [],
-    cells = [],
-    offset = MAP_MAX_INDEX; //add to coordinates s.t. player is at 0, 0
+cellHeight = cellWidth,
+textWidth = 14,
+textHeight = textWidth,
+cellBgColor = "#001600",//'black',
+cellFgColor =  "#00b500", // 'green',
+cellHighlightBgColor = 'yellow',
+cellHighlightFgColor = 'black',
+layers = [],
+cells = [],
+offset = MAP_MAX_INDEX; //add to coordinates s.t. player is at 0, 0
 
 Bq.Map = function(stage, fgLayer, bgLayer) {
   this.stage = stage;
@@ -25,15 +25,28 @@ Bq.Map.prototype.render = function(toUpdate) {
   while (loc = toUpdate.pop()) {
     var cell = Bq.Cell.getCellById(Bq.Cell.hashCellPair(loc[0] - 1, (Bq.mapData.n - loc[1])));
     //Initialize newcellcontents to F so the cell will display as F if the correct char fails to load
-    var newContents = tileChars[70]
-    //use tileChars to get the character representation from the tile ID
+    var imagePath = tileSpritePaths[70]
+    // only used for player.
+    var imageRotation = 0;
+    //use tileSpritePaths to get the character representation from the tile ID
     //if loc = (0, 0) display the player's character
     if (Bq.playerData.display && loc[0] === 0 && loc[1] === 0) {
       var dir = Bq.playerData.facing;
-      if (dir === 'north') newContents = tileChars[51];
-      if (dir === 'south') newContents = tileChars[52];
-      if (dir === 'east') newContents = tileChars[53];
-      if (dir === 'west') newContents = tileChars[54];
+      if (dir === 'north') {
+        imagePath = tileSpritePaths[51];
+      }
+      if (dir === 'south') {
+        imagePath = tileSpritePaths[52];
+        imageRotation = 90;
+      }
+      if (dir === 'east')  {
+        imagePath = tileSpritePaths[53];
+        imageRotation = 180;
+      }
+      if (dir === 'west') {
+        imagePath = tileSpritePaths[54];
+        imageRotation = 270;
+      }
     }
     else {
       tileId = Bq.mapData.tileAt(loc[0], loc[1]);
@@ -41,10 +54,18 @@ Bq.Map.prototype.render = function(toUpdate) {
         //Tile id of non-existant location (off the map)
         tileId = 50;
       }
-      newContents = tileChars[tileId];
+      imagePath = tileSpritePaths[tileId];
     }
-    cell.update({"text": newContents});
-  }
+    var sprite = new Kinetic.Sprite({
+      x: 0,
+      y: 0,
+      image: Bq.images.tiles[tileId],
+      width: Bq.constants.cellWidth,
+      height: Bq.constants.cellHeight,
+      rotation: imageRotation
+    });
+    cell.update({"sprite": sprite});
+    }
   //draw after updating all the tiles for efficiency when drawing updating entire map at once.
   this.fgLayer.draw();
 }

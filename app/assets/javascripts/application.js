@@ -19,5 +19,7 @@
 //= require turbolinks
 //= require interpreter/skulpt.min.js
 //= require interpreter/skulpt-stdlib.js
+//= require constants
 //= require kinetic/kinetic.min
+//= require load-images
 //= require_tree .

@@ -50,38 +50,30 @@ $(document).ready(function() {
         fill: cellBgColor
       });
 
-      var cellContents = new Kinetic.Text({
-        text: Bq.mapData.tileAt(x-offset, y-offset),
-        fill: cellFgColor,
-        width: textWidth,
-        height: textHeight,
-        align: "center",
-        //strokeWidth: 5,
-        //scaleX: .5,
-        fontFamily:'Lucida Console,Monaco,Courier New,Consolas,Liberation Mono,Bitstream Vera Sans Mono, DejaVu Sans Mono, monospace',
-        x: 0,
-        y: 0
-      });
-
-      var cellContents = new Kinetic.Sprite({
-        x: 0,
-        y: 0,
-        image: 
-      });
-      //cellContents.skewX(2);
-
-      cell.add(cellBg);
-      cell.add(cellContents);
+      imageObject = new Image();
+      imageObject.onLoad = function() {
+        var cellFg = new Kinetic.Sprite({
+          width: cellWidth,
+          height: cellHeight,
+          x: 0,
+          y: 0,
+          image: imageObject
+        });
+        cell.add(cellBg);
+        cell.add(cellFg);
+        cells[i].push(cell);
+      }
       cells[i].push(cell);
+      imageObject.src = '/assets/tiles/tile_placeholder.png';
     }
   }
+
 
   for (var i = 0; i < cells.length; i++) {
     for (var j = 0; j < cells[i].length; j++) {
       fgLayer.add(cells[i][j]);
     }
   }
-
   Bq.map = new Bq.Map(stage, fgLayer, bgLayer);
 
   //////////////////////////////////////////

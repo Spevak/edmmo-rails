@@ -20,106 +20,108 @@ var itemId = {
 
 //A map of tile ids to their sprite representation
 var tileSpritePaths = {
-    0: '/images/tile/tile_dirt.png',
-    1: '/images/tile/tile_sand.png',
-    2: '/images/tile/tile_mud.png',
-    3: 'images/tile/tile_placeholder.png', //acid
-    4: 'images/tile/tile_placeholder.png', //wall
-    5: 'images/tile/tile_placeholder.png', //north-facing ledge
-    6: 'images/tile/tile_placeholder.png', //west-facing ledge
-    7: 'images/tile/tile_placeholder.png', //south-facing ledge
-    8: 'images/tile/tile_placeholder.png', //east-facing ledge
-    9: 'images/tile/tile_placeholder.png', //northeast-facing ledge
-    10: 'images/tile/tile_placeholder.png', //northwest-facing ledge
-    11: 'images/tile/tile_placeholder.png', //southwest-facing ledge
-    12: 'images/tile/tile_placeholder.png', //southeast-facing ledge
-    13: 'images/tile/tile_portal.png', //portal
+    0: '/assets/tiles/tile_dirt.png',
+    1: '/assets/tiles/tile_sand.png',
+    2: '/assets/tiles/tile_mud.png',
+    3: 'assets/tiles/tile_placeholder.png', //acid
+    4: 'assets/tiles/tile_placeholder.png', //wall
+    5: 'assets/tiles/tile_placeholder.png', //north-facing ledge
+    6: 'assets/tiles/tile_placeholder.png', //west-facing ledge
+    7: 'assets/tiles/tile_placeholder.png', //south-facing ledge
+    8: 'assets/tiles/tile_placeholder.png', //east-facing ledge
+    9: 'assets/tiles/tile_placeholder.png', //northeast-facing ledge
+    10: 'assets/tiles/tile_placeholder.png', //northwest-facing ledge
+    11: 'assets/tiles/tile_placeholder.png', //southwest-facing ledge
+    12: 'assets/tiles/tile_placeholder.png', //southeast-facing ledge
+    13: 'assets/tiles/tile_portal.png', //portal
+    14: 'assets/tiles/tile_door_opened.png', //locked door
+    15: 'assets/tiles/tile_door_closed.png', //open door
 
 
     //Representation of non-existant tile (off the map)
-    50: 'images/tile/tile_placeholder.png',
+    50: 'assets/tiles/tile_placeholder.png',
     //Player character representations (one for each direction)
-    51: 'images/tile/tile_placeholder.png',
-    52: 'images/tile/tile_placeholder.png',
-    53: 'images/tile/tile_placeholder.png',
-    54: 'images/tile/tile_placeholder.png',
+    51: 'assets/robot.png',
+    52: 'assets/robot.png',
+    53: 'assets/robot.png',
+    54: 'assets/robot.png',
 
     //Use ascii values for Letters:
-    65: 'images/tile/tile_placeholder.png',
-    66: 'images/tile/tile_placeholder.png',
-    67: 'images/tile/tile_placeholder.png',
-    68: 'images/tile/tile_placeholder.png',
-    69: 'images/tile/tile_placeholder.png',
-    70: 'images/tile/tile_placeholder.png',
-    71: 'images/tile/tile_placeholder.png',
-    72: 'images/tile/tile_placeholder.png',
-    73: 'images/tile/tile_placeholder.png',
-    74: 'images/tile/tile_placeholder.png',
-    75: 'images/tile/tile_placeholder.png',
-    76: 'images/tile/tile_placeholder.png',
-    77: 'images/tile/tile_placeholder.png',
-    78: 'images/tile/tile_placeholder.png',
-    79: 'images/tile/tile_placeholder.png',
-    80: 'images/tile/tile_placeholder.png',
-    81: 'images/tile/tile_placeholder.png',
-    82: 'images/tile/tile_placeholder.png',
-    83: 'images/tile/tile_placeholder.png',
-    84: 'images/tile/tile_placeholder.png',
-    85: 'images/tile/tile_placeholder.png',
-    86: 'images/tile/tile_placeholder.png',
-    87: 'images/tile/tile_placeholder.png',
-    88: 'images/tile/tile_placeholder.png',
-    89: 'images/tile/tile_placeholder.png',
-    90: 'images/tile/tile_placeholder.png',
+    65: 'assets/tiles/tile_placeholder.png',
+    66: 'assets/tiles/tile_placeholder.png',
+    67: 'assets/tiles/tile_placeholder.png',
+    68: 'assets/tiles/tile_placeholder.png',
+    69: 'assets/tiles/tile_placeholder.png',
+    70: 'assets/tiles/tile_placeholder.png',
+    71: 'assets/tiles/tile_placeholder.png',
+    72: 'assets/tiles/tile_placeholder.png',
+    73: 'assets/tiles/tile_placeholder.png',
+    74: 'assets/tiles/tile_placeholder.png',
+    75: 'assets/tiles/tile_placeholder.png',
+    76: 'assets/tiles/tile_placeholder.png',
+    77: 'assets/tiles/tile_placeholder.png',
+    78: 'assets/tiles/tile_placeholder.png',
+    79: 'assets/tiles/tile_placeholder.png',
+    80: 'assets/tiles/tile_placeholder.png',
+    81: 'assets/tiles/tile_placeholder.png',
+    82: 'assets/tiles/tile_placeholder.png',
+    83: 'assets/tiles/tile_placeholder.png',
+    84: 'assets/tiles/tile_placeholder.png',
+    85: 'assets/tiles/tile_placeholder.png',
+    86: 'assets/tiles/tile_placeholder.png',
+    87: 'assets/tiles/tile_placeholder.png',
+    88: 'assets/tiles/tile_placeholder.png',
+    89: 'assets/tiles/tile_placeholder.png',
+    90: 'assets/tiles/tile_placeholder.png',
 
-    97: 'images/tile/tile_placeholder.png',
-    98: 'images/tile/tile_placeholder.png',
-    99: 'images/tile/tile_placeholder.png',
-    100: 'images/tile/tile_placeholder.png',
-    101: 'images/tile/tile_placeholder.png',
-    102: 'images/tile/tile_placeholder.png',
-    103: 'images/tile/tile_placeholder.png',
-    104: 'images/tile/tile_placeholder.png',
-    105: 'images/tile/tile_placeholder.png',
-    106: 'images/tile/tile_placeholder.png',
-    107: 'images/tile/tile_placeholder.png',
-    108: 'images/tile/tile_placeholder.png',
-    109: 'images/tile/tile_placeholder.png',
-    110: 'images/tile/tile_placeholder.png',
-    111: 'images/tile/tile_placeholder.png',
-    112: 'images/tile/tile_placeholder.png',
-    113: 'images/tile/tile_placeholder.png',
-    114: 'images/tile/tile_placeholder.png',
-    115: 'images/tile/tile_placeholder.png',
-    116: 'images/tile/tile_placeholder.png',
-    117: 'images/tile/tile_placeholder.png',
-    118: 'images/tile/tile_placeholder.png',
-    119: 'images/tile/tile_placeholder.png',
-    120: 'images/tile/tile_placeholder.png',
-    121: 'images/tile/tile_placeholder.png',
-    122: 'images/tile/tile_placeholder.png',
+    97: 'assets/tiles/tile_placeholder.png',
+    98: 'assets/tiles/tile_placeholder.png',
+    99: 'assets/tiles/tile_placeholder.png',
+    100: 'assets/tiles/tile_placeholder.png',
+    101: 'assets/tiles/tile_placeholder.png',
+    102: 'assets/tiles/tile_placeholder.png',
+    103: 'assets/tiles/tile_placeholder.png',
+    104: 'assets/tiles/tile_placeholder.png',
+    105: 'assets/tiles/tile_placeholder.png',
+    106: 'assets/tiles/tile_placeholder.png',
+    107: 'assets/tiles/tile_placeholder.png',
+    108: 'assets/tiles/tile_placeholder.png',
+    109: 'assets/tiles/tile_placeholder.png',
+    110: 'assets/tiles/tile_placeholder.png',
+    111: 'assets/tiles/tile_placeholder.png',
+    112: 'assets/tiles/tile_placeholder.png',
+    113: 'assets/tiles/tile_placeholder.png',
+    114: 'assets/tiles/tile_placeholder.png',
+    115: 'assets/tiles/tile_placeholder.png',
+    116: 'assets/tiles/tile_placeholder.png',
+    117: 'assets/tiles/tile_placeholder.png',
+    118: 'assets/tiles/tile_placeholder.png',
+    119: 'assets/tiles/tile_placeholder.png',
+    120: 'assets/tiles/tile_placeholder.png',
+    121: 'assets/tiles/tile_placeholder.png',
+    122: 'assets/tiles/tile_placeholder.png',
 
     //Characters used in the splash page ascii art start with 200
-    200: '█',
-    201: '╗',
-    202: '╔',
-    203: '═',
-    204: '╚',
-    205: '╝',
-    206: '║',
-    207: '_',
-    208: '|',
-    209: '[',
-    210: ']',
-    211: '\\',
-    212: '/',
-    213: '(',
-    214: ')',
-    215: '^',
-    216: ',',
-    217: '¯',
-    218: '.',
-    219: '>'
+    200: 'assets/tiles/tile_placeholder.png',
+    201: 'assets/tiles/tile_placeholder.png',
+    202: 'assets/tiles/tile_placeholder.png',
+    203: 'assets/tiles/tile_placeholder.png',
+    204: 'assets/tiles/tile_placeholder.png',
+    205: 'assets/tiles/tile_placeholder.png',
+    206: 'assets/tiles/tile_placeholder.png',
+    207: 'assets/tiles/tile_placeholder.png',
+    208: 'assets/tiles/tile_placeholder.png',
+    209: 'assets/tiles/tile_placeholder.png',
+    210: 'assets/tiles/tile_placeholder.png',
+    211: 'assets/tiles/tile_placeholder.png',
+    212: 'assets/tiles/tile_placeholder.png',
+    213: 'assets/tiles/tile_placeholder.png',
+    214: 'assets/tiles/tile_placeholder.png',
+    215: 'assets/tiles/tile_placeholder.png',
+    216: 'assets/tiles/tile_placeholder.png',
+    217: 'assets/tiles/tile_placeholder.png',
+    218: 'assets/tiles/tile_placeholder.png',
+    219: 'assets/tiles/tile_placeholder.png'
 
  
 };
