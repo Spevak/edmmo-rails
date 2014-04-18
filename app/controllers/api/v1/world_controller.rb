@@ -41,11 +41,21 @@ class Api::V1::WorldController < Api::V1::BaseController
     .select { |entry| !(entry.nil?) } # Remove nil entries (characterless tiles)
     .inject { |hash, hashlet| hash.merge(hashlet) } # Combine into one hash
 
+    # Create a hash of { tile xy pair hash => item on tile } entries
+    world_items = (tiles_to_return.map do |tile|
+      if tile.item then
+        { tile.x_y_pair => tile.item }
+      end
+    end)
+    .select { |entry| !(entry.nil?) } # Remove nil entries (characterless tiles)
+    .inject { |hash, hashlet| hash.merge(hashlet) } # Combine into one hash
+
     render json: {
-      :tiles => tiles_to_return,
-      :player_x => player_x,
-      :player_y => player_y,
-      :other_players => other_players
+      :tiles         => tiles_to_return,
+      :player_x      => player_x,
+      :player_y      => player_y,
+      :other_players => other_players,
+      :world_items   => world_items
     }
   end
 end
