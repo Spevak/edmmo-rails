@@ -100,7 +100,7 @@ class Character < ActiveRecord::Base
     tile.save!
   end
 
-  def use_item(item, args*)
+  def use_item(item)
     if self.inventory.items.include? item then
       item.do_action
     end

@@ -55,4 +55,9 @@ class Tile < ActiveRecord::Base
     end
   end
 
+  def become(tile_type)
+    self.tile_type = tile_type
+    self.save
+  end
+
 end

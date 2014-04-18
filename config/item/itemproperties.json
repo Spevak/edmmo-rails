@@ -1,7 +1,7 @@
 {
-        "0": {
+        "sign": {
             "type": "sign",
-	    "affects": "world"
+	    "affects": "world",
 	    "coordsEffects": {
                 "x": 0,
                 "y": 0
@@ -19,10 +19,11 @@
                 }
             ],
             "defaultMessage": "You come across a blank sign. Blank as the void where your heart ought to be."
-        }
-        "1": {
+        },
+
+        "potato": {
             "type": "potato",
-	    "affects": "player"
+	    "affects": "player",
             "coordsEffects": {
                 "x": 0,
                 "y": 0
