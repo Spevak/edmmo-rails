@@ -207,9 +207,9 @@ describe Api::V1::PlayersController do
   end
 
   describe "GET #status" do
-    it "reports player status, hp, battery" do
+    it "reports player status, health, battery" do
       post :status
-      JSON.parse(response.body)["hp"].should eql 100
+      JSON.parse(response.body)["health"].should eql 100
       JSON.parse(response.body)["battery"].should eql 100
     end
   end

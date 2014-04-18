@@ -12,7 +12,7 @@ DROP_RESPONSES = {:success => "0", :no_item => "1", :occupied => "2"}
 DIG_RESPONSES = {:success => "0", :failure => "1"}
 USE_RESPONSES = {:success => "0", :no_item => "1", :bad_args => "2"}
 INSPECT_RESPONSES = {:success => "0", :no_item => "1"}
-STATUS_RESPONSES = {:success => "{'hp': 100, 'battery': 100}"}
+STATUS_RESPONSES = {:success => "{'health': 100, 'battery': 100}"}
 TILES = {:center => '0', :nw => '1', :ne => '2', :sw => '3', :se => '4'}
 
 #Helper for executing python code and getting the result
@@ -233,7 +233,7 @@ describe "Interpreter" do
   end
 
   #describe 'the builtin status function' do
-  #  it 'retuns a dict of hp and battery' do
+  #  it 'retuns a dict of health and battery' do
   #    stub_env "development" do
   #      visit('')
   #      result = runPython("print(status())")
