@@ -18,6 +18,114 @@ var itemId = {
     'occupied': 4
 }
 
+//A map of tile ids to their sprite representation
+var tileSpritePaths = {
+    0: '/assets/tiles/tile_dirt.png',
+    1: '/assets/tiles/tile_sand.png',
+    2: '/assets/tiles/tile_mud.png',
+    3: 'assets/tiles/tile_placeholder.png', //acid
+    4: 'assets/tiles/tile_placeholder.png', //wall
+    5: 'assets/tiles/tile_placeholder.png', //north-facing ledge
+    6: 'assets/tiles/tile_placeholder.png', //west-facing ledge
+    7: 'assets/tiles/tile_placeholder.png', //south-facing ledge
+    8: 'assets/tiles/tile_placeholder.png', //east-facing ledge
+    9: 'assets/tiles/tile_placeholder.png', //northeast-facing ledge
+    10: 'assets/tiles/tile_placeholder.png', //northwest-facing ledge
+    11: 'assets/tiles/tile_placeholder.png', //southwest-facing ledge
+    12: 'assets/tiles/tile_placeholder.png', //southeast-facing ledge
+    13: 'assets/tiles/tile_portal.png', //portal
+    14: 'assets/tiles/tile_door_opened.png', //locked door
+    15: 'assets/tiles/tile_door_closed.png', //open door
+
+
+    //Representation of non-existant tile (off the map)
+    50: 'assets/tiles/tile_placeholder.png',
+    //Player character representations (one for each direction)
+    51: 'assets/robot.png',
+    52: 'assets/robot.png',
+    53: 'assets/robot.png',
+    54: 'assets/robot.png',
+
+    //Use ascii values for Letters:
+    65: 'assets/tiles/tile_placeholder.png',
+    66: 'assets/tiles/tile_placeholder.png',
+    67: 'assets/tiles/tile_placeholder.png',
+    68: 'assets/tiles/tile_placeholder.png',
+    69: 'assets/tiles/tile_placeholder.png',
+    70: 'assets/tiles/tile_placeholder.png',
+    71: 'assets/tiles/tile_placeholder.png',
+    72: 'assets/tiles/tile_placeholder.png',
+    73: 'assets/tiles/tile_placeholder.png',
+    74: 'assets/tiles/tile_placeholder.png',
+    75: 'assets/tiles/tile_placeholder.png',
+    76: 'assets/tiles/tile_placeholder.png',
+    77: 'assets/tiles/tile_placeholder.png',
+    78: 'assets/tiles/tile_placeholder.png',
+    79: 'assets/tiles/tile_placeholder.png',
+    80: 'assets/tiles/tile_placeholder.png',
+    81: 'assets/tiles/tile_placeholder.png',
+    82: 'assets/tiles/tile_placeholder.png',
+    83: 'assets/tiles/tile_placeholder.png',
+    84: 'assets/tiles/tile_placeholder.png',
+    85: 'assets/tiles/tile_placeholder.png',
+    86: 'assets/tiles/tile_placeholder.png',
+    87: 'assets/tiles/tile_placeholder.png',
+    88: 'assets/tiles/tile_placeholder.png',
+    89: 'assets/tiles/tile_placeholder.png',
+    90: 'assets/tiles/tile_placeholder.png',
+
+    97: 'assets/tiles/tile_placeholder.png',
+    98: 'assets/tiles/tile_placeholder.png',
+    99: 'assets/tiles/tile_placeholder.png',
+    100: 'assets/tiles/tile_placeholder.png',
+    101: 'assets/tiles/tile_placeholder.png',
+    102: 'assets/tiles/tile_placeholder.png',
+    103: 'assets/tiles/tile_placeholder.png',
+    104: 'assets/tiles/tile_placeholder.png',
+    105: 'assets/tiles/tile_placeholder.png',
+    106: 'assets/tiles/tile_placeholder.png',
+    107: 'assets/tiles/tile_placeholder.png',
+    108: 'assets/tiles/tile_placeholder.png',
+    109: 'assets/tiles/tile_placeholder.png',
+    110: 'assets/tiles/tile_placeholder.png',
+    111: 'assets/tiles/tile_placeholder.png',
+    112: 'assets/tiles/tile_placeholder.png',
+    113: 'assets/tiles/tile_placeholder.png',
+    114: 'assets/tiles/tile_placeholder.png',
+    115: 'assets/tiles/tile_placeholder.png',
+    116: 'assets/tiles/tile_placeholder.png',
+    117: 'assets/tiles/tile_placeholder.png',
+    118: 'assets/tiles/tile_placeholder.png',
+    119: 'assets/tiles/tile_placeholder.png',
+    120: 'assets/tiles/tile_placeholder.png',
+    121: 'assets/tiles/tile_placeholder.png',
+    122: 'assets/tiles/tile_placeholder.png',
+
+    //Characters used in the splash page ascii art start with 200
+    200: 'assets/tiles/tile_placeholder.png',
+    201: 'assets/tiles/tile_placeholder.png',
+    202: 'assets/tiles/tile_placeholder.png',
+    203: 'assets/tiles/tile_placeholder.png',
+    204: 'assets/tiles/tile_placeholder.png',
+    205: 'assets/tiles/tile_placeholder.png',
+    206: 'assets/tiles/tile_placeholder.png',
+    207: 'assets/tiles/tile_placeholder.png',
+    208: 'assets/tiles/tile_placeholder.png',
+    209: 'assets/tiles/tile_placeholder.png',
+    210: 'assets/tiles/tile_placeholder.png',
+    211: 'assets/tiles/tile_placeholder.png',
+    212: 'assets/tiles/tile_placeholder.png',
+    213: 'assets/tiles/tile_placeholder.png',
+    214: 'assets/tiles/tile_placeholder.png',
+    215: 'assets/tiles/tile_placeholder.png',
+    216: 'assets/tiles/tile_placeholder.png',
+    217: 'assets/tiles/tile_placeholder.png',
+    218: 'assets/tiles/tile_placeholder.png',
+    219: 'assets/tiles/tile_placeholder.png'
+
+ 
+};
+
 //A map of tile ids to their ascii representation
 var tileChars = {
     0: ' ', //dirt

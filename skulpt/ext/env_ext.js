@@ -70,4 +70,4 @@ Bq.setPlayerData(playerData);
 //the definition of tileProperties is added at build time (by the rake task) from the files
 //properties.json and properties_prefix in config/map/tiles.  
 Bq.setTileProperties(tileProperties);
-Bq.setSpriteImages(spriteImagePaths);
+Bq.setSpriteImages(tileSpritePaths);
