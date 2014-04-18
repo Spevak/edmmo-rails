@@ -6,8 +6,22 @@ require 'inventory'
 class Character < ActiveRecord::Base
   belongs_to :item
   has_one :user
-  belongs_to :tile
+  has_one :tile
   belongs_to :inventory
+
+  after_create do |c|
+    i = Inventory.create
+    c.inventory = i
+    c.battery = 100
+    c.health  = 100
+    c.facing = "north"
+    c.save
+  end
+
+  def self.with_name(name)
+    c = Character.new(name: name)
+    return c
+  end
 
   #move in direction dir. Return true on success, false on failure
   def move_direction(direction)
@@ -64,31 +78,41 @@ class Character < ActiveRecord::Base
       oldTile.character = nil
       oldTile.save!
 
-      puts "oldTile character:"
-      puts oldTile.character
+      #puts "oldTile character:"
+      #puts oldTile.character
 
       tile.character = self
       tile.save!
 
-      puts "tile character:"
-      puts tile.character
+      #puts "tile character:"
+      #puts tile.character
     end
   end
 
-  def pick_up(item_id)
-    i = Item.find_by_id(item_id)
-    self.item = i
-    self.save!
+  def pick_up(item)
+    if (self.item) then
+      inventory = self.inventory
+      inventory.items << item
+      inventory.save
+    else
+      self.item = item
+      self.save!
+    end
   end
 
-  def drop(item_id)
-    i = self.item
-    t = self.tile
-    t.item = i
-    t.save!
+  def drop(item)
+    if self.inventory.items.include? item then
+      self.inventory.items.delete(item)
+      self.inventory.save!
+    elsif self.item == item then
+      self.item = nil
+    end
 
-    self.item = nil
-    self.save!
+    if self.tile then
+      t = self.tile
+      t.item = item
+      t.save!
+    end
   end
 
   def tile()
@@ -100,34 +124,53 @@ class Character < ActiveRecord::Base
     tile.save!
   end
 
-  def use_item(item)
-    if self.inventory.items.include? item then
+  def use_item(item, *args)
+    if self.inventory.items.include? item or
+       self.item == item then
       item.do_action
     end
   end
 
   def status
-    if self.tile then
-      tile_x = self.tile.x
-      tile_y = self.tile.y
-    else
-      tile_x = -1
-      tile_y = -1
+    inventory = self.inventory.items.map do |item|
+      { item.item_type => item }
     end
-    
-    { :hp => self.health || 100,
+    { 
+      :hp => self.health || 100,
       :battery => self.battery || 100,
       :facing => self.facing || 'north',
-      :x => tile_x,
-      :y => tile_y}
+      :x => self.x,
+      :y => self.y,
+      :inventory => inventory
+    }
   end
 
   def x
-    self.tile.x
+    if self.tile then
+      self.tile.x
+    else
+      -1
+    end
   end
 
   def y
-    self.tile.y
+    if self.tile then
+      self.tile.y
+    else
+      -1
+    end
+  end
+
+  # Take damage, or heal me if the amount is negative.
+  # Use this instead of directly setting so we can check if the player died.
+  def heal(amount)
+    self.health += amount
+    self.save!
+  end
+
+  def charge(amount)
+    self.battery += amount
+    self.save!
   end
 
 end

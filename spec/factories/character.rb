@@ -6,6 +6,7 @@ FactoryGirl.define do
     battery 100
     facing 0
     planet 1
+    inventory
   end
 
 end

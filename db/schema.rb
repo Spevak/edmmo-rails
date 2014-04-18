@@ -49,9 +49,6 @@ ActiveRecord::Schema.define(version: 20140418010453) do
     t.boolean  "consumable"
     t.integer  "battery_effect"
     t.integer  "health_effect"
-    t.integer  "aoe_x_plus"
-    t.integer  "aoe_y_plus"
-    t.integer  "aoe_tile_becomes"
     t.string   "default_message"
   end
 
