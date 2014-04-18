@@ -48,7 +48,6 @@ class Api::V1::WorldController < Api::V1::BaseController
       end
     end)
     .select { |entry| !(entry.nil?) } # Remove nil entries (itemless tiles)
-    .inject { |hash, hashlet| hash.merge(hashlet) } # Combine into one hash
 
     render json: {
       :tiles         => tiles_to_return,
