@@ -78,6 +78,11 @@
  	 "traversable": {"n": 0, "w": 0, "s": 0, "e": 0}, 	  
 	 "batteffect": {"n": -1, "w": -1, "s": -1, "e": -1}, 
 	 "healtheffect": {"n": 0, "w": 0, "s": 0, "e": 0},
+	 "itemexposed": true },
+ "16": { "description": "sign",
+ 	 "traversable": {"n": 0, "w": 0, "s": 0, "e": 0}, 	  
+	 "batteffect": {"n": -1, "w": -1, "s": -1, "e": -1}, 
+	 "healtheffect": {"n": 0, "w": 0, "s": 0, "e": 0},
 	 "itemexposed": true } 
 
 }
