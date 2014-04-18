@@ -94,6 +94,10 @@ class Character < ActiveRecord::Base
       tile.character = self
       tile.save!
 
+      #trigger any events that happen when you enter the new tile
+      puts '************************'
+      tile.onEnter(self)
+
     end
   end
 

@@ -33,6 +33,7 @@ var tileChars = {
     10: '╔', //northwest-facing ledge
     11: '╚', //southwest-facing ledge
     12: '╝', //southeast-facing ledge
+    13: '@', //portal
 
 
     //Representation of non-existant tile (off the map)

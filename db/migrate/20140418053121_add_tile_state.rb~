@@ -1,0 +1,4 @@
+class AddTileState < ActiveRecord::Migration
+  def change
+  end
+end

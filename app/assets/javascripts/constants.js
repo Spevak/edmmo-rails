@@ -26,13 +26,14 @@ var tileChars = {
     3: '%', //acid
     4: '█', //wall
     5: '¯', //north-facing ledge
-    6: ']', //west-facing ledge
+    6: '[', //west-facing ledge
     7: '_', //south-facing ledge
-    8: '[', //east-facing ledge
+    8: ']', //east-facing ledge
     9: '╗', //northeast-facing ledge
     10: '╔', //northwest-facing ledge
     11: '╚', //southwest-facing ledge
     12: '╝', //southeast-facing ledge
+    13: '@', //portal
 
 
     //Representation of non-existant tile (off the map)

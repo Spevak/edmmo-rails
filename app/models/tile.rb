@@ -55,4 +55,18 @@ class Tile < ActiveRecord::Base
     end
   end
 
+  def onEnter(char)
+    #puts 'entering tile (' + self.x.to_s + ", " + self.y.to_s + "), id: " + self.tile_type.to_s
+    #portal
+    if self.tile_type == 13 then
+      #the indices of the tile to warp to are stored in self.data as the string (x,y)
+      indices = /\((\d*),(\d*)\)/.match(self.state)
+      x = indices[1].to_i
+      y = indices[2].to_i
+      #make sure we're not teleporting onto another warp, to avoid infinite mutual recursion
+      target = Tile.tile_at(x, y)
+      if target.tile_type == 13 then return end
+      char.move_to(x,y)
+    end
+  end
 end
