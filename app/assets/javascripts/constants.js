@@ -11,7 +11,11 @@ var direction = {0:'north', 1:'east',2:'south',3:'west'}
 
 //A map of itemIds
 var itemId = {
-    'rubbish': 0
+    'cake': 0,
+    'nowhere' : 1,
+    'handsfull' : 2,
+    'nothing': 3,
+    'occupied': 4
 }
 
 //A map of tile ids to their ascii representation

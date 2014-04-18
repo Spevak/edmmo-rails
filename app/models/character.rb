@@ -9,27 +9,54 @@ class Character < ActiveRecord::Base
   belongs_to :tile
   belongs_to :inventory
 
-  before_save do |me|
-    i = Inventory.create
-    me.inventory = i
+  #move in direction dir. Return true on success, false on failure
+  def move_direction(direction)
+    dx, dy = 0, 0
+    if direction == 'north' then
+      dx, dy = 0, 1
+    elsif direction == 'south'
+      dx, dy = 0, -1
+    elsif direction == 'east'
+      dx, dy = 1, 0
+    elsif direction == 'west'
+      dx, dy = -1, 0
+    end
+
+    if dx == 0 and dy == 0 then
+      return false
+    end
+
+    x = self.tile.x + dx
+    y = self.tile.y + dy
+    target_tile = Tile.tile_at(x, y)
+
+    if target_tile == nil then
+      return false
+    end
+
+    #update direction facing
+    if y > self.tile.y then
+      self.facing = 0
+    elsif y < self.tile.y then
+      self.facing = 2
+    elsif x > self.tile.x then
+      self.facing = 1
+    elsif x < self.tile.x then
+      self.facing = 3
+    end
+
+    #spent 1 unit of battery taking a step
+    self.battery -= 1
+    self.save!
+
+    self.move_to(x, y)
+    return true
   end
 
   def move_to(x, y)
-    if (self.tile.x - x).abs + (self.tile.y - y).abs <= 1 then
-      #update direction facing
-      if y > self.tile.y then
-        self.facing = 0
-      elsif y < self.tile.y then
-        self.facing = 2
-      elsif x > self.tile.x then
-        self.facing = 1
-      elsif x < self.tile.x then
-        self.facing = 3
-      end
-      #spent 1 unit of battery taking a step
-      self.battery -= 1
 
-      self.save!
+    #Don't move to same tile as this causes strange bug where character's association with a tile is deleted.
+    if (self.tile.x - x).abs + (self.tile.y - y).abs >= 1 then
 
       #update tile
       tile = Tile.tile_at(x, y)
@@ -37,9 +64,14 @@ class Character < ActiveRecord::Base
       oldTile.character = nil
       oldTile.save!
 
+      puts "oldTile character:"
+      puts oldTile.character
+
       tile.character = self
       tile.save!
 
+      puts "tile character:"
+      puts tile.character
     end
   end
 

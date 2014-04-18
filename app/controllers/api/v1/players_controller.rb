@@ -13,30 +13,18 @@ class Api::V1::PlayersController < Api::V1::BaseController
     @user = current_user
     @character = @user.character
 
-    if @character.battery <= 0 then
-      render json: { 'err' => 2 }, status: 403
-      return
-    end
-
     direction = request[:direction] 
 
-    dx, dy = 0, 0
-    if direction == 'north' then
-      dx, dy = 0, 1
-    elsif direction == 'south'
-      dx, dy = 0, -1
-    elsif direction == 'east'
-      dx, dy = 1, 0
-    elsif direction == 'west'
-      dx, dy = -1, 0
-    end
+    #target_tile = Tile.tile_at(@character.tile.x + dx, @character.tile.y + dy)
+    #puts "target tile:"
+    #puts target_tile.x.to_s + "," + target_tile.y.to_s
+    #puts "user's tile:"
+    #puts @character.tile.x.to_s + "," + target_tile.y.to_s
 
-    target_tile = Tile.tile_at(@character.tile.x + dx, @character.tile.y + dy)
-    if target_tile == nil then
-      render json: { 'err' => 1 }, status: 200
-    else
-      @character.move_to(target_tile.x, target_tile.y)
+    if @character.move_direction(direction) then
       render json: { 'err' => 0 }
+    else
+      render json: { 'err' => 1 }
     end
   end
 

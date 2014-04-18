@@ -1,18 +1,21 @@
 # A tile on the map in BotQuest. Tiles are 0-indexed (coords begin at 0.)
 class Tile < ActiveRecord::Base
   # Side length of the map.
-  MAP_SIDE_LENGTH = 16
+  MAP_SIDE_LENGTH = 25
 
   belongs_to :item
   belongs_to :character
 
   validates :x, numericality: { only_integer: true }
   validates :y, numericality: { only_integer: true }
-  validates :xn_plus_y, uniqueness: true, numericality: { only_integer: true }
+  validates :x_y_pair, uniqueness: true 
   validates :tile_type, numericality: { only_integer: true }
 
   before_validation do |tile|
-    tile.xn_plus_y = (tile.x * MAP_SIDE_LENGTH) + tile.y
+    #tile.xn_plus_y = (tile.x * MAP_SIDE_LENGTH) + tile.y
+    if tile.x_y_pair == nil then
+        tile.x_y_pair = tile.x.to_s + "," + tile.y.to_s
+    end
   end
 
   def self.MAP_SIDE_LENGTH
@@ -20,10 +23,7 @@ class Tile < ActiveRecord::Base
   end
 
   def self.tile_at(x, y)
-    if x >= 0 and y >=0 then
-      return Tile.find_by_xn_plus_y((x * MAP_SIDE_LENGTH) + y) 
-    end
-    return nil
+    Tile.find_by_x_y_pair(x.to_s + "," + y.to_s) 
   end
 
   # Return the tiles with x in between x1 and x2 (inclusive)

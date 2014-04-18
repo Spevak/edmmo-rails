@@ -12,15 +12,15 @@ class Api::Test::PlayerController < ApplicationController
   end
 
   def pickup
-    x = request[:x]
-    y = request[:y]
-    id = params[:itemID]
+    #x = request[:x]
+    #y = request[:y]
+    id = params[:item_id]
 
-    if x > 0
+    if id == 1 #"nowhere"
       render :json => {:err => 2} #can't access 
-    elsif y > 0
+    elsif id == 2 #"handsfull"
       render :json => {:err => 3} #hands are full
-    elsif id == "cake"
+    elsif id == 0 #"cake"
       render :json => {:err =>1} #doesn't exist
     else
       render :json => {:err => 0} #success
@@ -28,10 +28,10 @@ class Api::Test::PlayerController < ApplicationController
   end
 
   def drop
-    id = request[:itemID]
-    if id == 'nothing'
+    id = request[:item_id]
+    if id == 3 #'nothing'
       render :json => {:err => 1}
-    elsif id == 'occupied'
+    elsif id ==4 #'occupied'
       render :json => {:err => 2}
     else
       render :json => {:err => 0}
@@ -43,9 +43,9 @@ class Api::Test::PlayerController < ApplicationController
   end
 
   def use
-    id = request[:itemID]
+    id = request[:item_id]
     args = request[:args]
-    if id == 'cake'
+    if id == 0 #'cake'
       render :json => {:err => 1}
     elsif args == 'bad'
       render :json => {:err => 2}
@@ -59,8 +59,8 @@ class Api::Test::PlayerController < ApplicationController
   end
 
   def inspect
-    id = params[:itemID]
-    if id == 'cake'
+    id = params[:item_id]
+    if id == 0 #'cake'
       render :json => {:err => 1}
     else
       render :json => {:err => 0}
