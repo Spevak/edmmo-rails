@@ -363,16 +363,17 @@ Sk.builtin.digFunction = function() {
  *   args: name = python string containing name of item to inspect
  * @suppress {missingProperties}
  */
-Sk.builtin.inspectFunction = function(name) {
+Sk.builtin.inspectFunction = function(args) {
   //check args count and types
-  Sk.builtin.pyCheckArgs("inspectFunction", arguments, 1, 1);
-  Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
+  Sk.builtin.pyCheckArgs("inspectFunction", arguments, 0, 1);
+  if (args !== undefined) { 
+    Sk.builtin.pyCheckType("args", "string", Sk.builtin.checkString(name));
+  }
 
   //get the value from the python representation 
-  var item_id = itemId[name.v]
 
   var inspectFailure = failureFunction(INSPECT_PATH);
-  return json_request("POST", INSPECT_PATH, inspectSuccess, inspectFailure, {'item_id': item_id});
+  return json_request("POST", INSPECT_PATH, inspectSuccess, inspectFailure, {'args': args.v});
 }
 
 /**
