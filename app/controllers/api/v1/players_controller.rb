@@ -84,8 +84,6 @@ class Api::V1::PlayersController < Api::V1::BaseController
 
   def use
     # do nothing lol
-    x = request[:x]
-    y = request[:y]
     item_id = request[:item_id]
     @user = current_user
     @character = @user.character
@@ -94,6 +92,8 @@ class Api::V1::PlayersController < Api::V1::BaseController
         'err' => 1
       }
     else
+      item = Item.find(item_id)
+      @character.use_item(item)
       render json: {
         'err' => 0
       }

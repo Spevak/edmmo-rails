@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140416080732) do
+ActiveRecord::Schema.define(version: 20140418010453) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,10 +24,12 @@ ActiveRecord::Schema.define(version: 20140416080732) do
     t.string   "planet"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "item_id"
     t.integer  "inventory_id"
   end
 
   add_index "characters", ["inventory_id"], name: "index_characters_on_inventory_id", using: :btree
+  add_index "characters", ["item_id"], name: "index_characters_on_item_id", using: :btree
 
   create_table "inventories", force: true do |t|
     t.datetime "created_at"
@@ -40,6 +42,17 @@ ActiveRecord::Schema.define(version: 20140416080732) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "inventory_id"
+    t.string   "type"
+    t.string   "affects"
+    t.integer  "moves_player_x"
+    t.integer  "moves_player_y"
+    t.boolean  "consumable"
+    t.integer  "battery_effect"
+    t.integer  "health_effect"
+    t.integer  "aoe_x_plus"
+    t.integer  "aoe_y_plus"
+    t.integer  "aoe_tile_becomes"
+    t.string   "default_message"
   end
 
   add_index "items", ["inventory_id"], name: "index_items_on_inventory_id", using: :btree

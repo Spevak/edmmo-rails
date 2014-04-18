@@ -22,11 +22,27 @@ describe Character do
   end
 
   describe ".pick_up" do
-    it "sets the character's item" do
-      item = FactoryGirl.create(:item)
-      @character.pick_up(item.id)
-      @character.save
-      @character.item.should eq(item)
+
+    context 'with item held' do
+      it "adds the picked up item to the inventory" do
+        item = FactoryGirl.create(:item)
+        @character.pick_up(item.id)
+        item2 = FactoryGirl.create(:item)
+        @character.pick_up(item2.id)
+        @character.inventory.should include(item)
+      end
+    end
+
+    context 'without item held' do
+      it "pushes the currently held item into the inventory" do
+      end
+
+      it "sets the character's currently held item" do
+        item = FactoryGirl.create(:item)
+        @character.pick_up(item.id)
+        @character.save
+        @character.item.should eq(item)
+      end
     end
   end
 

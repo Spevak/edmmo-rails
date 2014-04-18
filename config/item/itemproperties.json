@@ -1,0 +1,44 @@
+{
+        "0": {
+            "type": "sign",
+	    "affects": "world"
+	    "coordsEffects": {
+                "x": 0,
+                "y": 0
+            },
+            "pickupable": false,
+            "consumable": false,
+	    "walkoverable": false,
+	    "batteryEffect": 0,
+            "healthEffect": 0,
+            "aoe": [
+                {
+                    "xCoordPlus": 0,
+                    "yCoordPlus": 0,
+                    "tileBecomes": 13
+                }
+            ],
+            "defaultMessage": "You come across a blank sign. Blank as the void where your heart ought to be."
+        }
+        "1": {
+            "type": "potato",
+	    "affects": "player"
+            "coordsEffects": {
+                "x": 0,
+                "y": 0
+            },
+            "pickupable": true,
+            "consumable": true,
+	    "walkoverable": true,
+            "batteryEffect": 10,
+            "healthEffect": 0,
+	    "aoe":  [
+	        {
+                    "changeXPlus": 0,
+                    "changeYPlus": 0,
+                    "tileBecomes": 14
+            }
+        ],
+            "defaultMessage": "You're a potato!"
+        }
+}

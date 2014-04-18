@@ -9,8 +9,12 @@ class Character < ActiveRecord::Base
   belongs_to :tile
   belongs_to :inventory
 
-  def move_to(x, y)
+  before_save do |me|
+    i = Inventory.create
+    me.inventory = i
+  end
 
+  def move_to(x, y)
     if (self.tile.x - x).abs + (self.tile.y - y).abs <= 1 then
       #update direction facing
       if y > self.tile.y then
@@ -64,8 +68,10 @@ class Character < ActiveRecord::Base
     tile.save!
   end
 
-  def use_item(x, y)
-    # do nothing LOL
+  def use_item(item, args*)
+    if self.inventory.items.include? item then
+      item.do_action
+    end
   end
 
   def status
