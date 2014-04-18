@@ -34,7 +34,9 @@ var tileChars = {
     11: '╚', //southwest-facing ledge
     12: '╝', //southeast-facing ledge
     13: '@', //portal
-
+    14: '☒', //locked door
+    15: 'ロ', //open door
+    
 
     //Representation of non-existant tile (off the map)
     50: '#',

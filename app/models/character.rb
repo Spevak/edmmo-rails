@@ -159,22 +159,6 @@ class Character < ActiveRecord::Base
   end
 
   def status
-<<<<<<< HEAD
-<<<<<<< HEAD
-    { :hp => self.health, # Michel: why the name change? let's try to keep things consistent when possible.
-=======
-    inventory = self.inventory.items.map do |item|
-      { item.item_type => item }
-    end
-
-    { :health => self.health, 
->>>>>>> inventories
-      :battery => self.battery,
-      :facing => self.facing,
-      :x => self.tile.x,
-      :y => self.tile.y}
-<<<<<<< HEAD
-=======
     inventory = self.inventory.items.map do |item|
       { item.item_type => item }
     end
@@ -186,9 +170,6 @@ class Character < ActiveRecord::Base
       :y => self.y,
       :inventory => inventory
     }
->>>>>>> inventories
-=======
->>>>>>> inventories
   end
 
   def x

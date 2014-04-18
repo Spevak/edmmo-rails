@@ -23,8 +23,16 @@
 	  <div class="tool" id="tile_select">
 	    Select a tile to use
 	    <br>
-	    <select id="tile" onchange="currentTileType = + this.value">
+	    <select id="tile" onchange="tileSelectChange()">
 	    </select>
+	    <div id="portalOptions">
+	      Teleport destination:
+	      <br>
+	      x:
+	      <input class="indexBox" type="text" id="portal_x">
+	      y:
+	      <input class="indexBox" type="text" id="portal_y">
+	    </div>
 	  </div>
 	  <div class="tool" id="save_file">
 	    Save as
@@ -71,8 +79,14 @@
       $('#hiddenShell').hide();
       $('#log').hide();
 
+      //hide the box for inputting the destination of a portal tile
+      $('#portalOptions').hide();
+
       //What tile we're currently drawing on the map
       var currentTileType = -1;
+      //Need to store tile instance data to send to server (e.g. portal destination)
+      //Store it as a map from nx+y to data (n = map side length)
+      var tileStateValues = {}
 
     //poplulate the tile options dropdown bar
       $('#tile').append("<option value=-1>" + tileChars[50] + "&nbsp&nbsp(no tile)</option>");
@@ -81,6 +95,16 @@
       if (Bq.tileProperties[tileId]) {
         desc = "&nbsp&nbsp(" + Bq.tileProperties[tileId]["description"] + ")";
         $('#tile').append("<option value='" + tileId.toString() + "'>" + tileChars[tileId] + desc +" </option>");
+      }
+    }
+    //handle the select bar onchange
+    function tileSelectChange(){
+      currentTileType = parseInt($('#tile').val(), 10);
+      //portal selected
+      if (currentTileType == 13) {
+        $('#portalOptions').show();
+      } else {
+        $('#portalOptions').hide();
       }
     }
 
@@ -120,9 +144,9 @@
 	//have to subtract map max index from coordinates so that (0, 0) is in bottom left corner instead of center
         Bq.mapData.setTile(tile.x-MAP_MAX_INDEX, tile.y-MAP_MAX_INDEX, tile.id);
         //console.log("x: " + tile.x + ", y: " + tile.y + ", id: " + tile.id);
-        alert("(" + tile.x.toString() + ", " + tile.y.toString() + ")");
+        //alert("(" + tile.x.toString() + ", " + tile.y.toString() + ")");
       }
-      Bq.renderMap(Bq.Map.getIndices());
+      Bq.map.render(Bq.map.getIndices());
     }
 
     $('#save').click(function() {
@@ -134,7 +158,12 @@
 	  id = Bq.mapData.tileAt(x-MAP_MAX_INDEX, y-MAP_MAX_INDEX);
           //don't bother saving tiles that are undefined.
           if (id != -1 && id != 50) {
-            tilesList.push({x:x, y:y, id:id});
+            var state = ""
+	    var tileHash = x * Bq.mapData.n + y;
+	    if (tileStateValues[tileHash]) {
+	      state = tileStateValues[tileHash];
+            }
+            tilesList.push({x:x, y:y, id:id, state:state});
           }
         }
       }
@@ -176,7 +205,7 @@
         case 32: //space
           replaceChar();
       }
-      if (e.which > 36 && e.which < 41) {
+      if (e.which > 36 && e.which < 41 || e.which == 32) {
         return false;
       }
     });
@@ -201,6 +230,14 @@
       if (!showCursor) return;
       //update map data
       Bq.mapData.setTile(currentTileX, currentTileY, currentTileType);
+      if (currentTileType == 13) {
+	//convert to 0,0 in corner of map
+        var x = currentTileX + MAP_MAX_INDEX;
+        var y = currentTileY + MAP_MAX_INDEX;
+	var tileHash = Bq.mapData.n * x + y;
+        var tileText = "(" + $('#portal_x').val() + "," + $('#portal_y').val() + ")"; 
+        tileStateValues[tileHash] = tileText;
+      }
 
       //update display
       var cell = Bq.Cell.getCell(currentTileX, currentTileY);

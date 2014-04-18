@@ -45,7 +45,7 @@ task :generate_map => :environment do
 	#to other files' contents
 	absolute_x = x * BLOCK_SIDE_LENGTH + tile["x"]
 	absolute_y = y * BLOCK_SIDE_LENGTH + tile["y"]
-	Tile.create(x: absolute_x, y: absolute_y, tile_type: tile["id"])
+	Tile.create(x: absolute_x, y: absolute_y, tile_type: tile["id"], state: tile["state"])
       end
     end
   end
