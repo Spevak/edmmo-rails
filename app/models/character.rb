@@ -163,7 +163,7 @@ class Character < ActiveRecord::Base
       { item.item_type => item }
     end
     { 
-      :hp => self.health || 100,
+      :health => self.health || 100,
       :battery => self.battery || 100,
       :facing => self.facing || 'north',
       :x => self.x,

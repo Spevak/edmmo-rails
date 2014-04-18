@@ -29,30 +29,33 @@ class Api::V1::WorldController < Api::V1::BaseController
                                     character_tile.y - n, #lower left
                                     character_tile.x + n,
                                     character_tile.y + n) #upper right
-    #player_x, player_y = 0, 0
-    #tiles_to_return.each do |t|
-    #  if t.character == character then
-    #    player_x = t.x
-    #    player_y = t.y
-    #  end
-    #end
     player_x = character_tile.x
     player_y = character_tile.y
 
     # Create a hash of { tile xy pair hash => character on tile } entries
     other_players = (tiles_to_return.map do |tile|
-      if tile.character then
+      if tile.character and tile.character != character then
         { tile.x_y_pair => tile.character }
       end
     end)
     .select { |entry| !(entry.nil?) } # Remove nil entries (characterless tiles)
     .inject { |hash, hashlet| hash.merge(hashlet) } # Combine into one hash
 
+    # Create a hash of { tile xy pair hash => item on tile } entries
+    world_items = (tiles_to_return.map do |tile|
+      if tile.item then
+        { tile.x_y_pair => tile.item }
+      end
+    end)
+    .select { |entry| !(entry.nil?) } # Remove nil entries (itemless tiles)
+    .inject { |hash, hashlet| hash.merge(hashlet) } # Combine into one hash
+
     render json: {
-      :tiles => tiles_to_return,
-      :player_x => player_x,
-      :player_y => player_y,
-      :other_players => other_players
+      :tiles         => tiles_to_return,
+      :player_x      => player_x,
+      :player_y      => player_y,
+      :other_players => other_players || {}, # always send a map
+      :world_items   => world_items || {}
     }
   end
 end
