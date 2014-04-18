@@ -215,7 +215,7 @@ describe Character do
       inventory_map = @character.inventory.items.map do |item|
         { item.item_type => item }
       end
-      status[:hp].should eq(@character.health)
+      status[:health].should eq(@character.health)
       status[:battery].should eq(@character.battery)
       status[:facing].should eq(@character.facing)
       status[:x].should eq(@character.x)
@@ -226,7 +226,7 @@ describe Character do
     it "reflects changes to user attributes" do
       @character.health = 99
       @character.save
-      @character.status[:hp].should eq(99)
+      @character.status[:health].should eq(99)
     end
   end
 

@@ -61,6 +61,10 @@ class Character < ActiveRecord::Base
     y = self.tile.y + dy
     target_tile = Tile.tile_at(x, y)
 
+    if target_tile == nil then
+      return false
+    end
+
     #Make sure it is valid to walk over the tile
     target_tile_props = TILE_PROPERTIES[target_tile.tile_type.to_s]
     current_tile_props = TILE_PROPERTIES[self.tile.tile_type.to_s]
@@ -68,10 +72,6 @@ class Character < ActiveRecord::Base
     entering_traversable = target_tile_props["traversable"][enter_dir]
     if leaving_traversable == 1 or leaving_traversable == 3 or
         entering_traversable == 1 or entering_traversable == 2 then
-      return false
-    end
-
-    if target_tile == nil then
       return false
     end
 
@@ -160,11 +160,20 @@ class Character < ActiveRecord::Base
 
   def status
 <<<<<<< HEAD
+<<<<<<< HEAD
     { :hp => self.health, # Michel: why the name change? let's try to keep things consistent when possible.
+=======
+    inventory = self.inventory.items.map do |item|
+      { item.item_type => item }
+    end
+
+    { :health => self.health, 
+>>>>>>> inventories
       :battery => self.battery,
       :facing => self.facing,
       :x => self.tile.x,
       :y => self.tile.y}
+<<<<<<< HEAD
 =======
     inventory = self.inventory.items.map do |item|
       { item.item_type => item }
@@ -177,6 +186,8 @@ class Character < ActiveRecord::Base
       :y => self.y,
       :inventory => inventory
     }
+>>>>>>> inventories
+=======
 >>>>>>> inventories
   end
 

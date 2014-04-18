@@ -57,6 +57,7 @@ function log(msg) {
     logPre.innerHTML += "<li class='log-msg'>" + msg + "</li>";
     var log = document.getElementById('log');
     log.scrollTop = log.scrollHeight;
+
 }
 
 var mapData = new MapData();
