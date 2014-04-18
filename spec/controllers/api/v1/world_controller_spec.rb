@@ -6,6 +6,10 @@ describe Api::V1::WorldController do
     context 'while signed in' do
       it 'calls .tiles_at' do
         user = FactoryGirl.create(:user)
+        character = FactoryGirl.create(:character)
+        tile = Tile.first
+        tile.character = character
+        tile.save!
         sign_in user
 
         Tile.should_receive(:tiles_at)
@@ -15,6 +19,7 @@ describe Api::V1::WorldController do
         response.body.keys.should include("player_x")
         response.body.keys.should include("player_y")
         response.body.keys.should include("other_players")
+        response.body.keys.should include("world_items")
       end
     end
 
