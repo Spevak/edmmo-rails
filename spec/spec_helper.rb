@@ -1,4 +1,5 @@
 require 'simplecov'
+
 SimpleCov.start do
   add_filter '/spec/'
   add_filter '/config/'
@@ -97,5 +98,6 @@ RSpec.configure do |config|
 
   #Use capybara-webkit
   Capybara.javascript_driver = :webkit
+
 end
 
