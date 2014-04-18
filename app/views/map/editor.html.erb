@@ -88,6 +88,11 @@
       //Store it as a map from nx+y to data (n = map side length)
       var tileStateValues = {}
 
+      //For highlighting a rectangle
+      var highlighterDown = false;
+      var selectP1 = []; //coords of first corner of highlighting
+      var selectP2 = [];
+
     //poplulate the tile options dropdown bar
       $('#tile').append("<option value=-1>" + tileChars[50] + "&nbsp&nbsp(no tile)</option>");
     for (tileId in tileChars) {
@@ -190,6 +195,10 @@
     var showCursor = false;
     $(document).keydown(function(e) {
       switch(e.which) {
+        case 16: //shift
+          highlighterDown = true;
+          selectP1 = selectP2 = [currentTileX, currentTileY];
+          break;
         case 37: //left
           if (currentTileX > -MAP_MAX_INDEX) setCursor(currentTileX-1, currentTileY);
           break;
@@ -205,8 +214,15 @@
         case 32: //space
           replaceChar();
       }
-      if (e.which > 36 && e.which < 41 || e.which == 32) {
+      if (e.which > 36 && e.which < 41 || e.which == 32 || e.which == 16) {
         return false;
+      }
+    });
+    $(document).keyup(function(e) {
+      switch(e.which) {
+        case 16: //shift
+          highlighterDown = false;
+          break;
       }
     });
 
@@ -216,35 +232,116 @@
       var x = currentTileX;
       var y = currentTileY;
       //var cell = Bq.Cell.getCellById(Bq.Cell.hashCellPair(x - 1, (Bq.mapData.n - y)));
-      var cell = Bq.Cell.getCell(x, y);
-      cell.unhighlight();
-      x = currentTileX = new_x;
-      y = currentTileY = new_y;
-      //cell = Bq.Cell.getCellById(Bq.Cell.hashCellPair(x - 1, (Bq.mapData.n - y)));
-      cell = Bq.Cell.getCell(x,y);
-      cell.highlight();
+      if (highlighterDown) {
+        drawSelectBox(false);
+        selectP2 = [new_x, new_y];
+	currentTileX = new_x;
+        currentTileY = new_y;	    
+        drawSelectBox(true);
+      } else {
+	if (selectP1.length > 0) {
+          drawSelectBox(false);
+          selectP1 = selectP2 = [];
+        }
+        var cell = Bq.Cell.getCell(x, y);
+        cell.unhighlight();
+        cell.layer.draw();
+        x = currentTileX = new_x;
+        y = currentTileY = new_y;
+        //cell = Bq.Cell.getCellById(Bq.Cell.hashCellPair(x - 1, (Bq.mapData.n - y)));
+        cell = Bq.Cell.getCell(x,y);
+        cell.highlight();
+        cell.layer.draw();
+      }
+    }
+
+    //Draw a box of highlighted stuff (on = true means highlight, false means un-highlight
+    function drawSelectBox(on) {
+      var x1, x2, y1, y2;
+      if (selectP1[0] < selectP2[0]) {
+        x1 = selectP1[0];
+        x2 = selectP2[0];
+      } else {
+        x1 = selectP2[0];
+        x2 = selectP1[0];
+      }
+      if (selectP1[1] < selectP2[1]) {
+        y1 = selectP1[1];
+        y2 = selectP2[1];
+      } else {
+        y1 = selectP2[1];
+        y2 = selectP1[1];
+      }
+      var cell;
+      for (x = x1; x <= x2; x++) {
+        for (y = y1; y <= y2; y++) {
+          cell = Bq.Cell.getCell(x, y);
+          if (on) {
+	    cell.highlight();
+          } else {
+            cell.unhighlight();
+          }
+        }
+      }
+      cell.layer.draw();
     }
 
     //Replace the value of the currently highlighted cell with the current character
     function replaceChar() {
       if (!showCursor) return;
-      //update map data
-      Bq.mapData.setTile(currentTileX, currentTileY, currentTileType);
-      if (currentTileType == 13) {
-	//convert to 0,0 in corner of map
-        var x = currentTileX + MAP_MAX_INDEX;
-        var y = currentTileY + MAP_MAX_INDEX;
-	var tileHash = Bq.mapData.n * x + y;
-        var tileText = "(" + $('#portal_x').val() + "," + $('#portal_y').val() + ")"; 
-        tileStateValues[tileHash] = tileText;
+
+      var toUpdate = [];
+      if (selectP1.length > 0) {
+        var x1, x2, y1, y2;
+        if (selectP1[0] < selectP2[0]) {
+          x1 = selectP1[0];
+          x2 = selectP2[0];
+        } else {
+          x1 = selectP2[0];
+          x2 = selectP1[0];
+        }
+        if (selectP1[1] < selectP2[1]) {
+          y1 = selectP1[1];
+          y2 = selectP2[1];
+        } else {
+          y1 = selectP2[1];
+          y2 = selectP1[1];
+        }
+        for (x = x1; x <= x2; x++) {
+          for (y = y1; y <= y2; y++) {
+            toUpdate.push([x, y])
+          }
+        }
+        //get rid of the selection
+        drawSelectBox(false);
+        selectP1 = selectP2 = [];
+      } else {
+        toUpdate.push([currentTileX, currentTileY]);
       }
 
-      //update display
-      var cell = Bq.Cell.getCell(currentTileX, currentTileY);
-      if (currentTileType == -1) {
-        cell.update({'text': tileChars[50]});
-      } else {
-        cell.update({'text': tileChars[currentTileType]});
+      var cell;
+
+      for (i = 0; i < toUpdate.length; i++) {
+        //update map data
+        indices = toUpdate[i]
+        //console.log(indices.toString() + indices.toString() + currentTileType.toString());
+        Bq.mapData.setTile(indices[0], indices[1], currentTileType);
+        if (currentTileType == 13) {
+	  //convert to 0,0 in corner of map
+          var x = indices[0] + MAP_MAX_INDEX;
+          var y = indices[1] + MAP_MAX_INDEX;
+	  var tileHash = Bq.mapData.n * x + y;
+          var tileText = "(" + $('#portal_x').val() + "," + $('#portal_y').val() + ")"; 
+          tileStateValues[tileHash] = tileText;
+        }
+
+        //update display
+        cell = Bq.Cell.getCell(indices[0], indices[1]);
+        if (currentTileType == -1) {
+          cell.update({'text': tileChars[50]});
+        } else {
+          cell.update({'text': tileChars[currentTileType]});
+        }
       }
       cell.layer.draw();
     }

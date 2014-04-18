@@ -40,15 +40,14 @@ Bq.Cell.cellCache = {};
     Bq.Cell.prototype.highlight = function() {
 	this.outer.setAttr('fill', cellHighlightBgColor);
 	this.inner.setAttr('fill', cellHighlightFgColor);
-	this.layer.draw();
     }
 
     //Returns a cell to non-highlighted color scheme
     Bq.Cell.prototype.unhighlight = function() {
 	this.outer.setAttr('fill', cellBgColor)
 	this.inner.setAttr('fill', cellFgColor)
-	this.layer.draw();
     }
+
 // Update the cell.
 // options = {
 //	 outer: (attributes hash for Kinetic.Rect)
