@@ -320,7 +320,11 @@ Sk.builtin.dropFunction = function(name) {
   Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
 
   //get values from python representation
-  var item_id = itemId[name.v];
+  if (name.v in itemId) {
+    var item_id = itemId[name.v];
+  } else {
+    var item_id = name.v
+  }
 
   var dropFailure = failureFunction(DROP_PATH);
   return json_request('POST', DROP_PATH, dropSuccess, dropFailure, {'item_id': item_id});
@@ -339,7 +343,11 @@ Sk.builtin.useFunction = function(name, args) {
   Sk.builtin.pyCheckType("args", "string", Sk.builtin.checkString(args));
 
   //get values from python representation
-  var item_id = itemId[name.v];
+  if (name.v in itemId) {
+    var item_id = itemId[name.v];
+  } else {
+    var item_id = name.v
+  }
   var use_args = args.v;
 
   var useFailure = failureFunction(USE_PATH);

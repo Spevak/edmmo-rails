@@ -147,13 +147,16 @@ class Character < ActiveRecord::Base
   end
 
   def setTile(tile)
-    tile.character = self
-    tile.save!
+    if (tile)
+      tile.character = self
+      tile.save!
+    end
   end
 
   def use_item(item, *args)
     if self.inventory.items.include? item or
        self.item == item then
+       item.character = self
       item.do_action
     end
   end
