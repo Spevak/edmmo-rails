@@ -120,6 +120,7 @@ function statusSuccess(response) {
  */
 function inspectSuccess(response) {
   //todo: should log result of inspect instead.
+    log("You see " + response.msg);
   return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
 }
 
@@ -366,14 +367,16 @@ Sk.builtin.digFunction = function() {
 Sk.builtin.inspectFunction = function(args) {
   //check args count and types
   Sk.builtin.pyCheckArgs("inspectFunction", arguments, 0, 1);
+    var argString = "";
   if (args !== undefined) { 
-    Sk.builtin.pyCheckType("args", "string", Sk.builtin.checkString(name));
+    Sk.builtin.pyCheckType("args", "string", Sk.builtin.checkString(args));
+    argString = args.v
   }
 
   //get the value from the python representation 
-
+  
   var inspectFailure = failureFunction(INSPECT_PATH);
-  return json_request("POST", INSPECT_PATH, inspectSuccess, inspectFailure, {'args': args.v});
+  return json_request("POST", INSPECT_PATH, inspectSuccess, inspectFailure, {'args': argString});
 }
 
 /**

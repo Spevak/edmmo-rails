@@ -95,19 +95,13 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def inspect
-    item_id = request[:item_id]
+    args = request[:args]
     @user = current_user
     @character = @user.character
-    if (@character.item == nil) or @character.item.id != item_id.to_i then
-      render json: {
-        'err'  => 1,
-      }
-    else
-      render json: {
-        'err' => 0,
-        'item' => @user.character.item
-      }
-    end
+    facing = @character.facing
+    tile = @character.tile
+    msg = tile.inspectTile(facing, args)
+    render :json => {:err => 0, :msg => msg}
   end
 
   def characters

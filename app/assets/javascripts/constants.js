@@ -36,6 +36,7 @@ var tileChars = {
     13: '@', //portal
     14: '☒', //locked door
     15: 'ロ', //open door
+    16: '=',
     
 
     //Representation of non-existant tile (off the map)

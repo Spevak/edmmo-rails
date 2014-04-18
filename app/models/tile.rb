@@ -75,4 +75,24 @@ class Tile < ActiveRecord::Base
     self.save
   end
 
+  def inspectTile(dir, args)
+    dx, dy = 0, 0
+    if dir == 0 then
+      dy = 1
+    elsif dir == 2
+      dy = -1
+    elsif dir == 1
+      dx = 1
+    elsif dir == 3
+      dx = -1
+    end
+    toInspect = Tile.tile_at(self.x + dx, self.y + dy)
+    #sign
+    if toInspect.tile_type == 16 then 
+       return "a sign that says '" + toInspect.state + "'"
+    end  
+    #return TILE_PROPERITES[self.tile_type.to_s]["description"]
+    return "..."
+  end
+
 end
