@@ -100,38 +100,39 @@ describe "Interpreter" do
       end
     end
 
-describe "The builtin pickup function" do
-  it "returns " + PICKUP_RESPONSES[:success] + " on success", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(pickup('potato'))")
-      expect(result).to eq(PICKUP_RESPONSES[:success])
+    it "returns " + GO_RESPONSES[:immobilized] + " when immobilized", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(go('south'))")
+        expect(result).to eq(GO_RESPONSES[:immobilized])
+      end
     end
   end
 
-  it "returns " + PICKUP_RESPONSES[:no_item] + " when item does not exist", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(pickup('cake'))")
-      expect(result).to eq(PICKUP_RESPONSES[:no_item])
+  describe "The builtin pickup function" do
+    it "returns " + PICKUP_RESPONSES[:success] + " on success", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(pickup(0,0,'potato'))")
+        expect(result).to eq(PICKUP_RESPONSES[:success])
+      end
     end
 
-  it "returns " + PICKUP_RESPONSES[:no_access] + " when item is not accessible", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(pickup('nowhere'))")
-            expect(result).to eq(PICKUP_RESPONSES[:no_access])
-        end
+    it "returns " + PICKUP_RESPONSES[:no_item] + " when item does not exist", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(pickup(0,0,'cake'))")
+        expect(result).to eq(PICKUP_RESPONSES[:no_item])
+      end
     end
 
-  it "returns " + PICKUP_RESPONSES[:no_space] + "when hands are full.", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(pickup('handsfull'))")
-      expect(result).to eq(PICKUP_RESPONSES[:no_space])
-    end
-  end
-end
+    it "returns " + PICKUP_RESPONSES[:no_access] + " when item is not accessible", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(pickup(10,0,'potato'))")
+              expect(result).to eq(PICKUP_RESPONSES[:no_access])
+          end
+      end
 
     it "returns " + PICKUP_RESPONSES[:no_space] + "when hands are full.", :js => true do
       stub_env "development" do

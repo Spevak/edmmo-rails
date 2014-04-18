@@ -15,12 +15,10 @@ class Api::V1::PlayersController < Api::V1::BaseController
 
     direction = request[:direction] 
 
-    #target_tile = Tile.tile_at(@character.tile.x + dx, @character.tile.y + dy)
-    #puts "target tile:"
-    #puts target_tile.x.to_s + "," + target_tile.y.to_s
-    #puts "user's tile:"
-    #puts @character.tile.x.to_s + "," + target_tile.y.to_s
-
+    if current_user.character.battery <= 0
+      render json: { 'err' => 2 }, status: 200
+      return
+    end
     if @character.move_direction(direction) then
       render json: { 'err' => 0 }
     else
@@ -117,14 +115,18 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def dig
-    #for now digging is always successful
+    # for now digging is always successful
+    # consider doing something as simple as allowing digging a third of the time
+    #   success = rand(3); if success == 1 then
     success = true
     if success then
       current_user.character.battery += 10
       current_user.character.save!
-      render json: {err: 0}
+      # render json: {err: 0} - Michel: Why did this have a different json syntax?
+      render json: { 'err' => 0 }
     else
-      render json: {err: 1}
+      # render json: {err: 1}
+      render json: { 'err' => 1 }, status: 200
     end
   end
 end

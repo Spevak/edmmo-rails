@@ -1,27 +1,11 @@
 require 'user'
 require 'tile'
 require 'item'
-require 'inventory'
 
 class Character < ActiveRecord::Base
   belongs_to :item
   has_one :user
-  has_one :tile
-  belongs_to :inventory
-
-  after_create do |c|
-    i = Inventory.create
-    c.inventory = i
-    c.battery = 100
-    c.health  = 100
-    c.facing = "north"
-    c.save
-  end
-
-  def self.with_name(name)
-    c = Character.new(name: name)
-    return c
-  end
+  belongs_to :tile
 
   #move in direction dir. Return true on success, false on failure
   def move_direction(direction)
@@ -35,21 +19,16 @@ class Character < ActiveRecord::Base
     if direction == 'north' then
       dx, dy = 0, 1
       leave_dir, enter_dir = 'n', 's'
-      self.facing = 0
     elsif direction == 'south'
       dx, dy = 0, -1
       leave_dir, enter_dir = 's', 'n'
-      self.facing = 2
     elsif direction == 'east'
       dx, dy = 1, 0
       leave_dir, enter_dir = 'e', 'w'
-      self.facing = 1
     elsif direction == 'west'
       dx, dy = -1, 0
       leave_dir, enter_dir = 'w', 'e'
-      self.facing = 3
     end
-    self.save!
 
     #The direction given was not one of the 4 cardinal directions
     if dx == 0 and dy == 0 then
@@ -64,12 +43,24 @@ class Character < ActiveRecord::Base
     #Make sure it is valid to walk over the tile
     target_tile_props = TILE_PROPERTIES[target_tile.tile_type.to_s]
     current_tile_props = TILE_PROPERTIES[self.tile.tile_type.to_s]
-    leaving_traversable = current_tile_props["traversable"][leave_dir]
-    entering_traversable = target_tile_props["traversable"][enter_dir]
-    if leaving_traversable == 1 or leaving_traversable == 3 or
-        entering_traversable == 1 or entering_traversable == 2 then
+    if current_tile_props["traversable"][leave_dir] == 1 or
+        target_tile_props["traversable"][enter_dir] == 1 then
       return false
     end
+
+    #Michel stuff
+    ## update battery & health according to tile property
+    #self.battery += tile_properties[target_tile.tile_type.to_s]["batteffect"][direction[0]]
+    #self.health += tile_properties[target_tile.tile_type.to_s]["healtheffect"][direction[0]]
+    #self.save!
+    # if the target tile is not traversable
+    # Note: as of 4/16 ledges cannot be walked on so a value of 2 is nontraversable
+    #elsif [1, 2].include? (tile_properties[target_tile.tile_type.to_s]["traversable"][direction[0]])
+    #  render json: { 'err' => 1 }, status: 200
+
+    # if the character is out of battery or health
+    #elsif current_user.character.battery <= 0 or current_user.character.health <= 0
+    #  render json: { 'err' => 1 }, status: 200
 
     if target_tile == nil then
       return false
@@ -86,10 +77,8 @@ class Character < ActiveRecord::Base
       self.facing = 3
     end
 
-
-    # update battery & health according to tile property
-    self.battery += TILE_PROPERTIES[target_tile.tile_type.to_s]["batteffect"][enter_dir]
-    self.health += TILE_PROPERTIES[target_tile.tile_type.to_s]["healtheffect"][enter_dir]
+    #spent 1 unit of battery taking a step
+    self.battery -= 1
     self.save!
 
     self.move_to(x, y)
@@ -113,30 +102,20 @@ class Character < ActiveRecord::Base
     end
   end
 
-  def pick_up(item)
-    if (self.item) then
-      inventory = self.inventory
-      inventory.items << item
-      inventory.save
-    else
-      self.item = item
-      self.save!
-    end
+  def pick_up(item_id)
+    i = Item.find_by_id(item_id)
+    self.item = i
+    self.save!
   end
 
-  def drop(item)
-    if self.inventory.items.include? item then
-      self.inventory.items.delete(item)
-      self.inventory.save!
-    elsif self.item == item then
-      self.item = nil
-    end
+  def drop(item_id)
+    i = self.item
+    t = self.tile
+    t.item = i
+    t.save!
 
-    if self.tile then
-      t = self.tile
-      t.item = item
-      t.save!
-    end
+    self.item = nil
+    self.save!
   end
 
   def tile()
@@ -148,11 +127,8 @@ class Character < ActiveRecord::Base
     tile.save!
   end
 
-  def use_item(item, *args)
-    if self.inventory.items.include? item or
-       self.item == item then
-      item.do_action
-    end
+  def use_item(x, y)
+    # do nothing LOL
   end
 
   def status
@@ -164,31 +140,11 @@ class Character < ActiveRecord::Base
   end
 
   def x
-    if self.tile then
-      self.tile.x
-    else
-      -1
-    end
+    self.tile.x
   end
 
   def y
-    if self.tile then
-      self.tile.y
-    else
-      -1
-    end
-  end
-
-  # Take damage, or heal me if the amount is negative.
-  # Use this instead of directly setting so we can check if the player died.
-  def heal(amount)
-    self.health += amount
-    self.save!
-  end
-
-  def charge(amount)
-    self.battery += amount
-    self.save!
+    self.tile.y
   end
 
 end
