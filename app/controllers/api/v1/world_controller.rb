@@ -2,7 +2,7 @@ class Api::V1::WorldController < Api::V1::BaseController
   def tiles
     #Max index on map with character at (0,0) (same as MAP_MAX_INDEX from the front end)
     #Make this set by some sort of configuration instead of hard coded?
-    n = 12
+    n = MAP_MAX_INDEX
     if user_signed_in? then
       character = current_user.character
       if !character then
