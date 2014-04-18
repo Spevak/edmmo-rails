@@ -62,6 +62,8 @@ Bq.Cell.prototype.update = function(options) {
 		this.inner.setAttrs(options['inner']);
 	if (options['text'])
 		this.inner.setText(options['text']);
+        if (options['sprite'])
+                this.inner = options['sprite'];
 	//inneficient to redraw everytime we update a cell if we will often update them all at the same time 
 	//this.layer.draw();
 };

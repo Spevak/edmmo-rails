@@ -18,6 +18,112 @@ var itemId = {
     'occupied': 4
 }
 
+//A map of tile ids to their sprite representation
+var tileSpritePaths = {
+    0: '/images/tile/tile_dirt.png',
+    1: '/images/tile/tile_sand.png',
+    2: '/images/tile/tile_mud.png',
+    3: 'images/tile/tile_placeholder.png', //acid
+    4: 'images/tile/tile_placeholder.png', //wall
+    5: 'images/tile/tile_placeholder.png', //north-facing ledge
+    6: 'images/tile/tile_placeholder.png', //west-facing ledge
+    7: 'images/tile/tile_placeholder.png', //south-facing ledge
+    8: 'images/tile/tile_placeholder.png', //east-facing ledge
+    9: 'images/tile/tile_placeholder.png', //northeast-facing ledge
+    10: 'images/tile/tile_placeholder.png', //northwest-facing ledge
+    11: 'images/tile/tile_placeholder.png', //southwest-facing ledge
+    12: 'images/tile/tile_placeholder.png', //southeast-facing ledge
+    13: 'images/tile/tile_portal.png', //portal
+
+
+    //Representation of non-existant tile (off the map)
+    50: 'images/tile/tile_placeholder.png',
+    //Player character representations (one for each direction)
+    51: 'images/tile/tile_placeholder.png',
+    52: 'images/tile/tile_placeholder.png',
+    53: 'images/tile/tile_placeholder.png',
+    54: 'images/tile/tile_placeholder.png',
+
+    //Use ascii values for Letters:
+    65: 'images/tile/tile_placeholder.png',
+    66: 'images/tile/tile_placeholder.png',
+    67: 'images/tile/tile_placeholder.png',
+    68: 'images/tile/tile_placeholder.png',
+    69: 'images/tile/tile_placeholder.png',
+    70: 'images/tile/tile_placeholder.png',
+    71: 'images/tile/tile_placeholder.png',
+    72: 'images/tile/tile_placeholder.png',
+    73: 'images/tile/tile_placeholder.png',
+    74: 'images/tile/tile_placeholder.png',
+    75: 'images/tile/tile_placeholder.png',
+    76: 'images/tile/tile_placeholder.png',
+    77: 'images/tile/tile_placeholder.png',
+    78: 'images/tile/tile_placeholder.png',
+    79: 'images/tile/tile_placeholder.png',
+    80: 'images/tile/tile_placeholder.png',
+    81: 'images/tile/tile_placeholder.png',
+    82: 'images/tile/tile_placeholder.png',
+    83: 'images/tile/tile_placeholder.png',
+    84: 'images/tile/tile_placeholder.png',
+    85: 'images/tile/tile_placeholder.png',
+    86: 'images/tile/tile_placeholder.png',
+    87: 'images/tile/tile_placeholder.png',
+    88: 'images/tile/tile_placeholder.png',
+    89: 'images/tile/tile_placeholder.png',
+    90: 'images/tile/tile_placeholder.png',
+
+    97: 'images/tile/tile_placeholder.png',
+    98: 'images/tile/tile_placeholder.png',
+    99: 'images/tile/tile_placeholder.png',
+    100: 'images/tile/tile_placeholder.png',
+    101: 'images/tile/tile_placeholder.png',
+    102: 'images/tile/tile_placeholder.png',
+    103: 'images/tile/tile_placeholder.png',
+    104: 'images/tile/tile_placeholder.png',
+    105: 'images/tile/tile_placeholder.png',
+    106: 'images/tile/tile_placeholder.png',
+    107: 'images/tile/tile_placeholder.png',
+    108: 'images/tile/tile_placeholder.png',
+    109: 'images/tile/tile_placeholder.png',
+    110: 'images/tile/tile_placeholder.png',
+    111: 'images/tile/tile_placeholder.png',
+    112: 'images/tile/tile_placeholder.png',
+    113: 'images/tile/tile_placeholder.png',
+    114: 'images/tile/tile_placeholder.png',
+    115: 'images/tile/tile_placeholder.png',
+    116: 'images/tile/tile_placeholder.png',
+    117: 'images/tile/tile_placeholder.png',
+    118: 'images/tile/tile_placeholder.png',
+    119: 'images/tile/tile_placeholder.png',
+    120: 'images/tile/tile_placeholder.png',
+    121: 'images/tile/tile_placeholder.png',
+    122: 'images/tile/tile_placeholder.png',
+
+    //Characters used in the splash page ascii art start with 200
+    200: '█',
+    201: '╗',
+    202: '╔',
+    203: '═',
+    204: '╚',
+    205: '╝',
+    206: '║',
+    207: '_',
+    208: '|',
+    209: '[',
+    210: ']',
+    211: '\\',
+    212: '/',
+    213: '(',
+    214: ')',
+    215: '^',
+    216: ',',
+    217: '¯',
+    218: '.',
+    219: '>'
+
+ 
+};
+
 //A map of tile ids to their ascii representation
 var tileChars = {
     0: ' ', //dirt

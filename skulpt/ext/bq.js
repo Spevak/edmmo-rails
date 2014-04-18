@@ -50,6 +50,8 @@ var Bq = (function() {
                 setPlayerData: function(data) { this.playerData = data; },
                 tileProperties: {},
                 setTileProperties: function(data) { this.tileProperties = data; },
+                spriteImagePaths: {},
+                setSpriteImagePaths: function(data) { this.spriteImagePaths = data; },
 		log: log
   }
 })(); 
