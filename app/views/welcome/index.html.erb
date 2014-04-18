@@ -13,7 +13,12 @@
       <div class="half" id="terminals"> 
 	<!-- The area for text output from the game -->
 	<div class="terminal" id="log">
-	  <ul id="log-text"></ul>
+    <ul id="log-text">
+    <li class="log-msg" id="welcome-msg">
+      <font size=4> Welcome to Bot Quest!</font><br>
+      <font size=3> &nbsp; &nbsp; Try typing a command below </font>
+    </li>
+    </ul>
 	</div>
 	<!-- The interpreter terminal -->
 	<div class="terminal" id="shell">   
@@ -24,7 +29,7 @@
     </div>
     <!-- This is kind of jank but for now the easiest way I can find to 
 	 test the front end requires having a pre block I can print to.
-	 May want find a cleaner way to do it later -->
+   May want find a cleaner way to do it later -->
     <pre id="output"></pre>
   </body>
 </html>

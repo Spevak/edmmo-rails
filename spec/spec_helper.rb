@@ -85,6 +85,7 @@ RSpec.configure do |config|
       # Generate tiles.
       @tiles = (1..Tile.MAP_SIDE_LENGTH ** 2).collect { FactoryGirl.create(:tile) }
       @side_length = Tile.MAP_SIDE_LENGTH
+
   end
 
   # After each top level block reset the sequence FactoryGirl uses to make tiles
@@ -96,6 +97,5 @@ RSpec.configure do |config|
 
   #Use capybara-webkit
   Capybara.javascript_driver = :webkit
-
 end
 

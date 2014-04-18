@@ -186,13 +186,7 @@ function tilesSuccess(response) {
 
     Bq.mapData.setTile(x-player_x, y-player_y, tiles[i].tile_type);
   }
-
-
-    //Make sure player character's sprite shows up
-    //playerData["display"]=true;
-
-
-  Bq.renderMap(Bq.Map.getIndices());
+  Bq.map.render(Bq.Map.getIndices());
   return new Sk.builtin.nmber(0, Sk.builtin.int$);
 }
 

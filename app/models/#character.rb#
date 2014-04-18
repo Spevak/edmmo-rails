@@ -53,6 +53,14 @@ class Character < ActiveRecord::Base
     #self.battery += tile_properties[target_tile.tile_type.to_s]["batteffect"][direction[0]]
     #self.health += tile_properties[target_tile.tile_type.to_s]["healtheffect"][direction[0]]
     #self.save!
+    # if the target tile is not traversable
+    # Note: as of 4/16 ledges cannot be walked on so a value of 2 is nontraversable
+    #elsif [1, 2].include? (tile_properties[target_tile.tile_type.to_s]["traversable"][direction[0]])
+    #  render json: { 'err' => 1 }, status: 200
+
+    # if the character is out of battery or health
+    #elsif current_user.character.battery <= 0 or current_user.character.health <= 0
+    #  render json: { 'err' => 1 }, status: 200
 
     if target_tile == nil then
       return false

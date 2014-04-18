@@ -105,14 +105,18 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def dig
-    #for now digging is always successful
+    # for now digging is always successful
+    # consider doing something as simple as allowing digging a third of the time
+    #   success = rand(3); if success == 1 then
     success = true
     if success then
       current_user.character.battery += 10
       current_user.character.save!
-      render json: {err: 0}
+      # render json: {err: 0} - Michel: Why did this have a different json syntax?
+      render json: { 'err' => 0 }
     else
-      render json: {err: 1}
+      # render json: {err: 1}
+      render json: { 'err' => 1 }, status: 200
     end
   end
 end

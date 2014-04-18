@@ -48,7 +48,16 @@ html, body {
   height:30%;
   padding: 15px;
   //margin: auto;
-  background: #eeeeee
+  background: #eeeeee;
+  overflow-y: scroll;
+}
+
+.log-msg {
+  display: block;
+}
+
+#welcome-msg {
+  background-color: #ccc;
 }
 
 #shell {

@@ -54,7 +54,7 @@ MapData.prototype.setTile = function(x, y, tileId) {
  */
 function log(msg) {
     var logPre = document.getElementById('log-text');
-    logPre.innerHTML += "<li class='log-msg'>" + msg + "</li>";
+    logPre.innerHTML += "<li class='log-msg'>"+msg+"</li>";
 }
 
 var mapData = new MapData();

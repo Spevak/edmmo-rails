@@ -1,5 +1,8 @@
 require 'spec_helper'
 
+include Warden::Test::Helpers
+Warden.test_mode!
+
 #Some configuration values which we should sparate from the test logic so
 #we can change the frontend spec without changing the test code
 MAP_MAX_INDEX = 12
@@ -50,231 +53,240 @@ end
 #  This is so we can separate the front and back end for unit testing
 #  Therefore these tests should not pass on the production back end.
 ################################################################
-
-describe "The splash page" do
-  it "loads the dashboard" do
-    stub_env "development" do
-      visit('')
-      expect(page).to have_css('div#dashboard')
-    end
+describe "Interpreter" do
+  before(:all) do
+    user = FactoryGirl.create(:user)
+    character = FactoryGirl.create(:character)
+    character.setTile(Tile.tile_at(0, 0))
+    character.save!
+    user.character = character
+    user.save!
   end
-end
 
-#sort of a smoke test to make sure skulpt is working on our page
-describe "Skulpt" do
-  it "works (runs a print statement)", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print('Hello World')")
-      expect(result).to eq("Hello World")
-    end
-  end
-end
-
-describe "The builtin go function" do
-  it "retuns " + GO_RESPONSES[:legal] + " on legal move", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(go('north'))")
-      expect(result).to eq(GO_RESPONSES[:legal])
+  describe "The splash page" do
+    it "loads the dashboard" do
+      stub_env "development" do
+        visit('')
+        expect(page).to have_css('div#dashboard')
+      end
     end
   end
 
-  it "returns " + GO_RESPONSES[:illegal] + " on illegal move" , :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(go('west'))")
-      expect(result).to eq(GO_RESPONSES[:illegal])
+  #sort of a smoke test to make sure skulpt is working on our page
+  describe "Skulpt" do
+    it "works (runs a print statement)", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print('Hello World')")
+        expect(result).to eq("Hello World")
+      end
     end
   end
 
-  it "returns " + GO_RESPONSES[:immobilized] + " when immobilized", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(go('south'))")
-      expect(result).to eq(GO_RESPONSES[:immobilized])
-    end
-  end
-end
-
-describe "The builtin pickup function" do
-  it "returns " + PICKUP_RESPONSES[:success] + " on success", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(pickup('potato'))")
-      expect(result).to eq(PICKUP_RESPONSES[:success])
-    end
-  end
-
-  it "returns " + PICKUP_RESPONSES[:no_item] + " when item does not exist", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(pickup('cake'))")
-      expect(result).to eq(PICKUP_RESPONSES[:no_item])
-    end
-  end
-
-  it "returns " + PICKUP_RESPONSES[:no_access] + " when item is not accessible", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(pickup('nowhere'))")
-            expect(result).to eq(PICKUP_RESPONSES[:no_access])
-        end
+  describe "The builtin go function" do
+    it "retuns " + GO_RESPONSES[:legal] + " on legal move", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(go('north'))")
+        expect(result).to eq(GO_RESPONSES[:legal])
+      end
     end
 
-  it "returns " + PICKUP_RESPONSES[:no_space] + "when hands are full.", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(pickup('handsfull'))")
-      expect(result).to eq(PICKUP_RESPONSES[:no_space])
+    it "returns " + GO_RESPONSES[:illegal] + " on illegal move" , :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(go('west'))")
+        expect(result).to eq(GO_RESPONSES[:illegal])
+      end
     end
-  end
-end
 
-describe "The builtin drop function" do
-  it "returns " + DROP_RESPONSES[:success] + " on success", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(drop('potato'))")
-      expect(result).to eq(DROP_RESPONSES[:success])
+    it "returns " + GO_RESPONSES[:immobilized] + " when immobilized", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(go('south'))")
+        expect(result).to eq(GO_RESPONSES[:immobilized])
+      end
     end
   end
 
-  it "returns " + DROP_RESPONSES[:no_item] + " when the item doesn't exist", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(drop('nothing'))")
-      expect(result).to eq(DROP_RESPONSES[:no_item])
+  describe "The builtin pickup function" do
+    it "returns " + PICKUP_RESPONSES[:success] + " on success", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(pickup(0,0,'potato'))")
+        expect(result).to eq(PICKUP_RESPONSES[:success])
+      end
     end
-  end  
 
-  it "returns " + DROP_RESPONSES[:occupied] + " when the tile is occupied.", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(drop('occupied'))")
-      expect(result).to eq(DROP_RESPONSES[:occupied])
+    it "returns " + PICKUP_RESPONSES[:no_item] + " when item does not exist", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(pickup(0,0,'cake'))")
+        expect(result).to eq(PICKUP_RESPONSES[:no_item])
+      end
     end
-  end
-end
 
-#This one is hard because we can't send an argument to tell the test backend which response to give
-#for now just have the backend return 0
-describe "The builtin dig function" do
-    it "returns " + DIG_RESPONSES[:success] + " on success", :js => true do
-    stub_env "development" do
-      visit('')
-      #result = -1
-      #while result != 0
-      #  if result != 0
-      #    result = runPython("(dig()")
-      #  else
-      #    result = runPython("print(dig())")
-      #  end
-      #end
-      result = runPython("print(dig())")
-      expect(result).to eq(DIG_RESPONSES[:success])
-    end
-  end
-end
+    it "returns " + PICKUP_RESPONSES[:no_access] + " when item is not accessible", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(pickup(10,0,'potato'))")
+              expect(result).to eq(PICKUP_RESPONSES[:no_access])
+          end
+      end
 
-describe "The builtin use function" do
-  it "returns " + USE_RESPONSES[:success] + " on success", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(useItem('potato', 'battery'))")
-      expect(result).to eq(USE_RESPONSES[:success])
+    it "returns " + PICKUP_RESPONSES[:no_space] + "when hands are full.", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(pickup(0,1,'potato'))")
+        expect(result).to eq(PICKUP_RESPONSES[:no_space])
+      end
     end
   end
 
-  it "returns " + USE_RESPONSES[:no_item] + " when the item does not exist", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(useItem('cake', 'battery'))")
-      expect(result).to eq(USE_RESPONSES[:no_item])
+  describe "The builtin drop function" do
+    it "returns " + DROP_RESPONSES[:success] + " on success", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(drop('potato'))")
+        expect(result).to eq(DROP_RESPONSES[:success])
+      end
+    end
+
+    it "returns " + DROP_RESPONSES[:no_item] + " when the item doesn't exist", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(drop('nothing'))")
+        expect(result).to eq(DROP_RESPONSES[:no_item])
+      end
+    end  
+
+    it "returns " + DROP_RESPONSES[:occupied] + " when the tile is occupied.", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(drop('occupied'))")
+        expect(result).to eq(DROP_RESPONSES[:occupied])
+      end
     end
   end
 
-  it "returns " + USE_RESPONSES[:bad_args] + " when passed a bad argument string", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(useItem('potato', 'bad'))")
-      expect(result).to eq(USE_RESPONSES[:bad_args])
-    end
-  end
-end
-
-describe "The builtin inspect function" do
-  it "returns " + INSPECT_RESPONSES[:success] +  " on success", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(inspect('potato'))")
-      expect(result).to eq(INSPECT_RESPONSES[:success])
-    end
-  end
-  it "returns " + INSPECT_RESPONSES[:no_item] + " when item does not exist", :js => true do
-    stub_env "development" do
-      visit('')
-      result = runPython("print(inspect('cake'))")
-            expect(result).to eq(INSPECT_RESPONSES[:no_item])
-        end
-    end
-end
-
-#describe 'the builtin status function' do
-#  it 'retuns a dict of hp and battery' do
-#    stub_env "development" do
-#      visit('')
-#      result = runPython("print(status())")
-#      expect(result).to eq(STATUS_RESPONSES[:success])
-#    end
-#  end
-#end
-
-
-describe "The builtin tiles function" do
-  it "loads the correct tile in the center", :js => true do
-    stub_env "development" do
-      visit('')
-      runPython('tiles()')
-      result = getTile(0,0)
-      expect(result).to eq(TILES[:center])
+  #This one is hard because we can't send an argument to tell the test backend which response to give
+  #for now just have the backend return 0
+  describe "The builtin dig function" do
+      it "returns " + DIG_RESPONSES[:success] + " on success", :js => true do
+      stub_env "development" do
+        visit('')
+        #result = -1
+        #while result != 0
+        #  if result != 0
+        #    result = runPython("(dig()")
+        #  else
+        #    result = runPython("print(dig())")
+        #  end
+        #end
+        result = runPython("print(dig())")
+        expect(result).to eq(DIG_RESPONSES[:success])
+      end
     end
   end
 
-  it "loads the correct tile in the northwest corner", :js => true do
-    stub_env "development" do
-      visit('')
-      runPython('tiles()')
-      result = getTile(-MAP_MAX_INDEX, MAP_MAX_INDEX)
-      expect(result).to eq(TILES[:nw])
+  describe "The builtin use function" do
+    it "returns " + USE_RESPONSES[:success] + " on success", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(useItem('potato', 'battery'))")
+        expect(result).to eq(USE_RESPONSES[:success])
+      end
+    end
+
+    it "returns " + USE_RESPONSES[:no_item] + " when the item does not exist", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(useItem('cake', 'battery'))")
+        expect(result).to eq(USE_RESPONSES[:no_item])
+      end
+    end
+
+    it "returns " + USE_RESPONSES[:bad_args] + " when passed a bad argument string", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(useItem('potato', 'bad'))")
+        expect(result).to eq(USE_RESPONSES[:bad_args])
+      end
     end
   end
 
-  it "loads the correct tile in the northeast corner", :js => true do
-    stub_env "development" do
-      visit('')
-      runPython('tiles()')
-      result = getTile(MAP_MAX_INDEX, MAP_MAX_INDEX)
-      expect(result).to eq(TILES[:ne])
+  describe "The builtin inspect function" do
+    it "returns " + INSPECT_RESPONSES[:success] +  " on success", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(inspect('potato'))")
+        expect(result).to eq(INSPECT_RESPONSES[:success])
+      end
+    end
+    it "returns " + INSPECT_RESPONSES[:no_item] + " when item does not exist", :js => true do
+      stub_env "development" do
+        visit('')
+        result = runPython("print(inspect('cake'))")
+              expect(result).to eq(INSPECT_RESPONSES[:no_item])
+          end
+      end
+  end
+
+  #describe 'the builtin status function' do
+  #  it 'retuns a dict of hp and battery' do
+  #    stub_env "development" do
+  #      visit('')
+  #      result = runPython("print(status())")
+  #      expect(result).to eq(STATUS_RESPONSES[:success])
+  #    end
+  #  end
+  #end
+
+
+  describe "The builtin tiles function" do
+    it "loads the correct tile in the center", :js => true do
+      stub_env "development" do
+        visit('')
+        runPython('tiles()')
+        result = getTile(0,0)
+        expect(result).to eq(TILES[:center])
+      end
     end
   end
 
-  it "loads the correct tile in the southwest corner", :js => true do
-    stub_env "development" do
-      visit('')
-      runPython('tiles()')
-      result = getTile(-MAP_MAX_INDEX, -MAP_MAX_INDEX)
-      expect(result).to eq(TILES[:sw])
+    it "loads the correct tile in the northwest corner", :js => true do
+      stub_env "development" do
+        visit('')
+        runPython('tiles()')
+        result = getTile(-MAP_MAX_INDEX, MAP_MAX_INDEX)
+        expect(result).to eq(TILES[:nw])
+      end
     end
-  end
 
-  it "loads the correct tile in the southeast corner", :js => true do
-    stub_env "development" do
-      visit('')
-      runPython('tiles()')
-      result = getTile(MAP_MAX_INDEX, -MAP_MAX_INDEX)
-      expect(result).to eq(TILES[:se])
+    it "loads the correct tile in the northeast corner", :js => true do
+      stub_env "development" do
+        visit('')
+        runPython('tiles()')
+        result = getTile(MAP_MAX_INDEX, MAP_MAX_INDEX)
+        expect(result).to eq(TILES[:ne])
+      end
     end
-  end
 
+    it "loads the correct tile in the southwest corner", :js => true do
+      stub_env "development" do
+        visit('')
+        runPython('tiles()')
+        result = getTile(-MAP_MAX_INDEX, -MAP_MAX_INDEX)
+        expect(result).to eq(TILES[:sw])
+      end
+    end
+
+    it "loads the correct tile in the southeast corner", :js => true do
+      stub_env "development" do
+        visit('')
+        runPython('tiles()')
+        result = getTile(MAP_MAX_INDEX, -MAP_MAX_INDEX)
+        expect(result).to eq(TILES[:se])
+      end
+    end
 end
