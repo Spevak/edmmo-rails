@@ -9,24 +9,45 @@ class Character < ActiveRecord::Base
 
   #move in direction dir. Return true on success, false on failure
   def move_direction(direction)
+
+    #Convert the direction to a change in x and y coordinates. 
+    #Also set the direction we are leaving the current tile and the direction
+    #we are entering the new tile (e.g. going north we leave the current tile
+    #in the north direction and enter the next tile from the south 
     dx, dy = 0, 0
+    leave_dir, enterDir = nil, nil
     if direction == 'north' then
       dx, dy = 0, 1
+      leave_dir, enter_dir = 'n', 's'
     elsif direction == 'south'
       dx, dy = 0, -1
+      leave_dir, enter_dir = 's', 'n'
     elsif direction == 'east'
       dx, dy = 1, 0
+      leave_dir, enter_dir = 'e', 'w'
     elsif direction == 'west'
       dx, dy = -1, 0
+      leave_dir, enter_dir = 'w', 'e'
     end
 
+    #The direction given was not one of the 4 cardinal directions
     if dx == 0 and dy == 0 then
       return false
     end
 
+    #find the tile to be moved to
     x = self.tile.x + dx
     y = self.tile.y + dy
     target_tile = Tile.tile_at(x, y)
+
+    #Make sure it is valid to walk over the tile
+    target_tile_props = TILE_PROPERTIES[target_tile.tile_type.to_s]
+    current_tile_props = TILE_PROPERTIES[self.tile.tile_type.to_s]
+    if current_tile_props["traversable"][leave_dir] == 1 or
+        target_tile_props["traversable"][enter_dir] == 1 then
+      return false
+    end
+
 
     if target_tile == nil then
       return false
