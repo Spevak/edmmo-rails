@@ -34,6 +34,21 @@ describe Item do
     end
 
     context 'of sign' do
+      it "converts the character's current tile to a Sign tile" do
+        sign = FactoryGirl.create(:sign)
+        @character.pick_up(sign)
+        @character.use_item(sign)
+        @character = Character.find(@character)
+        @character.tile.tile_type.should eq(16)
+      end
+
+      it "is consumed on use" do
+        sign = FactoryGirl.create(:sign)
+        @character.pick_up(sign)
+        @character.use_item(sign)
+        @character = Character.find(@character)
+        @character.item.should_not eq(sign)
+      end
     end
   end
 end

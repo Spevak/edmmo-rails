@@ -7,7 +7,7 @@
                 "y": 0
             },
             "pickupable": false,
-            "consumable": false,
+            "consumable": true,
 	    "walkoverable": false,
 	    "batteryEffect": 0,
             "healthEffect": 0,
@@ -15,7 +15,7 @@
                 {
                     "xCoordPlus": 0,
                     "yCoordPlus": 0,
-                    "tileBecomes": 13
+                    "tileBecomes": 16
                 }
             ],
             "defaultMessage": "You come across a blank sign. Blank as the void where your heart ought to be."

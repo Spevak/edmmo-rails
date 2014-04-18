@@ -157,6 +157,8 @@ function tilesSuccess(response) {
   var sw_y = player_y - MAP_MAX_INDEX;
   var tiles = response.tiles;
 
+  var other_players = response.other_players;
+
   //var map  = [];
   //for (var i = 0; i < n; i++) {
   //  var row = [];
@@ -186,7 +188,17 @@ function tilesSuccess(response) {
       alert('tile indices out of range');
     }
 
-    Bq.mapData.setTile(x-player_x, y-player_y, tiles[i].tile_type);
+    if (other_players["x,y".replace("x", x).replace("y", y)]) {
+      var dir = other_players["x,y".replace("x", x).replace("y", y)].facing;
+      if (dir === 0) Bq.mapData.setTile(x-player_x, y-player_y, 51); 
+      if (dir === 2) Bq.mapData.setTile(x-player_x, y-player_y, 52);
+      if (dir === 1) Bq.mapData.setTile(x-player_x, y-player_y, 53);
+      if (dir === 3) Bq.mapData.setTile(x-player_x, y-player_y, 54);
+      
+    } else {
+      Bq.mapData.setTile(x-player_x, y-player_y, tiles[i].tile_type);
+    }
+
   }
   Bq.map.render(Bq.Map.getIndices());
   return new Sk.builtin.nmber(0, Sk.builtin.int$);
