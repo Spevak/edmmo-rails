@@ -39,10 +39,20 @@ class Api::V1::WorldController < Api::V1::BaseController
     player_x = character_tile.x
     player_y = character_tile.y
 
+    # Create a hash of { tile xy pair hash => character on tile } entries
+    other_players = (tiles_to_return.map do |tile|
+      if tile.character then
+        { tile.x_y_pair => tile.character }
+      end
+    end)
+    .select { |entry| !(entry.nil?) } # Remove nil entries (characterless tiles)
+    .inject { |hash, hashlet| hash.merge(hashlet) } # Combine into one hash
+
     render json: {
       :tiles => tiles_to_return,
       :player_x => player_x,
-      :player_y => player_y
+      :player_y => player_y,
+      :other_players => other_players
     }
   end
 end
