@@ -33,7 +33,7 @@ class MapController < ApplicationController
       (0..tiles.size-1).each do |index|
         tile = tiles[index]
         file.write("    {\"x\": " + tile["x"].to_s + ", \"y\": " + tile["y"].to_s +
-                   ", \"id\": " + tile["id"].to_s + "}")
+                   ", \"id\": " + tile["id"].to_s + ", \"state\": \"" + tile["state"] + "\"}")
         if index != tiles.size-1 then file.write(",") end
         file.write("\n");
       end
