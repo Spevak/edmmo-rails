@@ -92,22 +92,22 @@ function useSuccess(response) {
 /**
  * Function to be called on success of a call to players/status
  * args: response = the json response to the request
- * returns: a python dict indicating the player's status, containing 3 keys: hp, battery, and facing
+ * returns: a python dict indicating the player's status, containing 3 keys: health, battery, and facing
  * @suppress {missingProperties}
  */
 function statusSuccess(response) {
-  var hp = new Sk.builtin.nmber(response.hp, Sk.builtin.nmber.int$);
+  var health = new Sk.builtin.nmber(response.health, Sk.builtin.nmber.int$);
   var battery = new Sk.builtin.nmber(response.battery, Sk.builtin.nmber.int$);
   //var facing = new Sk.builtin.str(reshellsponse.facing);
-  var logMsg = "Health: " + response.hp.toString() + " Battery: " + response.battery.toString();
+  var logMsg = "Health: " + response.health.toString() + " Battery: " + response.battery.toString();
   logMsg = logMsg + " Position: (" + response.x.toString() + ", " + response.y.toString() + ")";
   log(logMsg);
   Bq.playerData.facing = direction[response.facing];
-  Bq.playerData.health = response.hp;
+  Bq.playerData.health = response.health;
   Bq.playerData.battery = response.battery;
   Bq.playerData.x = response.x;
   Bq.playerData.y = response.y;
-  return new Sk.builtin.tuple([hp, battery]);
+  return new Sk.builtin.tuple([health, battery]);
 } 
 
 
