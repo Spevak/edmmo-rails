@@ -29,13 +29,6 @@ class Api::V1::WorldController < Api::V1::BaseController
                                     character_tile.y - n, #lower left
                                     character_tile.x + n,
                                     character_tile.y + n) #upper right
-    #player_x, player_y = 0, 0
-    #tiles_to_return.each do |t|
-    #  if t.character == character then
-    #    player_x = t.x
-    #    player_y = t.y
-    #  end
-    #end
     player_x = character_tile.x
     player_y = character_tile.y
 
