@@ -5,15 +5,6 @@ class Api::V1::WorldController < Api::V1::BaseController
     n = MAP_MAX_INDEX
     if user_signed_in? then
       character = current_user.character
-      if !character then
-        c = Character.new(health: 100, battery: 100, facing: 'north', name: nil)
-        c.save
-        t = Tile.tile_at(15, 15)
-        t.character = c
-        t.save
-        current_user.character = c
-        current_user.save
-      end
     else
       render json: {}, status: :forbidden
       return
