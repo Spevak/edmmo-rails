@@ -1,6 +1,14 @@
 class Api::V1::PlayersController < Api::V1::BaseController
 
-  #before_filter :validate
+  before_filter :check_signed_in
+
+  def check_signed_in
+    unless user_signed_in?
+      render json: {}, status: 404
+      return 
+    end
+  end
+
   def move
     @user = current_user
     @character = @user.character
@@ -62,8 +70,6 @@ class Api::V1::PlayersController < Api::V1::BaseController
 
   def use
     # do nothing lol
-    x = request[:x]
-    y = request[:y]
     item_id = request[:item_id]
     @user = current_user
     @character = @user.character
@@ -72,6 +78,8 @@ class Api::V1::PlayersController < Api::V1::BaseController
         'err' => 1
       }
     else
+      item = Item.find(item_id)
+      @character.use_item(item)
       render json: {
         'err' => 0
       }
@@ -79,7 +87,11 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def status
-    render json: current_user.character.status
+    if user_signed_in?
+      render json: current_user.character.status
+    else
+      render json: {}, status: 404
+    end
   end
 
   def inspect

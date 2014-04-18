@@ -131,8 +131,8 @@ describe "Interpreter" do
         visit('')
         result = runPython("print(pickup(10,0,'potato'))")
               expect(result).to eq(PICKUP_RESPONSES[:no_access])
-          end
       end
+    end
 
     it "returns " + PICKUP_RESPONSES[:no_space] + "when hands are full.", :js => true do
       stub_env "development" do

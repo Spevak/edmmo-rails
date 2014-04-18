@@ -18,7 +18,7 @@ FactoryGirl.define do
     item
     character
     tile_type 0
-    after(:build) { |t| t.xn_plus_y = (t.x * side_length) + t.y }
+    after(:build) { |t| t.x_y_pair = t.x.to_s + "," + t.y.to_s }
   end
 
   factory :tile_empty, class: Tile do
@@ -27,7 +27,7 @@ FactoryGirl.define do
     item nil
     character nil
     tile_type 0
-    after(:build) { |t| t.xn_plus_y = (t.x * side_length) + t.y }
+    after(:build) { |t| t.x_y_pair = t.x.to_s + "," + t.y.to_s }
   end
 
 end

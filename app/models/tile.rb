@@ -69,4 +69,10 @@ class Tile < ActiveRecord::Base
       char.move_to(x,y)
     end
   end
+
+  def become(tile_type)
+    self.tile_type = tile_type
+    self.save
+  end
+
 end

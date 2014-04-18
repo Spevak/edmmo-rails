@@ -87,6 +87,8 @@ $(document).ready(function() {
 	//Load character's data (hp, battery, facing, x, y)
 	Sk.builtin.statusFunction();
 
+	Bq.log("<font size=4> Welcome to Bot Quest! <br> </font>" +
+			"<font size=3> &nbsp &nbsp Try typing a command below </font>");
 
     //playerData["display"]=true;
 });

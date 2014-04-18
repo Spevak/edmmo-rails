@@ -25,16 +25,34 @@ ActiveRecord::Schema.define(version: 20140418053121) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "item_id"
+    t.integer  "inventory_id"
   end
 
+  add_index "characters", ["inventory_id"], name: "index_characters_on_inventory_id", using: :btree
   add_index "characters", ["item_id"], name: "index_characters_on_item_id", using: :btree
+
+  create_table "inventories", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "items", force: true do |t|
     t.boolean  "pickupable"
     t.boolean  "walkoverable"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "inventory_id"
+    t.string   "item_type"
+    t.string   "affects"
+    t.integer  "moves_player_x"
+    t.integer  "moves_player_y"
+    t.boolean  "consumable"
+    t.integer  "battery_effect"
+    t.integer  "health_effect"
+    t.string   "default_message"
   end
+
+  add_index "items", ["inventory_id"], name: "index_items_on_inventory_id", using: :btree
 
   create_table "tiles", force: true do |t|
     t.integer  "tile_id"
