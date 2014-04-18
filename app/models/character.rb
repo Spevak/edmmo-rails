@@ -19,16 +19,21 @@ class Character < ActiveRecord::Base
     if direction == 'north' then
       dx, dy = 0, 1
       leave_dir, enter_dir = 'n', 's'
+      self.facing = 0
     elsif direction == 'south'
       dx, dy = 0, -1
       leave_dir, enter_dir = 's', 'n'
+      self.facing = 2
     elsif direction == 'east'
       dx, dy = 1, 0
       leave_dir, enter_dir = 'e', 'w'
+      self.facing = 1
     elsif direction == 'west'
       dx, dy = -1, 0
       leave_dir, enter_dir = 'w', 'e'
+      self.facing = 3
     end
+    self.save!
 
     #The direction given was not one of the 4 cardinal directions
     if dx == 0 and dy == 0 then
@@ -43,16 +48,12 @@ class Character < ActiveRecord::Base
     #Make sure it is valid to walk over the tile
     target_tile_props = TILE_PROPERTIES[target_tile.tile_type.to_s]
     current_tile_props = TILE_PROPERTIES[self.tile.tile_type.to_s]
-    if current_tile_props["traversable"][leave_dir] == 1 or
-        target_tile_props["traversable"][enter_dir] == 1 then
+    leaving_traversable = current_tile_props["traversable"][leave_dir]
+    entering_traversable = target_tile_props["traversable"][enter_dir]
+    if leaving_traversable == 1 or leaving_traversable == 3 or
+        entering_traversable == 1 or entering_traversable == 2 then
       return false
     end
-
-    #Michel stuff
-    ## update battery & health according to tile property
-    #self.battery += tile_properties[target_tile.tile_type.to_s]["batteffect"][direction[0]]
-    #self.health += tile_properties[target_tile.tile_type.to_s]["healtheffect"][direction[0]]
-    #self.save!
 
     if target_tile == nil then
       return false
@@ -69,8 +70,10 @@ class Character < ActiveRecord::Base
       self.facing = 3
     end
 
-    #spent 1 unit of battery taking a step
-    self.battery -= 1
+
+    # update battery & health according to tile property
+    self.battery += TILE_PROPERTIES[target_tile.tile_type.to_s]["batteffect"][enter_dir]
+    self.health += TILE_PROPERTIES[target_tile.tile_type.to_s]["healtheffect"][enter_dir]
     self.save!
 
     self.move_to(x, y)

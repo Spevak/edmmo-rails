@@ -7,12 +7,10 @@ class Api::V1::PlayersController < Api::V1::BaseController
 
     direction = request[:direction] 
 
-    #target_tile = Tile.tile_at(@character.tile.x + dx, @character.tile.y + dy)
-    #puts "target tile:"
-    #puts target_tile.x.to_s + "," + target_tile.y.to_s
-    #puts "user's tile:"
-    #puts @character.tile.x.to_s + "," + target_tile.y.to_s
-
+    if current_user.character.battery <= 0
+      render json: { 'err' => 2 }, status: 200
+      return
+    end
     if @character.move_direction(direction) then
       render json: { 'err' => 0 }
     else
