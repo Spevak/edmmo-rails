@@ -127,12 +127,14 @@ class Character < ActiveRecord::Base
     end
   end
 
-  def drop(item)
+  def drop(item_id)
+    item = Item.find(item_id)
     if self.inventory.items.include? item then
       self.inventory.items.delete(item)
       self.inventory.save!
-    elsif self.item == item then
+    elsif self.item.id == item then
       self.item = nil
+      self.save
     end
 
     if self.tile then
@@ -147,13 +149,16 @@ class Character < ActiveRecord::Base
   end
 
   def setTile(tile)
-    tile.character = self
-    tile.save!
+    if (tile)
+      tile.character = self
+      tile.save!
+    end
   end
 
   def use_item(item, *args)
     if self.inventory.items.include? item or
        self.item == item then
+       item.character = self
       item.do_action
     end
   end

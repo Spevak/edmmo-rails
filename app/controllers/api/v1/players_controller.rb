@@ -40,7 +40,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
     elsif (target_tile.item == nil) || target_tile.item.id != item_id then
       render json: { 'err' => 1 }, status: 200
     else
-      @character.pick_up(item_id)
+      @character.pick_up(Item.find(item_id))
       target_tile.item = nil
       target_tile.save!
       render json: { 'err' => 0 }
@@ -69,16 +69,17 @@ class Api::V1::PlayersController < Api::V1::BaseController
   end
 
   def use
-    # do nothing lol
-    item_id = request[:item_id]
+    item_id = request[:item_id].to_i
+    item = Item.find(item_id)
     @user = current_user
     @character = @user.character
-    if (@character.item == nil) or @character.item.id != item_id.to_i then
+    if (@character.item == nil) or 
+      (@character.item.id != item_id and
+       !(@character.inventory.items.include? item)) then
       render json: {
         'err' => 1
       }
     else
-      item = Item.find(item_id)
       @character.use_item(item)
       render json: {
         'err' => 0
@@ -116,8 +117,9 @@ class Api::V1::PlayersController < Api::V1::BaseController
     #   success = rand(3); if success == 1 then
     success = true
     if success then
-      current_user.character.battery += 10
-      current_user.character.save!
+      i = Item.from_data(ITEM_PROPERTIES["potato"])
+      i.save
+      current_user.character.pick_up(i)
       # render json: {err: 0} - Michel: Why did this have a different json syntax?
       render json: { 'err' => 0 }
     else

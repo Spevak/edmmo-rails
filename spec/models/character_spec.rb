@@ -7,7 +7,7 @@ describe Character do
 
   before :each do
     @character = FactoryGirl.create(:character)
-    @tile = Tile.tile_at(2, 2)
+    @tile = Tile.first
     @tile.character = @character
     @tile.save
   end
@@ -30,6 +30,7 @@ describe Character do
 
     context "with valid input: south" do
       it "decrements self.y by 1" do
+        @character.move_direction('north')
         old_x = @character.x
         old_y = @character.y
         @character.move_direction('south')
@@ -58,6 +59,7 @@ describe Character do
 
     context "with valid input: west" do
       it "decrements self.x by 1" do
+        @character.move_direction('east')
         old_x = @character.x
         old_y = @character.y
         @character.move_direction('west')

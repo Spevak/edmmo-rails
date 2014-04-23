@@ -32,9 +32,13 @@ class Api::V1::WorldController < Api::V1::BaseController
     player_x = character_tile.x
     player_y = character_tile.y
 
+    tiles_to_return ||= Hash.new # no nil map errors...
+
     # Create a hash of { tile xy pair hash => character on tile } entries
     other_players = (tiles_to_return.map do |tile|
-      if tile.character and tile.character != character then
+      if tile.character and
+        tile.character != character and
+        tile.character.user.logged_in then
         { tile.x_y_pair => tile.character }
       end
     end)
