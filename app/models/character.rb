@@ -127,12 +127,14 @@ class Character < ActiveRecord::Base
     end
   end
 
-  def drop(item)
+  def drop(item_id)
+    item = Item.find(item_id)
     if self.inventory.items.include? item then
       self.inventory.items.delete(item)
       self.inventory.save!
-    elsif self.item == item then
+    elsif self.item.id == item then
       self.item = nil
+      self.save
     end
 
     if self.tile then

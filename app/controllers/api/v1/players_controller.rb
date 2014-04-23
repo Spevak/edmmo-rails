@@ -75,7 +75,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
     @character = @user.character
     if (@character.item == nil) or 
       (@character.item.id != item_id and
-       !(@character.inventory.items.include? Item.find(item))) then
+       !(@character.inventory.items.include? item)) then
       render json: {
         'err' => 1
       }

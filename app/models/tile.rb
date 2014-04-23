@@ -89,7 +89,7 @@ class Tile < ActiveRecord::Base
     toInspect = Tile.tile_at(self.x + dx, self.y + dy)
     #sign
     if toInspect.tile_type == 16 then 
-       return "a sign that says '" + toInspect.state + "'"
+       return "a sign that says #{toInspect.state}"
     end  
     #return TILE_PROPERITES[self.tile_type.to_s]["description"]
     return "..."

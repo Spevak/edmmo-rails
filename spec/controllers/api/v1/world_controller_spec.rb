@@ -15,11 +15,12 @@ describe Api::V1::WorldController do
         Tile.should_receive(:tiles_at)
         post :tiles
         response.status.should eq 200
-        response.body.keys.should include("tiles")
-        response.body.keys.should include("player_x")
-        response.body.keys.should include("player_y")
-        response.body.keys.should include("other_players")
-        response.body.keys.should include("world_items")
+        response_json = JSON.parse(response.body)
+        response_json.keys.should include("tiles")
+        response_json.keys.should include("player_x")
+        response_json.keys.should include("player_y")
+        response_json.keys.should include("other_players")
+        response_json.keys.should include("world_items")
       end
     end
 
