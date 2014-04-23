@@ -223,7 +223,7 @@ describe Api::V1::PlayersController do
         north_tile.save
         @character.move_direction('north')
         post :inspect, json: { :args => "" }
-        JSON.parse(response.body)["msg"].should start_with "a sign that says"
+        JSON.parse(response.body)["msg"].should start_with "Sign:"
       end
     end
 

@@ -132,7 +132,7 @@ class Character < ActiveRecord::Base
     if self.inventory.items.include? item then
       self.inventory.items.delete(item)
       self.inventory.save!
-    elsif self.item.id == item then
+    elsif self.item.id == item_id then
       self.item = nil
       self.save
     end

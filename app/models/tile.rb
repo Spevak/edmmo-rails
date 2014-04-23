@@ -95,6 +95,8 @@ class Tile < ActiveRecord::Base
   def inspectTile(char, args)
     case self.tile_type
     when 16 #sign
+      self.state ||= ""
+      self.save
       return "Sign: '" + self.state + "'"
     when 14 #locked door
       #if request made with no args, just checking what the tile is, not entering a password
