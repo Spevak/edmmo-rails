@@ -40,7 +40,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
     elsif (target_tile.item == nil) || target_tile.item.id != item_id then
       render json: { 'err' => 1 }, status: 200
     else
-      @character.pick_up(item_id)
+      @character.pick_up(Item.find(item_id))
       target_tile.item = nil
       target_tile.save!
       render json: { 'err' => 0 }
