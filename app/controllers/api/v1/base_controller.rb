@@ -1,6 +1,6 @@
 class Api::V1::BaseController < ApplicationController
 
-  before_action :validate
+  #before_action :validate
 
   def request_valid?(request, session)
     #requested_user = request[:user_id]

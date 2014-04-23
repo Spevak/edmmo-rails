@@ -85,7 +85,9 @@ $(document).ready(function() {
 	Bq.map.displayTileArray(splashArt);
 
 	//Load character's data (hp, battery, facing, x, y)
-	Sk.builtin.statusFunction();
+        if (window.location.href === "/") {
+          Sk.builtin.statusFunction();
+        }
 
 	Bq.log("<font size=4> Welcome to Bot Quest! <br> </font>" +
 			"<font size=3> &nbsp &nbsp Try typing a command below </font>");
