@@ -56,7 +56,6 @@ class Tile < ActiveRecord::Base
   end
 
   def onEnter(char)
-    #puts 'entering tile (' + self.x.to_s + ", " + self.y.to_s + "), id: " + self.tile_type.to_s
     #portal
     if self.tile_type == 13 then
       #the indices of the tile to warp to are stored in self.data as the string (x,y)

@@ -100,8 +100,10 @@ class Api::V1::PlayersController < Api::V1::BaseController
     @character = @user.character
     facing = @character.facing
     tile = @character.tile
-    msg = tile.inspectTile(facing, args)
-    render :json => {:err => 0, :msg => msg}
+    to_inspect = tile.neighbor(facing)
+    msg = to_inspect.inspectTile(@character, args)
+    type = to_inspect.tile_type
+    render :json => {:err => 0, :type => type, :msg => msg}
   end
 
   def characters

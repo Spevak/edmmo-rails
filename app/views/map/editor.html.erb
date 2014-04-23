@@ -33,6 +33,14 @@
 	      y:
 	      <input class="indexBox" type="text" id="portal_y">
 	    </div>
+            <div id="signOptions">
+              Sign text:
+              <input type="text" id="signText">
+            </div>
+            <div id="doorOptions">
+              Door password:
+	      <input type="text" id="password">
+            </div>
 	  </div>
 	  <div class="tool" id="save_file">
 	    Save as
@@ -70,6 +78,32 @@
       keys to move the cursor around on the map (you will have to click outside of the scrolldown bar to deselect
       it first).  Pressing spacebar will replace the currently highlighted tile with whatever the currently 
       selected tile type is.  
+      <br><br>
+      <b>New Features for iter 3:</b>
+      <br>
+      <b>Selecting a box:</b>  You can now select a rectangle of tiles and edit them all at the same time.  
+      This should make it much faster to make walls or fields of one type of tile.  To select a rectangle,
+      hold down shift and use the arrow keys to adjust the highlighted box. When the rectangle is the correct
+      size, release shift.  Now you can use the spacebar as usual to set the tile, and all the highlighted tiles
+      will be set to the selected tile type.
+      <br>
+      <b>New tiles:</b> This iteration we are adding 3 new kinds of tiles: portals, locked doors, and signs.
+      <br>
+      <i>Portals:</i> When you select portal from the drop-down menu, text boxes for the x and y coordinates of the destination
+      will appear.  Enter these values before pressing spacebar to set the portal down.  These coordinates are 
+      ABSOLUTE coordinates, i.e. they refer to a location on the entire map, not just the block you are editing.
+      Also note: do not make a portal that teleports you onto another portal tile, as the backend will check for
+      this case and prevent the teleport from happening to avoid infinite mutual recursion.
+      <br>
+      <i>Locked Doors:</i> When you select a locked door from the drop-down menu, a text box for the password will
+      appear.  Enter the password before placing the door down, like with the portal coordinates.  
+      <br>
+      <i>Signs:</i> Once again, a text box will appear, this time so you can specify what the sign says. 
+      <br>
+      <b> Misc. Notes: </b> After entering text in a text box, you will have to click outside of the text box
+      so that you can use keys to navigate the left side of the gui.  If you don't, your button presses will be
+      handled by the text box, e.g. space will enter a space character into the box instead of placing a tile on
+      the map.  Also, don't forget to save your maps, and run rake generate_map to update the database!
     </div>
     </center>
   </body>
@@ -79,8 +113,10 @@
       $('#hiddenShell').hide();
       $('#log').hide();
 
-      //hide the box for inputting the destination of a portal tile
+      //hide the boxes for entering tile-specific values
       $('#portalOptions').hide();
+      $('#signOptions').hide();
+      $('#doorOptions').hide();
 
       //What tile we're currently drawing on the map
       var currentTileType = -1;
@@ -106,10 +142,22 @@
     function tileSelectChange(){
       currentTileType = parseInt($('#tile').val(), 10);
       //portal selected
-      if (currentTileType == 13) {
+      if (currentTileType === 13) {
         $('#portalOptions').show();
       } else {
         $('#portalOptions').hide();
+      }
+      //sign selected
+      if (currentTileType === 16) {
+        $('#signOptions').show();
+      } else {
+        $('#signOptions').hide();
+      }
+      //locked door selected
+      if (currentTileType === 14) {
+        $('#doorOptions').show();
+      } else {
+        $('#doorOptions').hide();
       }
     }
 
@@ -144,12 +192,16 @@
         }
       }
       tiles = json.tiles;
+      var x, y, tileHash;
       for (index in tiles) {
         tile = tiles[index];
 	//have to subtract map max index from coordinates so that (0, 0) is in bottom left corner instead of center
-        Bq.mapData.setTile(tile.x-MAP_MAX_INDEX, tile.y-MAP_MAX_INDEX, tile.id);
-        //console.log("x: " + tile.x + ", y: " + tile.y + ", id: " + tile.id);
-        //alert("(" + tile.x.toString() + ", " + tile.y.toString() + ")");
+        Bq.mapData.setTile(tile.x - MAP_MAX_INDEX, tile.y - MAP_MAX_INDEX, tile.id);
+
+        //Also store the "state" values of the tile
+	tileHash = Bq.mapData.n * tile.x + tile.y;
+        tileStateValues[tileHash] = tile.state;
+        
       }
       Bq.map.render(Bq.map.getIndices());
     }
@@ -194,6 +246,9 @@
     var currentTileY = 0;
     var showCursor = false;
     $(document).keydown(function(e) {
+    //Don't want to use our key commands when entering text (so that we don't override normal usage of 
+    //text boxes such as the space bar.
+    if (document.activeElement.type !== "text") {
       switch(e.which) {
         case 16: //shift
           highlighterDown = true;
@@ -217,6 +272,7 @@
       if (e.which > 36 && e.which < 41 || e.which == 32 || e.which == 16) {
         return false;
       }
+    }
     });
     $(document).keyup(function(e) {
       switch(e.which) {
@@ -326,12 +382,18 @@
         indices = toUpdate[i]
         //console.log(indices.toString() + indices.toString() + currentTileType.toString());
         Bq.mapData.setTile(indices[0], indices[1], currentTileType);
-        if (currentTileType == 13) {
+        if (currentTileType == 13 || currentTileType == 14 || currentTileType == 16) {
 	  //convert to 0,0 in corner of map
           var x = indices[0] + MAP_MAX_INDEX;
           var y = indices[1] + MAP_MAX_INDEX;
 	  var tileHash = Bq.mapData.n * x + y;
-          var tileText = "(" + $('#portal_x').val() + "," + $('#portal_y').val() + ")"; 
+          if (currentTileType == 13) {
+            var tileText = "(" + $('#portal_x').val() + "," + $('#portal_y').val() + ")";
+          } else if (currentTileType == 14) {
+            var tileText = $('#password').val();
+          } else if (currentTileType == 16) {
+            var tileText = $('#signText').val();
+          } 
           tileStateValues[tileHash] = tileText;
         }
 
