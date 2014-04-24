@@ -260,7 +260,7 @@
     {"x": 10, "y": 7, "id": 0, "state": ""},
     {"x": 10, "y": 8, "id": 0, "state": ""},
     {"x": 10, "y": 9, "id": 0, "state": ""},
-    {"x": 10, "y": 10, "id": 16, "state": "Use "go([direction])" to move your rover. If you ever run out of battery, try digging for a power source with dig(). You can check out other things in the world with inspect()."},
+    {"x": 10, "y": 10, "id": 16, "state": "Use 'go([direction])' to move your rover. If you ever run out of battery, try digging for a power source with dig(). You can check out other things in the world with inspect()."},
     {"x": 10, "y": 11, "id": 0, "state": ""},
     {"x": 10, "y": 12, "id": 0, "state": ""},
     {"x": 10, "y": 13, "id": 0, "state": ""},
