@@ -85,7 +85,7 @@ $(document).ready(function() {
 	Bq.map.displayTileArray(splashArt);
 
 	//Load character's data (hp, battery, facing, x, y)
-        if (window.location.href === "/") {
+        if (window.location.pathname === "/") {
           Sk.builtin.statusFunction();
         }
 

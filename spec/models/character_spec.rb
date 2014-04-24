@@ -136,7 +136,7 @@ describe Character do
       it "removes the item from the character's hand" do
         @item = FactoryGirl.create(:item)
         @character.pick_up(@item)
-        @character.drop(@item)
+        @character.drop(@item.id)
         @character.item.should_not eq(@item)
       end
 
