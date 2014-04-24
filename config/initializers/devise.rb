@@ -239,8 +239,10 @@ Devise.setup do |config|
   end
 
   Warden::Manager.before_logout do |user,auth,opts|
-    user.logged_in = false
-    user.save!
+    if user
+      user.logged_in = false
+      user.save!
+    end
   end
 
   # ==> Mountable engine configurations
