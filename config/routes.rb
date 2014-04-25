@@ -34,6 +34,7 @@ EdmmoRails::Application.routes.draw do
       post 'player/dig' => 'players#dig'
       get 'player/characters' => 'players#characters'
       post 'player/use' => 'players#use'
+      post 'player/face' => 'players#face'
     end
   end
 

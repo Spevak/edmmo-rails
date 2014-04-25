@@ -9,6 +9,20 @@ class Api::V1::PlayersController < Api::V1::BaseController
     end
   end
 
+  # Face a direction (N/S/E/W)
+  def face
+    @user = current_user
+    @character = @user.character
+
+    direction = request[:direction]
+    if @character.face(direction) then
+      render json: { 'err' => 0 }
+    else
+      render json: { 'err' => 1 }
+    end
+  end
+
+  # Move the current player in the request[:direction] direction (N/S/E/W)
   def move
     @user = current_user
     @character = @user.character

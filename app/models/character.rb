@@ -23,6 +23,23 @@ class Character < ActiveRecord::Base
     return c
   end
 
+  # Face the given direction.
+  def face(direction)
+    directions = {
+      'north' => 0,
+      'east'  => 1,
+      'south' => 2,
+      'west'  => 3
+    }
+    if directions.keys.include? direction
+      self.facing = directions[direction]
+      self.save
+      return true
+    end
+
+    false #return false on failure...
+  end
+
   #move in direction dir. Return true on success, false on failure
   def move_direction(direction)
 
