@@ -5,7 +5,10 @@ $(function () {
             mode: "python",
             theme: "solarized dark"
         }),
-        compilableLines = [],
+
+        //Add some botquest constants
+    compilableLines = ["north = 'north'", "south = 'south'", "east = 'east'", "west = 'west'"],
+
         //finds lines starting with "print" 
         re = new RegExp("\\s*print"),
         //finds import statements
