@@ -5,8 +5,15 @@ TEST_MAP_SIZE = 3
 
 describe Character do
 
-  before :each do
+  before :all do
     @character = FactoryGirl.create(:character)
+    Tile.all.each do |t|
+      t.character = nil
+      t.save!
+    end
+  end
+
+  before :each do
     @tile = Tile.first
     @tile.character = @character
     @tile.save
@@ -109,10 +116,16 @@ describe Character do
 
     context 'with item held' do
       it "adds the picked up item to the inventory" do
+
+        #clear the inventory and held item
+        @character.divest
+
         @item = FactoryGirl.create(:item)
-        @character.pick_up(@item)
+        @character.pick_up(@item) #to hand
+        
         @item2 = FactoryGirl.create(:item)
-        @character.pick_up(@item2)
+        @character.pick_up(@item2) #to inventory
+
         @character.item.should eq(@item)
         @character.inventory.items.should include(@item2)
       end
@@ -123,6 +136,8 @@ describe Character do
       end
 
       it "sets the character's currently held item" do
+        @character.divest
+
         @item = FactoryGirl.create(:item)
         @character.pick_up(@item)
         @character.inventory.items.should_not include(@item)
@@ -255,7 +270,10 @@ describe Character do
     end
 
     it "returns -1 when there is no tile" do
-      @character.tile = nil
+      t = @character.tile
+      t.character = nil
+      t.save
+      @character.reload
       @character.y.should eq(-1)
     end
   end
@@ -273,6 +291,21 @@ describe Character do
       old_battery = @character.battery
       @character.charge(10)
       @character.battery.should eq(old_battery + 10)
+    end
+  end
+
+  describe ".divest" do
+    it "removes all the character's items, inventory and held" do
+      5.times do
+        i = Item.from_data(ITEM_PROPERTIES["potato"])
+        i.save
+        @character.pick_up(i)
+      end
+      @character.item.should_not eq(nil)
+      @character.inventory.items.length.should_not eq(0)
+      @character.divest
+      @character.item.should eq(nil)
+      @character.inventory.items.length.should eq(0)
     end
   end
 end
