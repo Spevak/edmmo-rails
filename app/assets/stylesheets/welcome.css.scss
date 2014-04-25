@@ -35,9 +35,25 @@ html, body {
   float: left;
 }
 
-#map-label {
+#statsBar {
   align: center;
-  font-size: 2.5em;
+  margin: 0% 5%;
+  height: 1.5em;
+  font-size: 1.5em;
+}
+
+.stat {
+  background: #eeeeee;
+  width: 49%;
+  margin: 0px 0px;
+}
+
+#battery {
+  float: right;
+}
+
+#health {
+  float: left;
 }
 
 #terminals {
