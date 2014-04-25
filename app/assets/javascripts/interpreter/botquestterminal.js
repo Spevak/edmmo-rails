@@ -43,7 +43,6 @@ $(function () {
 
     //Loop
     repl.eval = function (code) {
-	console.log(compilableLines)
         Sk.configure({ 
             output: function(str) {
                 //strip out line-feeds

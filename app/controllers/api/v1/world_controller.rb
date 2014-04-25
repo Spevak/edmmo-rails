@@ -8,7 +8,7 @@ class Api::V1::WorldController < Api::V1::BaseController
       if !character then
         c = Character.new(health: 100, battery: 100, facing: 'north', name: nil)
         c.save
-        t = Tile.tile_at(15, 15)
+        t = Tile.tile_at(10, 10)
         t.character = c
         t.save
         current_user.character = c

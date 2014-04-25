@@ -124,6 +124,20 @@
       //Store it as a map from nx+y to data (n = map side length)
       var tileStateValues = {}
 
+      //Cleaner access to tileStateValues
+      function getTileState(x, y) {
+        x += MAP_MAX_INDEX
+        y += MAP_MAX_INDEX
+	tileHash = Bq.mapData.n * x + y;
+        return tileStateValues[tileHash];
+      }
+      function setTileState(x, y, state) {
+        x += MAP_MAX_INDEX
+        y += MAP_MAX_INDEX
+        tileHash = Bq.mapData.n * x + y;
+        tileStateValues[tileHash] = state;
+      }
+
       //For highlighting a rectangle
       var highlighterDown = false;
       var selectP1 = []; //coords of first corner of highlighting
@@ -308,6 +322,36 @@
         cell = Bq.Cell.getCell(x,y);
         cell.highlight();
         cell.layer.draw();
+
+        //This part makes sure we can see the tile state of tiles that are already saved. E.G. seeing the text
+        //on a sign that already exists.  We will autofill the text box with the value, but only if the text
+        //box is visible (i.e. if the tile we just moved to is of the same type as the currently selected tile
+        //type)     
+        if (currentTileType === Bq.mapData.tileAt(x,y)) {
+          var state = getTileState(x, y);
+          switch (currentTileType) {
+            //portal
+            case 13:
+              state = state.substring(1, state.length -1)
+              if (!state) {
+                $('#portal_y').val("");
+                $('#portal_x').val("");
+                break;
+              }
+              indices = state.split(',')
+              $('#portal_x').val(indices[0])
+              $('#portal_y').val(indices[1])
+              break;
+            //Locked Door
+            case 14:
+              $('#password').val(state);
+              break;
+            //Sign
+            case 16:
+              $('#signText').val(state);
+              break; 
+          }
+        }
       }
     }
 
