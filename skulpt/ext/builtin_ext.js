@@ -40,7 +40,8 @@ function goSuccessFunction(dir) {
       log("Can’t walk there...");
     if (response.err === 2)
       log("Immobilized!");
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+    //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+      return Sk.builtin.none.none$;
   };
 }
 
@@ -58,7 +59,8 @@ function pickupSuccess(response) {
     log("That item isn't there!");
   if (response.err === 2)
     log("You can't access this tile!");
-  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  return Sk.builtin.none.none$;
 }
 
 /**
@@ -73,7 +75,9 @@ function dropSuccess(response) {
     log("Dropped item");
   if (response.err === 1)
     log("You don't have that item!");
-  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  return Sk.builtin.none.none$;
+
 }
 
 /**
@@ -86,7 +90,9 @@ function useSuccess(response) {
     log("You don't have that item!");
   if (response.err === 2)
     log("Erm... I don't think you can do that with that item.");
-  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  return Sk.builtin.none.none$;
+
 }
 
 /**
@@ -124,7 +130,9 @@ function statusSuccess(response) {
 function inspectSuccess(response) {
   //todo: should log result of inspect instead.
     log("You see " + response.msg);
-  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+    return Sk.builtin.none.none$;
+
 }
 
 
@@ -136,7 +144,9 @@ function inspectSuccess(response) {
  */
 function digSuccess(response) {
   log("You dig around for a while and find a potato. This could make a good battery.");
-  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+    return Sk.builtin.none.none$;
+
 }
 
 /**
@@ -204,7 +214,9 @@ function tilesSuccess(response) {
 
   }
   Bq.map.render(Bq.Map.getIndices());
-  return new Sk.builtin.nmber(0, Sk.builtin.int$);
+  //return new Sk.builtin.nmber(0, Sk.builtin.int$);
+  return Sk.builtin.none.none$;
+
 }
 
 /**
@@ -239,7 +251,9 @@ function faceSuccessFunction(dir) {
     }
     if (response.err === 1)
       log("Can’t face that way...");
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+    //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+    return Sk.builtin.none.none$;
+
   };
 }
 //////////////////////////////////////////////////////////////////////////////////////

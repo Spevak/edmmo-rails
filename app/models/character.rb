@@ -90,8 +90,6 @@ class Character < ActiveRecord::Base
     if [3, 1].include? leaving_traversable or
       [2, 1].include? entering_traversable or
       target_tile.character then
-      puts "I am #{self.attributes}"
-      puts "Moving toward #{target_tile.character.attributes}"
       return false
     end
 
