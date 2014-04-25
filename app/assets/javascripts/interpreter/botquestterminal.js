@@ -24,7 +24,7 @@ $(function () {
     bqBuiltin = /go.*|pickup.*|drop.*|useItem.*|status.*|inspect.*|characters.*|tiles.*|dig.*/g
 
     repl.print("This is a terminal. You can enter commands here.");
-
+    repl.print("To see where you are on the map the left, try typing look()")
     repl.isBalanced = function (code) {
         var lines = code.split('\n'),
             depth = 0,

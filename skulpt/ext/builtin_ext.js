@@ -465,6 +465,18 @@ Sk.builtin.tilesFunction = function() {
 }
 
 /**
+ *Wrapper for tiles that is more intuitively named
+ */
+Sk.builtin.lookFunction = function() {
+    //For the tutorial, log some help if you're on the starting tile.
+    if (Bq.playerData.x == 11 && Bq.playerData.y == 10) {
+	log("You are the arrow in the middle of the map.  To look closer at what's in front of you, type inspect()");
+    }
+    Sk.builtin.pyCheckArgs("lookFunction", arguments, 0, 0);
+    return Sk.builtin.tilesFunction()
+}
+
+/**
  * Implementation of the built-in python function 'face'
  * @suppress {missingProperties}
  */
