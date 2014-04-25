@@ -40,7 +40,8 @@ function goSuccessFunction(dir) {
       log("Can’t walk there...");
     if (response.err === 2)
       log("Immobilized!");
-    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+    //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+      return Sk.builtin.none.none$;
   };
 }
 
@@ -58,7 +59,8 @@ function pickupSuccess(response) {
     log("That item isn't there!");
   if (response.err === 2)
     log("You can't access this tile!");
-  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  return Sk.builtin.none.none$;
 }
 
 /**
@@ -73,7 +75,9 @@ function dropSuccess(response) {
     log("Dropped item");
   if (response.err === 1)
     log("You don't have that item!");
-  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  return Sk.builtin.none.none$;
+
 }
 
 /**
@@ -86,7 +90,9 @@ function useSuccess(response) {
     log("You don't have that item!");
   if (response.err === 2)
     log("Erm... I don't think you can do that with that item.");
-  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  return Sk.builtin.none.none$;
+
 }
 
 /**
@@ -99,12 +105,15 @@ function statusSuccess(response) {
   var health = new Sk.builtin.nmber(response.health, Sk.builtin.nmber.int$);
   var battery = new Sk.builtin.nmber(response.battery, Sk.builtin.nmber.int$);
   //var facing = new Sk.builtin.str(reshellsponse.facing);
-  var logMsg = "Health: " + response.health.toString() + " Battery: " + response.battery.toString();
-  logMsg = logMsg + " Position: (" + response.x.toString() + ", " + response.y.toString() + ")";
-  log(logMsg);
+  //var logMsg = "Health: " + response.health.toString() + " Battery: " + response.battery.toString();
+  //logMsg = logMsg + " Position: (" + response.x.toString() + ", " + response.y.toString() + ")";
+  //log(logMsg);
   Bq.playerData.facing = direction[response.facing];
   Bq.playerData.health = response.health;
   Bq.playerData.battery = response.battery;
+  //update the stats bar
+  document.getElementById('health').innerHTML = "Health: " + response.health.toString();
+  document.getElementById('battery').innerHTML = "Battery: " + response.battery.toString();
   Bq.playerData.x = response.x;
   Bq.playerData.y = response.y;
   return new Sk.builtin.tuple([health, battery]);
@@ -119,10 +128,11 @@ function statusSuccess(response) {
  * @suppress {missingProperties}
  */
 function inspectSuccess(response) {
-    //todo: should log result of inspect instead.
-    switch (response.type):
+  //todo: should log result of inspect instead.
     log("You see " + response.msg);
-  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+    return Sk.builtin.none.none$;
+
 }
 
 
@@ -134,7 +144,9 @@ function inspectSuccess(response) {
  */
 function digSuccess(response) {
   log("You dig around for a while and find a potato. This could make a good battery.");
-  return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+    return Sk.builtin.none.none$;
+
 }
 
 /**
@@ -202,7 +214,9 @@ function tilesSuccess(response) {
 
   }
   Bq.map.render(Bq.Map.getIndices());
-  return new Sk.builtin.nmber(0, Sk.builtin.int$);
+  //return new Sk.builtin.nmber(0, Sk.builtin.int$);
+  return Sk.builtin.none.none$;
+
 }
 
 /**
@@ -215,6 +229,32 @@ function tilesSuccess(response) {
 function charactersSuccess(response) {
   return new Sk.builtin.str("charactersSuccess response handling not yet implemented");
 
+}
+
+/**
+ * Function to be called on success of a call to players/face
+ * args: response = the json response to the face request
+ * returns: python integer corresponding to the err code of the request. (this choice of return is 
+ * for iteration 1 and may be changed to a more meaningful response later on)
+ * @suppress {missingProperties}
+ */
+function faceSuccessFunction(dir) {
+  return function(response) {
+    //For now, reload map and player data every time we take a step
+    Sk.builtin.statusFunction();
+    Sk.builtin.tilesFunction();
+
+    if (response.err === 0) {
+      var x = Bq.playerData.x.toString();
+      var y = Bq.playerData.y.toString();
+      log('Now facing '+dir+'.')
+    }
+    if (response.err === 1)
+      log("Can’t face that way...");
+    //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+    return Sk.builtin.none.none$;
+
+  };
 }
 //////////////////////////////////////////////////////////////////////////////////////
 // UTILITY FUNCTIONS AND GAME STATE                                                 //
@@ -422,5 +462,31 @@ Sk.builtin.tilesFunction = function() {
 
   var tilesFailure = failureFunction(TILES_PATH);
   return json_request("GET", TILES_PATH, tilesSuccess, tilesFailure, {});
+}
+
+/**
+ *Wrapper for tiles that is more intuitively named
+ */
+//Sk.builtin.lookFunction = function() {
+//    Sk.builtin.pyCheckArgs("lookFunction", arguments, 0, 0);
+//    return Sk.builtin.tilesFunction()
+//}
+
+/**
+ * Implementation of the built-in python function 'face'
+ * @suppress {missingProperties}
+ */
+Sk.builtin.faceFunction = function(dir) {
+  // check args count and types
+  Sk.builtin.pyCheckArgs("faceFunction", arguments, 1, 1);
+  Sk.builtin.pyCheckType("dir", "string", Sk.builtin.checkString(dir));
+
+  // get the string from the python representation (there may be a better way to do this)
+  var direction = dir.v
+
+  var faceFailure = failureFunction(FACE_PATH);
+  var faceSuccess = faceSuccessFunction(direction);
+
+  return json_request('POST', FACE_PATH, faceSuccess, faceFailure, {'direction': direction});
 }
 
