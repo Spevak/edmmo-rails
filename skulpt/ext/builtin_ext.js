@@ -99,12 +99,15 @@ function statusSuccess(response) {
   var health = new Sk.builtin.nmber(response.health, Sk.builtin.nmber.int$);
   var battery = new Sk.builtin.nmber(response.battery, Sk.builtin.nmber.int$);
   //var facing = new Sk.builtin.str(reshellsponse.facing);
-  var logMsg = "Health: " + response.health.toString() + " Battery: " + response.battery.toString();
-  logMsg = logMsg + " Position: (" + response.x.toString() + ", " + response.y.toString() + ")";
-  log(logMsg);
+  //var logMsg = "Health: " + response.health.toString() + " Battery: " + response.battery.toString();
+  //logMsg = logMsg + " Position: (" + response.x.toString() + ", " + response.y.toString() + ")";
+  //log(logMsg);
   Bq.playerData.facing = direction[response.facing];
   Bq.playerData.health = response.health;
   Bq.playerData.battery = response.battery;
+  //update the stats bar
+  document.getElementById('health').innerHTML = "Health: " + response.health.toString();
+  document.getElementById('battery').innerHTML = "Battery: " + response.battery.toString();
   Bq.playerData.x = response.x;
   Bq.playerData.y = response.y;
   return new Sk.builtin.tuple([health, battery]);
