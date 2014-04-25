@@ -215,6 +215,30 @@ function charactersSuccess(response) {
   return new Sk.builtin.str("charactersSuccess response handling not yet implemented");
 
 }
+
+/**
+ * Function to be called on success of a call to players/face
+ * args: response = the json response to the face request
+ * returns: python integer corresponding to the err code of the request. (this choice of return is 
+ * for iteration 1 and may be changed to a more meaningful response later on)
+ * @suppress {missingProperties}
+ */
+function faceSuccessFunction(dir) {
+  return function(response) {
+    //For now, reload map and player data every time we take a step
+    Sk.builtin.statusFunction();
+    Sk.builtin.tilesFunction();
+
+    if (response.err === 0) {
+      var x = Bq.playerData.x.toString();
+      var y = Bq.playerData.y.toString();
+      log('Now facing '+dir+'.')
+    }
+    if (response.err === 1)
+      log("Can’t face that way...");
+    return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
+  };
+}
 //////////////////////////////////////////////////////////////////////////////////////
 // UTILITY FUNCTIONS AND GAME STATE                                                 //
 //////////////////////////////////////////////////////////////////////////////////////
@@ -421,5 +445,23 @@ Sk.builtin.tilesFunction = function() {
 
   var tilesFailure = failureFunction(TILES_PATH);
   return json_request("GET", TILES_PATH, tilesSuccess, tilesFailure, {});
+}
+
+/**
+ * Implementation of the built-in python function 'face'
+ * @suppress {missingProperties}
+ */
+Sk.builtin.faceFunction = function(dir) {
+  // check args count and types
+  Sk.builtin.pyCheckArgs("faceFunction", arguments, 1, 1);
+  Sk.builtin.pyCheckType("dir", "string", Sk.builtin.checkString(dir));
+
+  // get the string from the python representation (there may be a better way to do this)
+  var direction = dir.v
+
+  var faceFailure = failureFunction(FACE_PATH);
+  var faceSuccess = faceSuccessFunction(direction);
+
+  return json_request('POST', FACE_PATH, faceSuccess, faceFailure, {'direction': direction});
 }
 

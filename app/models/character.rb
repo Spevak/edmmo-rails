@@ -23,6 +23,23 @@ class Character < ActiveRecord::Base
     return c
   end
 
+  # Face the given direction.
+  def face(direction)
+    directions = {
+      'north' => 0,
+      'east'  => 1,
+      'south' => 2,
+      'west'  => 3
+    }
+    if directions.keys.include? direction
+      self.facing = directions[direction]
+      self.save
+      return true
+    end
+
+    false #return false on failure...
+  end
+
   #move in direction dir. Return true on success, false on failure
   def move_direction(direction)
 
@@ -70,8 +87,11 @@ class Character < ActiveRecord::Base
     current_tile_props = TILE_PROPERTIES[self.tile.tile_type.to_s]
     leaving_traversable = current_tile_props["traversable"][leave_dir]
     entering_traversable = target_tile_props["traversable"][enter_dir]
-    if leaving_traversable == 1 or leaving_traversable == 3 or
-        entering_traversable == 1 or entering_traversable == 2 then
+    if [3, 1].include? leaving_traversable or
+      [2, 1].include? entering_traversable or
+      target_tile.character then
+      puts "I am #{self.attributes}"
+      puts "Moving toward #{target_tile.character.attributes}"
       return false
     end
 
@@ -98,12 +118,13 @@ class Character < ActiveRecord::Base
 
   def move_to(x, y)
 
-    #Don't move to same tile as this causes strange bug where character's association with a tile is deleted.
-    if (self.tile.x - x).abs + (self.tile.y - y).abs >= 1 then
+    #update tile
+    tile = Tile.tile_at(x, y)
+    oldTile = self.tile
 
-      #update tile
-      tile = Tile.tile_at(x, y)
-      oldTile = self.tile
+    #Don't move to same tile as this causes strange bug
+    #where character's association with a tile is deleted.
+    if tile != oldTile then
       oldTile.character = nil
       oldTile.save!
 
@@ -125,6 +146,18 @@ class Character < ActiveRecord::Base
       self.item = item
       self.save!
     end
+  end
+
+  # Remove all the items from this character
+  # (not to be called by the external API)
+  def divest
+    # remove my current item
+    self.item = nil
+    self.save
+
+    # remove my inventory
+    self.inventory.destroy!
+    self.inventory = Inventory.create
   end
 
   def drop(item_id)
@@ -157,8 +190,8 @@ class Character < ActiveRecord::Base
 
   def use_item(item, *args)
     if self.inventory.items.include? item or
-       self.item == item then
-       item.character = self
+      self.item == item then
+      item.character = self
       item.do_action
     end
   end

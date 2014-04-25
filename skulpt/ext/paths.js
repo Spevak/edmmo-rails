@@ -9,3 +9,4 @@ var INSPECT_PATH = "api/v1/player/inspect";
 var CHARACTERS_PATH = "api/v1/player/characters";
 var TILES_PATH = "api/v1/world/tiles";
 var DIG_PATH = "api/v1/player/dig";
+var FACE_PATH = "api/v1/player/face";
