@@ -135,7 +135,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
       i.save
       current_user.character.pick_up(i)
       # render json: {err: 0} - Michel: Why did this have a different json syntax?
-      render json: { 'err' => 0 }
+      render json: { 'err' => 0, 'id' => i.id }
     else
       # render json: {err: 1}
       render json: { 'err' => 1 }, status: 200

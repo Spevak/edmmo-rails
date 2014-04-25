@@ -143,7 +143,8 @@ function inspectSuccess(response) {
  * @suppress {missingProperties}
  */
 function digSuccess(response) {
-  log("You dig around for a while and find a potato. This could make a good battery.");
+  var id = response.id.toString();
+  log("You dig around for a while and find a potato with id " + id + ". This could make a good battery.");
   //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
     return Sk.builtin.none.none$;
 
