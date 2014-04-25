@@ -239,7 +239,7 @@ Devise.setup do |config|
   end
 
   Warden::Manager.before_logout do |user,auth,opts|
-    if user
+    if user # lmbo
       user.logged_in = false
       user.save!
     end

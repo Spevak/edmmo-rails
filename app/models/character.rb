@@ -70,8 +70,9 @@ class Character < ActiveRecord::Base
     current_tile_props = TILE_PROPERTIES[self.tile.tile_type.to_s]
     leaving_traversable = current_tile_props["traversable"][leave_dir]
     entering_traversable = target_tile_props["traversable"][enter_dir]
-    if leaving_traversable == 1 or leaving_traversable == 3 or
-        entering_traversable == 1 or entering_traversable == 2 then
+    if [3, 1].include? leaving_traversable or
+        [2, 1].include? entering_traversable then
+        #target_tile.character then
       return false
     end
 
