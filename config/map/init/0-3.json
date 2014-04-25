@@ -340,7 +340,7 @@
     {"x": 13, "y": 12, "id": 0, "state": ""},
     {"x": 13, "y": 13, "id": 0, "state": ""},
     {"x": 13, "y": 14, "id": 0, "state": ""},
-    {"x": 13, "y": 15, "id": 16, "state": "Getting tired of writing 'go' so often? Try making a for loop! First type in 'for range(0, 6)'. After entering that, hit 'tab' and enter 'go('east')'. What happens?"},
+    {"x": 13, "y": 15, "id": 16, "state": "Getting tired of writing 'go' so often? Try making a for loop! First type in 'for i in range(0, 6)'. After entering that, hit 'tab' and enter 'go('east')'. Then enter one more time. What happens?"},
     {"x": 13, "y": 16, "id": 0, "state": ""},
     {"x": 13, "y": 17, "id": 0, "state": ""},
     {"x": 13, "y": 18, "id": 0, "state": ""},
