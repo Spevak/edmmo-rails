@@ -79,9 +79,7 @@ $(document).ready(function() {
 
   // Always returns a string which is unique for any pair (x, y)
   Bq.Cell.hashCellPair = function(x, y) {
-    x += offset;
-    y += offset;
-    return (x * Bq.mapData.n) + y;
+    return "(" + x + ", " + y + ")"
   };
 
   //Return the cell at location (x,y)

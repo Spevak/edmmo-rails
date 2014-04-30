@@ -36,6 +36,7 @@ $(document).ready(function() {
       var x = j,
       y = i;
 
+      ( function(cells) { 
       var cell = new Kinetic.Group({
         x: (x * cellWidth),
         y: (y * cellHeight),
@@ -50,8 +51,8 @@ $(document).ready(function() {
         fill: cellBgColor
       });
 
-      imageObject = new Image();
-      imageObject.onLoad = function() {
+      var imageObject = new Image();
+      imageObject.onload = function() {
         var cellFg = new Kinetic.Sprite({
           width: cellWidth,
           height: cellHeight,
@@ -59,21 +60,18 @@ $(document).ready(function() {
           y: 0,
           image: imageObject
         });
-        cell.add(cellBg);
+        console.log("cellfg: " + cellFg);
         cell.add(cellFg);
-        cells[i].push(cell);
+        console.log("cell: " + cell.children);
       }
-      cells[i].push(cell);
       imageObject.src = '/assets/tiles/tile_placeholder.png';
+      cell.add(cellBg);
+      fgLayer.add(cell);
+      } )(cells);
+      fgLayer.draw();
     }
   }
-
-
-  for (var i = 0; i < cells.length; i++) {
-    for (var j = 0; j < cells[i].length; j++) {
-      fgLayer.add(cells[i][j]);
-    }
-  }
+  fgLayer.draw();
   Bq.map = new Bq.Map(stage, fgLayer, bgLayer);
 
   //////////////////////////////////////////
