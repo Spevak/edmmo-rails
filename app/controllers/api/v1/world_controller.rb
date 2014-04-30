@@ -8,7 +8,7 @@ class Api::V1::WorldController < Api::V1::BaseController
       if !character then
         c = Character.new(health: 100, battery: 100, facing: 'north', name: nil)
         c.save
-        t = Tile.tile_at(15, 15)
+        t = Tile.tile_at(10, 10)
         t.character = c
         t.save
         current_user.character = c
@@ -32,9 +32,13 @@ class Api::V1::WorldController < Api::V1::BaseController
     player_x = character_tile.x
     player_y = character_tile.y
 
+    tiles_to_return ||= Hash.new # no nil map errors...
+
     # Create a hash of { tile xy pair hash => character on tile } entries
     other_players = (tiles_to_return.map do |tile|
-      if tile.character and tile.character != character then
+      if tile.character and
+        tile.character != character and
+        tile.character.user.logged_in then
         { tile.x_y_pair => tile.character }
       end
     end)
@@ -48,7 +52,6 @@ class Api::V1::WorldController < Api::V1::BaseController
       end
     end)
     .select { |entry| !(entry.nil?) } # Remove nil entries (itemless tiles)
-    .inject { |hash, hashlet| hash.merge(hashlet) } # Combine into one hash
 
     render json: {
       :tiles         => tiles_to_return,

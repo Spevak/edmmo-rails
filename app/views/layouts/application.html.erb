@@ -13,5 +13,14 @@
 
 <%= yield %>
 
+<div id="account-links">
+  <% if !user_signed_in? %>
+    <a href="/users/sign_in">Sign in</a>
+    <a href="/users/sign_up">Sign up</a>
+  <% else %>
+    <a href="/users/sign_out">Sign out</a>
+  <% end %>
+</div>
+
 </body>
 </html>

@@ -40,9 +40,9 @@ class Item < ActiveRecord::Base
       # an aoe effect is represented as a list of objects,
       # each one representing the effect on one tile
       ITEM_PROPERTIES[self.item_type]["aoe"].each do |aoe|
-        dx = aoe[:xCoordPlus]
-        dy = aoe[:yCoordPlus]
-        tile_becomes = aoe[:tileBecomes]
+        dx = aoe["xCoordPlus"]
+        dy = aoe["yCoordPlus"]
+        tile_becomes = aoe["tileBecomes"]
         Tile.tile_at(player_tile.x + dx, player_tile.y + dy).become tile_becomes
       end
 

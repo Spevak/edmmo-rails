@@ -215,24 +215,21 @@ describe Api::V1::PlayersController do
   end
 
   describe "POST #inspect" do
-    context "valid item" do
-      it "inspects an item" do
-        @item = FactoryGirl.create(:item)
-        @character.item = @item
-        @character.save!
-        json = {
-          item_id: @item.id
-        }
-        post :inspect, json
-        JSON.parse(response.body)["err"].should eql 0
-        JSON.parse(response.body)["item"].should eql JSON.parse(@item.to_json)
+    
+    context "sign tile" do
+      it "returns a string that starts with a 'sign that says'" do
+        north_tile = Tile.tile_at(@tile.x, @tile.y + 2)
+        north_tile.tile_type = 16
+        north_tile.save
+        @character.move_direction('north')
+        post :inspect, json: { :args => "" }
+        JSON.parse(response.body)["msg"].should start_with "Sign:"
       end
     end
-    context "does not have that item" do
-      it "returns error code 1" do
-        #TODO implement after inventory is done
-      end
+
+    context "invalid tile" do
     end
+
   end
 
   describe "GET #characters" do

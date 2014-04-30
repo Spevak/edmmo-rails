@@ -5,7 +5,10 @@ $(function () {
             mode: "python",
             theme: "solarized dark"
         }),
-        compilableLines = [],
+
+        //Add some botquest constants
+    compilableLines = ["north = 'north'", "south = 'south'", "east = 'east'", "west = 'west'"],
+
         //finds lines starting with "print" 
         re = new RegExp("\\s*print"),
         //finds import statements
@@ -21,7 +24,7 @@ $(function () {
     bqBuiltin = /go.*|pickup.*|drop.*|useItem.*|status.*|inspect.*|characters.*|tiles.*|dig.*/g
 
     repl.print("This is a terminal. You can enter commands here.");
-
+    repl.print("To see where you are on the map the left, try typing look()")
     repl.isBalanced = function (code) {
         var lines = code.split('\n'),
             depth = 0,
@@ -43,7 +46,6 @@ $(function () {
 
     //Loop
     repl.eval = function (code) {
-	console.log(compilableLines)
         Sk.configure({ 
             output: function(str) {
                 //strip out line-feeds

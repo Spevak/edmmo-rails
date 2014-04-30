@@ -6,7 +6,11 @@
       <!-- The Map -->
       <div class="half" id="map">
 	<div id="map-container"></div>
-	<div id="map-label"> <center> Map </center> </div>
+	<!-- <div id="map-label"> <center> Map </center> </div> -->
+        <div id="statsBar" >
+          <pre class="stat" id="health">Health:</pre>
+          <pre class="stat" id="battery">Battery:</pre>
+        </div>
       </div>
 
       <!-- The right hand side containing the two text boxes -->
@@ -15,8 +19,12 @@
 	<div class="terminal" id="log">
     <ul id="log-text">
     <li class="log-msg" id="welcome-msg">
-      <font size=4> Welcome to Bot Quest!</font><br>
-      <font size=3> &nbsp; &nbsp; Try typing a command below </font>
+      <font size=5> Welcome to Bot Quest!</font><br>
+      <font size=3> &nbsp; &nbsp; This box is the message log
+      </font>
+    </li>
+    <li class="log-msg" id="log-latest">
+      &nbsp; &nbsp Latest output highlighted in red.
     </li>
     </ul>
 	</div>

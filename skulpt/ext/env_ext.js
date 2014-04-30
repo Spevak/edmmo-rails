@@ -54,8 +54,11 @@ MapData.prototype.setTile = function(x, y, tileId) {
  */
 function log(msg) {
     var logPre = document.getElementById('log-text');
-    logPre.innerHTML += "<li class='log-msg'>" + msg + "</li>";
+    var logLatest = document.getElementById('log-latest');
     var log = document.getElementById('log');
+
+    logLatest.removeAttribute('id');
+    logPre.innerHTML += "<li id='log-latest' class='log-msg'>" + msg + "</li>";
     log.scrollTop = log.scrollHeight;
 
 }

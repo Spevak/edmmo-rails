@@ -1,4 +1,4 @@
-class MapController < ApplicationController
+class MapController < Api::V1::BaseController
 
   def editor
     unless Rails.env.development? then

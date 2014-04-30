@@ -143,8 +143,7 @@ function inspectSuccess(response) {
  * @suppress {missingProperties}
  */
 function digSuccess(response) {
-  var id = response.id.toString();
-  log("You dig around for a while and find a potato with id " + id + ". This could make a good battery.");
+  log("You dig around for a while and find a potato. This could make a good battery.");
   //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
     return Sk.builtin.none.none$;
 
@@ -468,14 +467,10 @@ Sk.builtin.tilesFunction = function() {
 /**
  *Wrapper for tiles that is more intuitively named
  */
-Sk.builtin.lookFunction = function() {
-    //For the tutorial, log some help if you're on the starting tile.
-    if (Bq.playerData.x == 11 && Bq.playerData.y == 10) {
-	log("You are the arrow in the middle of the map.  To look closer at what's in front of you, type inspect()");
-    }
-    Sk.builtin.pyCheckArgs("lookFunction", arguments, 0, 0);
-    return Sk.builtin.tilesFunction()
-}
+//Sk.builtin.lookFunction = function() {
+//    Sk.builtin.pyCheckArgs("lookFunction", arguments, 0, 0);
+//    return Sk.builtin.tilesFunction()
+//}
 
 /**
  * Implementation of the built-in python function 'face'

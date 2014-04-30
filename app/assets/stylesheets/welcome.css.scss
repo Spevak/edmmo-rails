@@ -35,9 +35,25 @@ html, body {
   float: left;
 }
 
-#map-label {
+#statsBar {
   align: center;
-  font-size: 2.5em;
+  margin: 0% 5%;
+  height: 1.5em;
+  font-size: 1.5em;
+}
+
+.stat {
+  background: #eeeeee;
+  width: 49%;
+  margin: 0px 0px;
+}
+
+#battery {
+  float: right;
+}
+
+#health {
+  float: left;
 }
 
 #terminals {
@@ -56,6 +72,11 @@ html, body {
   display: block;
 }
 
+#log-latest {
+  color: #d00;
+  background: #ccc;
+}
+
 #welcome-msg {
   background-color: #ccc;
 }
@@ -64,4 +85,12 @@ html, body {
   height:60%;
   font-size: 80%;
   //margin:auto
+}
+
+#account-links {
+  margin: 0 auto;
+  text-align: center;
+  width: 25%;
+  background: #ccc;
+  padding: 6px;
 }
