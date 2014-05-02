@@ -4,7 +4,7 @@ class Tile < ActiveRecord::Base
   MAP_SIDE_LENGTH = 25
 
   belongs_to :item
-  belongs_to :character
+  has_many :characters
 
   validates :x, numericality: { only_integer: true }
   validates :y, numericality: { only_integer: true }
@@ -46,16 +46,16 @@ class Tile < ActiveRecord::Base
     end
   end
 
-  def self.character_at(x, y)
+  def self.characters_at(x, y)
     t = Tile.tile_at(x, y)
     if t 
-      t.character
+      t.characters
     else
       nil
     end
   end
 
-  def onEnter(char)
+  def on_enter(char)
     #puts 'entering tile (' + self.x.to_s + ", " + self.y.to_s + "), id: " + self.tile_type.to_s
     #portal
     if self.tile_type == 13 then
@@ -92,7 +92,7 @@ class Tile < ActiveRecord::Base
 
   #char = character that is doing the inspecting.
   #args = their arguments (empty string if no args)
-  def inspectTile(char, args)
+  def inspect_tile(char, args = "")
     case self.tile_type
     when 16 #sign
       self.state ||= ""
@@ -115,6 +115,10 @@ class Tile < ActiveRecord::Base
     else
       return "..."
     end
+  end
+
+  def logged_in_characters
+    self.characters.select{ |c| c.user.logged_in }
   end
 
 end

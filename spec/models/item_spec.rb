@@ -3,9 +3,9 @@ require 'spec_helper'
 describe Item do
   before :each do
     @character = FactoryGirl.create(:character)
-    t = Tile.tile_at(4, 5)
-    t.character = @character
-    t.save
+    tile = Tile.tile_at(4, 5)
+    @character.tile = tile
+    @character.save
   end
 
   it "should be valid" do

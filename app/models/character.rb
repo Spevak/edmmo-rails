@@ -6,7 +6,7 @@ require 'inventory'
 class Character < ActiveRecord::Base
   belongs_to :item
   has_one :user
-  has_one :tile
+  belongs_to :tile
   belongs_to :inventory
 
   after_create do |c|
@@ -89,7 +89,7 @@ class Character < ActiveRecord::Base
     entering_traversable = target_tile_props["traversable"][enter_dir]
     if [3, 1].include? leaving_traversable or
       [2, 1].include? entering_traversable or
-      (target_tile.character and target_tile.character.user.logged_in) then
+      !(target_tile.characters.select { |c| c.user.logged_in }).empty? then
       return false
     end
 
@@ -115,7 +115,6 @@ class Character < ActiveRecord::Base
   end
 
   def move_to(x, y)
-
     #update tile
     tile = Tile.tile_at(x, y)
     oldTile = self.tile
@@ -123,15 +122,10 @@ class Character < ActiveRecord::Base
     #Don't move to same tile as this causes strange bug
     #where character's association with a tile is deleted.
     if tile != oldTile then
-      oldTile.character = nil
-      oldTile.save!
-
-      tile.character = self
-      tile.save!
-
+      self.tile = tile
+      self.save
       #trigger any events that happen when you enter the new tile
-      tile.onEnter(self)
-
+      tile.on_enter(self)
     end
   end
 
@@ -172,17 +166,6 @@ class Character < ActiveRecord::Base
       t = self.tile
       t.item = item
       t.save!
-    end
-  end
-
-  def tile()
-    Tile.find_by_character_id(self.id)
-  end
-
-  def setTile(tile)
-    if (tile)
-      tile.character = self
-      tile.save!
     end
   end
 

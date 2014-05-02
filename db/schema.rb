@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140418053121) do
+ActiveRecord::Schema.define(version: 20140502220334) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,10 +26,12 @@ ActiveRecord::Schema.define(version: 20140418053121) do
     t.datetime "updated_at"
     t.integer  "item_id"
     t.integer  "inventory_id"
+    t.integer  "tile_id"
   end
 
   add_index "characters", ["inventory_id"], name: "index_characters_on_inventory_id", using: :btree
   add_index "characters", ["item_id"], name: "index_characters_on_item_id", using: :btree
+  add_index "characters", ["tile_id"], name: "index_characters_on_tile_id", using: :btree
 
   create_table "inventories", force: true do |t|
     t.datetime "created_at"
@@ -61,13 +63,11 @@ ActiveRecord::Schema.define(version: 20140418053121) do
     t.string   "x_y_pair"
     t.integer  "tile_type"
     t.integer  "item_id"
-    t.integer  "character_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "state"
   end
 
-  add_index "tiles", ["character_id"], name: "index_tiles_on_character_id", using: :btree
   add_index "tiles", ["item_id"], name: "index_tiles_on_item_id", using: :btree
 
   create_table "users", force: true do |t|

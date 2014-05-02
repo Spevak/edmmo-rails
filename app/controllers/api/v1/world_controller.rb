@@ -19,28 +19,24 @@ class Api::V1::WorldController < Api::V1::BaseController
       return
     end
 
-    character_tile = current_user.character.tile
-    if (!character_tile)
-      character_tile = Tile.first
-      character_tile.character = current_user.character
-      character_tile.save
+    character = current_user.character
+    if (!character.tile)
+      character.tile = Tile.first
+      character.save
     end
-    tiles_to_return = Tile.tiles_at(character_tile.x - n,
-                                    character_tile.y - n, #lower left
-                                    character_tile.x + n,
-                                    character_tile.y + n) #upper right
-    player_x = character_tile.x
-    player_y = character_tile.y
+    tiles_to_return = Tile.tiles_at(character.x - n,
+                                    character.y - n, #lower left
+                                    character.x + n,
+                                    character.y + n) #upper right
 
     tiles_to_return ||= Hash.new # no nil map errors...
 
     # Create a hash of { tile xy pair hash => character on tile } entries
     other_players = (tiles_to_return.map do |tile|
-      if tile.character and
-        tile.character != character and
-        tile.character.user.logged_in then
-        { tile.x_y_pair => tile.character }
-      end
+      tile_chars = tile.logged_in_characters
+      if !(tile_chars.empty?) then
+        { tile.x_y_pair => tile.characters }
+      end # emits nil if above not executed
     end)
     .select { |entry| !(entry.nil?) } # Remove nil entries (characterless tiles)
     .inject { |hash, hashlet| hash.merge(hashlet) } # Combine into one hash
@@ -52,11 +48,12 @@ class Api::V1::WorldController < Api::V1::BaseController
       end
     end)
     .select { |entry| !(entry.nil?) } # Remove nil entries (itemless tiles)
+    .inject { |hash, hashlet| hash.merge(hashlet) } # Combine into one hash
 
     render json: {
       :tiles         => tiles_to_return,
-      :player_x      => player_x,
-      :player_y      => player_y,
+      :player_x      => character.x,
+      :player_y      => character.y,
       :other_players => other_players || {}, # always send a map
       :world_items   => world_items || {}
     }

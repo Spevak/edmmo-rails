@@ -7,16 +7,12 @@ describe Character do
 
   before :all do
     @character = FactoryGirl.create(:character)
-    Tile.all.each do |t|
-      t.character = nil
-      t.save!
-    end
   end
 
   before :each do
     @tile = Tile.first
-    @tile.character = @character
-    @tile.save
+    @character.tile = @tile
+    @character.save
   end
 
   describe ".move_direction" do
@@ -82,8 +78,8 @@ describe Character do
     context "with invalid input: nonexistent tile" do
       it "does nothing" do
         @tile = Tile.last
-        @tile.character = @character
-        @tile.save
+        @character.tile = @tile
+        @character.save
         @character.move_direction('north')
         @character.tile.should eq(@tile)
       end
@@ -101,14 +97,14 @@ describe Character do
   describe ".move_to" do
     it "reassigns the character's tile" do
       tile = @tiles.first
-      tile.character = @character
-      tile.save
+      @character.tile = tile
+      @character.save
       @character.move_to @tiles[1].x, @tiles[1].y
       #Tile.character_at(tile.x + 1, tile.y).should eq(@character)
       @character.tile.should_not eql(tile)
       @character.tile.should eq @tiles[1]
-      tile.character = nil
-      tile.save
+      @character.tile = nil
+      @character.save
     end
   end
 
@@ -158,8 +154,8 @@ describe Character do
       it "places the item on the tile the character is standing on" do
         @item = FactoryGirl.create(:item)
         @tile = @tiles.first
-        @tile.character = @character
-        @tile.save
+        @character.tile = @tile
+        @character.save
 
         @character.pick_up(@item)
         @character.drop(@item)
@@ -184,8 +180,8 @@ describe Character do
         @item2 = FactoryGirl.create(:item)
         @character.pick_up(@item2)
         @tile = @tiles.first
-        @tile.character = @character
-        @tile.save
+        @character.tile = @tile
+        @character.save
 
         @character.pick_up(@item)
         @character.pick_up(@item2)
@@ -250,13 +246,14 @@ describe Character do
   describe ".x" do
     it "returns the tile x when there is a tile" do
       tile = @tiles.first
-      tile.character = @character
-      tile.save
+      @character.tile = @tile
+      @character.save
       @character.x.should eq(@character.tile.x)
     end
 
     it "returns -1 when there is no tile" do
       @character.tile = nil
+      @character.save
       @character.x.should eq(-1)
     end
   end
@@ -264,16 +261,14 @@ describe Character do
   describe ".y" do
     it "returns the tile y when there is a tile" do
       tile = @tiles.first
-      tile.character = @character
-      tile.save
+      @character.tile = @tile
+      @character.save
       @character.y.should eq(@character.tile.y)
     end
 
     it "returns -1 when there is no tile" do
-      t = @character.tile
-      t.character = nil
-      t.save
-      @character.reload
+      @character.tile = nil
+      @character.save
       @character.y.should eq(-1)
     end
   end

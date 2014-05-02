@@ -54,19 +54,132 @@ describe Tile do
     end
   end
 
-  describe ".character_at" do
-    it "returns a valid character when there is one" do
+  describe ".characters_at" do
+    it "returns a correct list of valid characters when there is one" do
       tile = Tile.first
-      tile.character = Character.create
-      char_at = Tile.character_at(tile.x, tile.y)
-      char_at.should be_valid
+      5.times do
+        character = Character.create
+        character.tile = tile
+        character.save
+      end
+      chars_at = Tile.characters_at(tile.x, tile.y)
+      chars_at.each do |c|
+        c.should be_valid
+      end
     end
 
-    it "returns nil when there's no character" do
+    it "returns an empty list when there're no characters" do
       tile = Tile.first
-      tile.character = nil
-      tile.save
-      Tile.character_at(tile.x, tile.y).should eql nil
+      tile.characters.each do |c|
+        c.tile = nil
+        c.save
+      end
+      Tile.characters_at(tile.x, tile.y).length.should eq 0
     end
   end
+
+  describe ".inspect_tile" do
+    context "on a sign (16)" do
+      it "begins with Sign: " do
+        tile = Tile.first
+        tile.tile_type = 16
+        tile.save!
+        tile.inspect_tile(nil, "").should start_with "Sign: "
+      end
+
+      it "contains the tile's message" do
+        tile = Tile.first
+        tile.tile_type = 16
+        tile.state = "a message"
+        tile.save!
+        tile.inspect_tile(nil, "").should include "a message"
+      end
+    end
+
+    context "on a locked door (14)" do
+      context "with no args (just looking)" do
+        it "returns 'The door is locked with a password'" do
+          tile = Tile.first
+          tile.tile_type = 14
+          tile.save
+          tile.inspect_tile(nil, "").should eq "The door is locked with a password"
+        end
+      end
+
+      context "with correct password" do
+        it "returns 'Password Correct!'" do
+          tile = Tile.first
+          tile.tile_type = 14
+          tile.save
+          character = Character.create
+          character.tile = tile
+          character.save
+
+          tile_above = Tile.tile_at(tile.x, tile.y+1)
+          tile_above.tile_type = 14
+          tile_above.state = "hunter2"
+          tile_above.save
+
+          tile_above.inspect_tile(character, "hunter2").should eq "Password Correct!"
+        end
+
+        it "moves the character" do
+          tile = Tile.first
+          character = Character.create
+          character.tile = tile
+          character.save
+
+          tile_above = Tile.tile_at(tile.x, tile.y+1)
+          tile_above.tile_type = 14
+          tile_above.state = "hunter2"
+          tile_above.save
+          tile_above.inspect_tile(character, "hunter2")
+          character.tile.should eql tile_above
+        end
+      end
+
+      context "with incorrect password" do
+        it "returns 'Access Denied!'" do
+          tile = Tile.first
+          character = Character.create
+          character.tile = tile
+          character.save
+
+          tile_above = Tile.tile_at(tile.x, tile.y+1)
+          tile_above.tile_type = 14
+          tile_above.state = "hunter2"
+          tile_above.save
+          tile_above.inspect_tile(character, "WRONG").should eq "Access Denied!"
+        end
+      end
+    end
+  end
+
+  describe ".neighbor" do
+    context "north" do
+      it "returns the tile to the north" do
+        tile = Tile.first
+        tile.neighbor(0).should eq (Tile.tile_at(tile.x, tile.y + 1))
+      end
+    end
+    context "south" do
+      it "returns the tile to the north" do
+        tile = Tile.first
+        tile.neighbor(2).should eq (Tile.tile_at(tile.x, tile.y - 1))
+      end
+    end
+    context "west" do
+      it "returns the tile to the north" do
+        tile = Tile.first
+        tile.neighbor(1).should eq (Tile.tile_at(tile.x + 1, tile.y))
+      end
+    end
+    context "east" do
+      it "returns the tile to the north" do
+        tile = Tile.first
+        tile.neighbor(3).should eq (Tile.tile_at(tile.x - 1, tile.y))
+      end
+    end
+  end
+
 end

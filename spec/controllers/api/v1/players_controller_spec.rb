@@ -7,30 +7,30 @@ describe Api::V1::PlayersController do
     sign_in @user
     @character = @user.character
     @tile = Tile.first
-    @tile.character = @character
-    @tile.save!
+    @character.tile = @tile
+    @character.save!
   end
 
   describe "POST #move" do
 
     context "valid move" do 
       it "moves the player and returns error code 0 (success)" do
-        @character.setTile(Tile.tile_at(0, 0))
+        @character.tile = Tile.tile_at(0, 0)
         @character.save!
         json = {direction: 'east'}
         post :move, json
         @character.reload
         @character.tile.x.should eql 1
         @character.tile.y.should eql 0
-        Tile.tile_at(1, 0).character.should eql @character
-        Tile.tile_at(0, 0).character.should eql nil
+        Tile.tile_at(1, 0).characters.should include @character
+        Tile.tile_at(0, 0).characters.length.should eq 0
         JSON.parse(response.body)["err"].should eql 0
       end 
     end
 
     context "invalid move" do
       it "does not move player and returns error code 1" do
-        @character.setTile(Tile.tile_at(0, 0))
+        @character.tile = Tile.tile_at(0, 0)
         @character.save!
         json = {direction: 'south'}
         post :move, json
