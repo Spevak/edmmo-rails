@@ -89,7 +89,7 @@ class Character < ActiveRecord::Base
     entering_traversable = target_tile_props["traversable"][enter_dir]
     if [3, 1].include? leaving_traversable or
       [2, 1].include? entering_traversable or
-      target_tile.character then
+      (target_tile.character and target_tile.character.user.logged_in) then
       return false
     end
 
