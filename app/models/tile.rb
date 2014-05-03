@@ -92,7 +92,7 @@ class Tile < ActiveRecord::Base
 
   #char = character that is doing the inspecting.
   #args = their arguments (empty string if no args)
-  def inspect_tile(char, args = "")
+  def inspect_tile(char, args="")
     case self.tile_type
     when 16 #sign
       self.state ||= ""
