@@ -27,6 +27,21 @@ describe Api::V1::PlayersController do
         JSON.parse(response.body)["err"].should eql 0
       end 
     end
+    
+    context "valid move west" do
+        it "moves the player and returns error code 0 (success)" do
+            @character.tile = Tile.tile_at(1, 0)
+            @character.save!
+            json = {direction: 'west'}
+            post :move, json
+            @character.reload
+            @character.tile.x.should eql 0
+            @character.tile.y.should eql 0
+            Tile.tile_at(0, 0).characters.should include @character
+            Tile.tile_at(1, 0).characters.length.should eq 0
+            JSON.parse(response.body)["err"].should eql 0
+        end 
+    end
 
     context "invalid move" do
       it "does not move player and returns error code 1" do
@@ -52,6 +67,36 @@ describe Api::V1::PlayersController do
             @character.tile.y.should eql 0
             JSON.parse(response.body)["err"].should eql 1
         end 
+    end
+    
+    context "walk into a boulder" do
+        it "does not move player and returns error code 1" do
+            @character.tile = Tile.tile_at(0, 0)
+            north_tile = Tile.tile_at(@character.tile.x, @character.tile.y + 1)
+            north_tile.tile_type = 4
+            north_tile.save
+            @character.save!
+            json = {direction: 'north'}
+            post :move, json
+            @character.reload
+            @character.tile.x.should eql 0
+            @character.tile.y.should eql 0
+            JSON.parse(response.body)["err"].should eql 1
+        end
+    end
+    
+    context "walk with no battery" do
+        it "does not move player and returns error code 1" do
+            @character.tile = Tile.tile_at(0, 0)
+            @character.battery = 0
+            @character.save!
+            json = {direction: 'north'}
+            post :move, json
+            @character.reload
+            @character.tile.x.should eql 0
+            @character.tile.y.should eql 0
+            JSON.parse(response.body)["err"].should eql 2
+        end
     end
 
   end
@@ -212,10 +257,29 @@ describe Api::V1::PlayersController do
         JSON.parse(response.body)["err"].should eql 1
       end
     end
-    context "bad arguments" do
-      it "returns error code 2" do
-        #TODO
-      end
+    context "use a potato to recharge" do
+        it "should increase character's battery" do
+            
+            @tile.item = nil
+            @tile.save!
+            @character.item = nil
+            @character.save
+            
+            post :dig
+            
+            @character.reload
+            @tile.reload
+            
+            origBat = @character.battery
+            myid = @character.item.id
+            json = {item_id: myid, args: nil}
+            post :use, json
+            
+            @character.reload
+            #@character.should_receive(:use_item)
+            JSON.parse(response.body)["err"].should eql 0
+            @character.battery.should eql (origBat + 10)
+        end
     end
   end
 
@@ -224,6 +288,12 @@ describe Api::V1::PlayersController do
       post :status
       JSON.parse(response.body)["health"].should eql 100
       JSON.parse(response.body)["battery"].should eql 100
+    end
+    
+    it "returns 404 if user signed out" do
+        sign_out @user
+        post :status
+        response.status.should eq 404
     end
   end
 
@@ -283,6 +353,26 @@ describe Api::V1::PlayersController do
             end
         end
       
+      end
+
+  describe "POST #dig" do
+      it "digs up a potato" do
+          @tile.item = nil
+          @tile.save!
+          @character.item = nil
+          @character.save
+          
+          post :dig
+          
+          @character.reload
+          @tile.reload
+          
+          myid = @character.item.id
+          
+          JSON.parse(response.body)["err"].should eql 0
+          @character.item.id.should eql myid
+          @character.item.id.should_not eql nil
+          end
       end
 
   describe "GET #characters" do
