@@ -39,7 +39,20 @@ describe Api::V1::PlayersController do
         @character.tile.y.should eql 0
         JSON.parse(response.body)["err"].should eql 1
       end 
-    end 
+    end
+    
+    context "invalid direction" do
+        it "does not move player and returns error code 1" do
+            @character.tile = Tile.tile_at(0, 0)
+            @character.save!
+            json = {direction: 'not_a_dir'}
+            post :move, json
+            @character.reload
+            @character.tile.x.should eql 0
+            @character.tile.y.should eql 0
+            JSON.parse(response.body)["err"].should eql 1
+        end 
+    end
 
   end
 
@@ -231,6 +244,46 @@ describe Api::V1::PlayersController do
     end
 
   end
+
+  describe "POST #face" do
+      
+      context "face north" do
+          it "updates the character database to 0" do
+              @character.face('north')
+              @character.facing.should eql 0
+              end
+          end
+      
+      context "face east" do
+          it "updates the character database to 0" do
+              @character.face('east')
+              @character.facing.should eql 1
+            end
+        end
+      
+      context "face south" do
+          it "updates the character database to 0" do
+              @character.face('south')
+              @character.facing.should eql 2
+            end
+        end
+      
+      context "face west" do
+          it "updates the character database to 0" do
+              @character.face('west')
+              @character.facing.should eql 3
+            end
+        end
+      
+      context "face invalid" do
+          it "does not update the character db" do
+              @character.face('north')
+              @character.face('not_a_dir')
+              @character.facing.should eql 0
+            end
+        end
+      
+      end
 
   describe "GET #characters" do
     it "returns all characters in json objects" do
