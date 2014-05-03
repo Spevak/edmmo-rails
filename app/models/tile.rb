@@ -118,7 +118,7 @@ class Tile < ActiveRecord::Base
   end
 
   def logged_in_characters
-    self.characters.select{ |c| c.user.logged_in }
+    self.characters.select{ |c| c.user and c.user.logged_in }
   end
 
 end
