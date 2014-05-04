@@ -37,17 +37,22 @@ class Api::V1::WorldController < Api::V1::BaseController
       if tile_chars.include? character then
         { tile.x_y_pair => character }
       elsif !(tile_chars.empty?) then
-        { tile.x_y_pair => tile.characters.first }
-      end # emits nil if above not executed
-    end).inject { |hash, hashlet| hash.to_h.merge(hashlet.to_h) }
+        last_updated = tile.characters.order("updated_at").last
+        { tile.x_y_pair => last_updated }
+      else
+        {}
+      end
+    end).inject { |hash, hashlet| hash.merge(hashlet) }
     # Combine into one hash, removing nil entries
 
     # Create a hash of { tile xy pair hash => item on tile } entries
     world_items = (tiles_to_return.map do |tile|
       if tile.item then
         { tile.x_y_pair => tile.item }
+      else
+        {}
       end
-    end).inject { |hash, hashlet| hash.to_h.merge(hashlet.to_h) }
+    end).inject { |hash, hashlet| hash.merge(hashlet) }
     # Combine into one hash, removing nil entries
 
     render json: {

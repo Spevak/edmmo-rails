@@ -21,7 +21,7 @@ describe Item do
   describe ".do_action" do
     context 'of player-affecting item' do
       battery_effect = ITEM_PROPERTIES["potato"]["batteryEffect"]
-      it ": potato boosts the character's battery by #{battery_effect}" do
+      it "potato boosts the character's battery by #{battery_effect}" do
         potato = FactoryGirl.create(:potato)
         expected_battery = @character.battery + battery_effect
         @character.pick_up(potato)
@@ -31,7 +31,7 @@ describe Item do
       end
 
       health_effect = ITEM_PROPERTIES["repairKit"]["healthEffect"]
-      it ": repair kit boosts the character's health by #{health_effect}" do
+      it "repair kit boosts the character's health by #{health_effect}" do
         repair_kit = FactoryGirl.create(:repair_kit)
         expected_health = @character.health + health_effect
         @character.pick_up(repair_kit)
