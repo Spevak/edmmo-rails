@@ -12,6 +12,12 @@ describe Item do
     FactoryGirl.build(:item).should be_valid
   end
 
+  describe '#from_data' do
+    it "produces a valid Item" do
+      Item.from_data(ITEM_PROPERTIES["potato"]).should be_valid
+    end
+  end
+
   describe ".do_action" do
     context 'of player-affecting item' do
       battery_effect = ITEM_PROPERTIES["potato"]["batteryEffect"]
@@ -27,11 +33,11 @@ describe Item do
       health_effect = ITEM_PROPERTIES["repairKit"]["healthEffect"]
       it ": repair kit boosts the character's health by #{health_effect}" do
         repair_kit = FactoryGirl.create(:repair_kit)
-        expected_battery = @character.battery + battery_effect
+        expected_health = @character.health + health_effect
         @character.pick_up(repair_kit)
         @character.use_item(repair_kit)
         @character = Character.find(@character)
-        @character.battery.should eq(expected_battery)
+        @character.health.should eq(expected_health)
       end
 
       it "consumes item on use" do
