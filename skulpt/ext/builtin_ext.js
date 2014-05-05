@@ -84,6 +84,9 @@ function dropSuccess(response) {
  * @suppress {missingProperties}
  */
 function useSuccess(response) {
+  // Update the health & battery indicators when use is called
+  Sk.builtin.statusFunction();
+
   if (response.err === 0)
     log("Used item.")
   if (response.err === 1)
