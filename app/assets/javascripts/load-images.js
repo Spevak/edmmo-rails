@@ -1,9 +1,17 @@
-Bq.images = { tiles: {}, items: {} }
+Bq.images = { tiles: {}, items: {} };
 
-for (var i = 0; i < tileSpritePaths.length; i++) {
-  var imgObj = new Image();
-  imgObj.onLoad = function() {
-    Bq.images.tiles[i] = imgObj;
+Bq.images.loadImage = function (pathdict, imgdict, keyIndex) {
+  var pathdictKeys = Object.keys(pathdict);
+  if (pathdictKeys[keyIndex] == null) {
+    Bq.map.stage.draw();
+    return;
   }
-  imgObj.src = tileSpritePaths[i];
-}
+  var key=pathdictKeys[keyIndex];
+  imgdict[key] = new Image();
+  imgdict[key].onload = function() {
+    Bq.images.loadImage(pathdict, imgdict, keyIndex+1)    
+  };
+  imgdict[key].src = pathdict[key];
+};
+
+Bq.images.loadImage(tileSpritePaths, Bq.images.tiles, 0);
