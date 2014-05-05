@@ -53,7 +53,7 @@ $(document).ready(function() {
 
       var imageObject = new Image();
       imageObject.onload = function() {
-        var cellFg = new Kinetic.Sprite({
+        var cellFg = new Kinetic.Image({
           width: cellWidth,
           height: cellHeight,
           x: 0,
@@ -68,7 +68,6 @@ $(document).ready(function() {
       cell.add(cellBg);
       fgLayer.add(cell);
       } )(cells);
-      fgLayer.draw();
     }
   }
   fgLayer.draw();
