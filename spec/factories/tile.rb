@@ -16,16 +16,6 @@ FactoryGirl.define do
     x { generate(:x) }
     y { generate(:y) }
     item
-    character
-    tile_type 0
-    after(:build) { |t| t.x_y_pair = t.x.to_s + "," + t.y.to_s }
-  end
-
-  factory :tile_empty, class: Tile do
-    x { generate(:x) }
-    y { generate(:y) }
-    item nil
-    character nil
     tile_type 0
     after(:build) { |t| t.x_y_pair = t.x.to_s + "," + t.y.to_s }
   end

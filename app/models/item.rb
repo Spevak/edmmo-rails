@@ -28,8 +28,6 @@ class Item < ActiveRecord::Base
       )
     end
 
-    # Make my constructor private.
-    #private :new
   end
 
   # Do the thing that the item does.

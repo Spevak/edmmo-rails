@@ -8,8 +8,8 @@ describe Api::V1::WorldController do
         user = FactoryGirl.create(:user)
         character = FactoryGirl.create(:character)
         tile = Tile.first
-        tile.character = character
-        tile.save!
+        character.tile = tile
+        character.save!
         sign_in user
 
         Tile.should_receive(:tiles_at)

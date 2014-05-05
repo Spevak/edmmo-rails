@@ -116,7 +116,7 @@ class Api::V1::PlayersController < Api::V1::BaseController
     facing = @character.facing
     tile = @character.tile
     to_inspect = tile.neighbor(facing)
-    msg = to_inspect.inspectTile(@character, args)
+    msg = to_inspect.inspect_tile(@character, args)
     type = to_inspect.tile_type
     render :json => {:err => 0, :type => type, :msg => msg}
   end
