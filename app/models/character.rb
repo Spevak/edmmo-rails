@@ -105,11 +105,16 @@ class Character < ActiveRecord::Base
     end
 
 
-    # update battery & health according to tile property
-    self.battery += TILE_PROPERTIES[target_tile.tile_type.to_s]["batteffect"][enter_dir]
-    self.health += TILE_PROPERTIES[target_tile.tile_type.to_s]["healtheffect"][enter_dir]
+    # Make sure battery and health stay >= 0
+    new_battery = self.battery + TILE_PROPERTIES[target_tile.tile_type.to_s]["batteffect"][enter_dir]
+    new_health = self.health + TILE_PROPERTIES[target_tile.tile_type.to_s]["healtheffect"][enter_dir]
+    if new_battery < 0 or new_health < 0
+      return false
+    end
+    # Update battery & health
+    self.battery = new_battery
+    self.health = new_health
     self.save!
-
     self.move_to(x, y)
     return true
   end
