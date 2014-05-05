@@ -23,7 +23,9 @@ Bq.Map = function(stage, fgLayer, bgLayer) {
 Bq.Map.prototype.render = function(toUpdate) {
   var loc;
   while (loc = toUpdate.pop()) {
+      console.log('before getCellById');
     var cell = Bq.Cell.getCellById(Bq.Cell.hashCellPair(loc[0] - 1, (Bq.mapData.n - loc[1])));
+      console.log('after');
     //Initialize newcellcontents to F so the cell will display as F if the correct char fails to load
     var imagePath = tileSpritePaths[70]
     // only used for player.

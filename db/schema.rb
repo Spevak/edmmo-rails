@@ -24,7 +24,6 @@ ActiveRecord::Schema.define(version: 20140502220334) do
     t.string   "planet"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id"
     t.integer  "item_id"
     t.integer  "inventory_id"
     t.integer  "tile_id"
@@ -33,7 +32,6 @@ ActiveRecord::Schema.define(version: 20140502220334) do
   add_index "characters", ["inventory_id"], name: "index_characters_on_inventory_id", using: :btree
   add_index "characters", ["item_id"], name: "index_characters_on_item_id", using: :btree
   add_index "characters", ["tile_id"], name: "index_characters_on_tile_id", using: :btree
-  add_index "characters", ["user_id"], name: "index_characters_on_user_id", using: :btree
 
   create_table "inventories", force: true do |t|
     t.datetime "created_at"

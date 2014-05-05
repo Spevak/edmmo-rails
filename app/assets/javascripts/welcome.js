@@ -60,9 +60,9 @@ $(document).ready(function() {
           y: 0,
           image: imageObject
         });
-        console.log("cellfg: " + cellFg);
+        //console.log("cellfg: " + cellFg);
         cell.add(cellFg);
-        console.log("cell: " + cell.children);
+        //console.log("cell: " + cell.children);
       }
       imageObject.src = '/assets/tiles/tile_placeholder.png';
       cell.add(cellBg);
@@ -79,7 +79,6 @@ $(document).ready(function() {
 
   //Set up the splash page content
   Bq.map.displayTileArray(splashArt);
-
   //Load character's data (hp, battery, facing, x, y)
   Sk.builtin.statusFunction();
 
