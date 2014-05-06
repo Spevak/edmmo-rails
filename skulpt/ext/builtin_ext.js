@@ -77,7 +77,6 @@ function dropSuccess(response) {
     log("You don't have that item!");
   if (response.err === 2)
     log("An item is already on this tile, drop your item elsewhere!");
-    log("There's already something here. You should drop that elsewhere.");
   //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
   return Sk.builtin.none.none$;
 

@@ -74,6 +74,12 @@ class Api::V1::PlayersController < Api::V1::BaseController
     tile      = character.tile
     puts request.request_parameters
 
+    # first check if there is already an item on this tile
+    if tile.item != nil
+      render json: { 'err' => 2 }
+      return
+    end
+
     # If the item in hand is the item desired, then drop it
     if !character.item.nil? 
       if character.item.id == item_id 
@@ -87,8 +93,8 @@ class Api::V1::PlayersController < Api::V1::BaseController
       character.drop(item_id)
       render json: { 'err' => 0 }
     # otherwise, there is no item to be used
-    elsif tile.item != nil
-      render json: { 'err' => 2 }
+    # elsif tile.item != nil
+    #   render json: { 'err' => 2 }
     else
       render json: { 'err' => 1 }
     end
