@@ -75,6 +75,8 @@ function dropSuccess(response) {
     log("Dropped item");
   if (response.err === 1)
     log("You don't have that item!");
+  if (response.err === 2)
+    log("An item is already on this tile, drop your item elsewhere!");
   //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
   return Sk.builtin.none.none$;
 
@@ -349,7 +351,8 @@ Sk.builtin.pickupFunction = function(name) {
   //var y_val = Sk.builtin.asnum$(y);
   var x_val = Bq.playerData.x;
   var y_val = Bq.playerData.y;
-  var item_id = itemId[name.v];
+  // var item_id = itemId[name.v]; - Michel made this change
+  var item_id = name.v;
 
   var pickupFailure = failureFunction(PICKUP_PATH)
   return json_request('POST', PICKUP_PATH, pickupSuccess, pickupFailure, {'x': x_val, 'y': y_val, 'item_id': item_id});

@@ -135,10 +135,19 @@ class Character < ActiveRecord::Base
   end
 
   def pick_up(item)
+
+    puts "********  IN pick_up  ********"
+
     if (self.item) then
       inventory = self.inventory
       inventory.items << item
       inventory.save
+      puts "I'M ALREADY HOLDING AN ITEM"
+      # self.item = item
+      # self.save!
+      puts item
+      puts inventory.items
+      # puts inventory.items.last
     else
       self.item = item
       self.save!
@@ -159,27 +168,60 @@ class Character < ActiveRecord::Base
 
   def drop(item_id)
     item = Item.find(item_id)
-    if self.inventory.items.include? item then
+    # puts "want to drop: " + item_id.to_s
+    # puts "start of drop inventory: ", inventory.items.map{|x| x.id}
+    # puts "in hand: " + self.item.id.to_s
+    if self.inventory.items.map{|x| x.id == item_id}.include? true 
+      puts "i made it in the if"
       self.inventory.items.delete(item)
       self.inventory.save!
-    elsif self.item.id == item_id then
-      self.item = nil
-      self.save
+    elsif !self.item.nil?
+      if self.item.id == item_id 
+        puts "im in the elsif"
+        self.item = nil
+        self.save
+      end
     end
 
-    if self.tile then
+    puts "are you there?"
+    if self.tile 
+      puts "honey im here."
       t = self.tile
       t.item = item
       t.save!
+      puts t.item.id
     end
   end
 
   def use_item(item, *args)
-    if self.inventory.items.include? item or
-      self.item == item then
+
+    puts "********  IN use_item  ********"
+    # puts item.id
+
+    if !self.item.nil? and self.item.id == item.id
+      puts "*** in if"
+      item.character = self
+      item.do_action
+    elsif self.inventory.items.map{|x| x.id == item.id}.include? true #self.inventory.items.include? item
+      puts "*** in include ---- yea baby"
+      # put item currently in hand in the front of the inventory
+      if !self.item.nil?
+        # puts "Add in hand item to front of inventory"
+        inventory.items << self.item
+        puts "Add in hand item to front of inventory: ", inventory.items.map{|x| x.id}
+      end
+      self.item = item
+      self.save!
       item.character = self
       item.do_action
     end
+      
+
+    # if self.inventory.items.include? item or
+    #   self.item == item then
+    #   item.character = self
+    #   item.do_action
+    # end
   end
 
   def status

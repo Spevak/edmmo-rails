@@ -47,9 +47,15 @@ class Api::V1::PlayersController < Api::V1::BaseController
     @user = current_user
     @character = @user.character
     target_tile = Tile.tile_at(x, y)
-    if @character.item != nil then
-      render json: { 'err' => 3 }, status: 200
-    elsif target_tile.id != @character.tile.id then
+    puts "in pickup"
+    puts target_tile.item
+    puts item_id
+    puts x
+    puts y
+    puts request.request_parameters
+    # if @character.item != nil then
+    #   render json: { 'err' => 3 }, status: 200
+    if target_tile.id != @character.tile.id then
       render json: { 'err' => 2 }, status: 200
     elsif (target_tile.item == nil) || target_tile.item.id != item_id then
       render json: { 'err' => 1 }, status: 200
@@ -66,39 +72,100 @@ class Api::V1::PlayersController < Api::V1::BaseController
     user      = current_user
     character = user.character
     tile      = character.tile
-    if (character.item == nil) or character.item.id !=  item_id then
-      render json: {
-        'err' => 1
-      }
-    elsif tile.item != nil then
-      render json: {
-        'err' => 2
-      }
-    else
-      character.drop(item_id)
-      render json: {
-        'err' => 0
-      }
+    puts request.request_parameters
+
+    # If the item in hand is the item desired, then drop it
+    if !character.item.nil? 
+      if character.item.id == item_id 
+        character.drop(item_id)
+        render json: { 'err' => 0 }
+        return
+      end
     end
+    # otherwise if the item is in the inventory, then drop it
+    if (character.inventory.items.map{|x| x.id == item_id}.include? true)
+      character.drop(item_id)
+      render json: { 'err' => 0 }
+    # otherwise, there is no item to be used
+    elsif tile.item != nil
+      render json: { 'err' => 2 }
+    else
+      render json: { 'err' => 1 }
+    end
+
+
+    # if character.item == nil or character.item.id !=  item_id
+    #   render json: { 'err' => 1 }
+    # elsif tile.item != nil
+    #   render json: { 'err' => 2 }
+    # else
+    #   character.drop(item_id)
+    #   render json: { 'err' => 0 }
+    # end
   end
 
   def use
     item_id = request[:item_id].to_i
-    item = Item.find(item_id)
+    puts "********  IN use  ******** ==> " + item_id.to_s
+    # If that item_id doesn't exist, then error
+    item = Item.find(item_id) rescue nil
+    if item.nil?
+      render json: { 'err' => 1 }
+      return
+    end
     @user = current_user
     @character = @user.character
-    if (@character.item == nil) or 
-      (@character.item.id != item_id and
-       !(@character.inventory.items.include? item)) then
-      render json: {
-        'err' => 1
-      }
+    if @character.item.nil?
+          puts "in hand: none"
     else
-      @character.use_item(item)
-      render json: {
-        'err' => 0
-      }
+          puts "in hand: " + @character.item.id.to_s
     end
+
+    puts "inventory: ", @character.inventory.items.map{|x| x.id}
+    # If the character does not have an item in hand, then put in hand the first item in the inventory
+    # if there are no items in the inventory, then error b/c the character has no items
+    # if (@character.item == nil)
+    #   puts "*** first if"      
+    #   if @character.inventory.items.size > 0
+    #     @character.item = @character.inventory.items.shift
+    #   else
+    #     puts "*** inventory is empty"
+    #     render json: { 'err' => 1 }
+    #     return
+    #   end
+    # end
+
+    # If the item is not the item in hand, and the item is not in the inventory then error
+    # if (@character.item.id != item_id and !(@character.inventory.items.map{|x| x.id == item.id}.include? true))
+
+    # If the item in hand is the item desired, then use it
+    if !@character.item.nil? 
+      if @character.item.id == item_id 
+        puts "***1 if"
+        @character.use_item(item)
+        render json: { 'err' => 0 }
+        return
+      end
+    end
+    # otherwise if the item is in the inventory, then use it
+    if (@character.inventory.items.map{|x| x.id == item.id}.include? true)
+      @character.use_item(item)
+      render json: { 'err' => 0 }
+    # otherwise, there is no item to be used
+    else
+      puts "***1 else"
+      render json: { 'err' => 1 }
+    end
+
+    if @character.item.nil?
+          puts "in hand: none"
+    else
+          puts "in hand: " + @character.item.id.to_s
+    end
+
+    puts "inventory: ", @character.inventory.items.map{|x| x.id}
+
+
   end
 
   def status
@@ -134,10 +201,8 @@ class Api::V1::PlayersController < Api::V1::BaseController
       i = Item.from_data(ITEM_PROPERTIES["potato"])
       i.save
       current_user.character.pick_up(i)
-      # render json: {err: 0} - Michel: Why did this have a different json syntax?
       render json: { 'err' => 0, 'id' => i.id }
     else
-      # render json: {err: 1}
       render json: { 'err' => 1 }, status: 200
     end
   end
