@@ -36,7 +36,7 @@ var tileSpritePaths = {
     13: 'assets/tiles/tile_portal.png', //portal
     14: 'assets/tiles/tile_door_opened.png', //locked door
     15: 'assets/tiles/tile_door_closed.png', //open door
-
+    16: 'assets/items/item_signPost.png',//sign
 
     //Representation of non-existant tile (off the map)
     50: 'assets/tiles/tile_placeholder.png',
