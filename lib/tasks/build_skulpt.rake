@@ -25,7 +25,7 @@ task :build_skulpt do
   system('(cd skulpt;mv base/src/builtindict.js builtindict_original)')
   #easier to append our additional builtin types into object rather than
   #in separate files because separate files requires editing the build script
-  system('(cd skulpt;mv base/src/object.js object_original)')
+  #system('(cd skulpt;mv base/src/object.js object_original)')
 
   #append our additons temporary files
   system('(cd skulpt; cp env_original env.js; cp object_original object.js)')
@@ -42,9 +42,11 @@ task :build_skulpt do
   system('cat config/map/tiles/properties.json >> skulpt/env.js')
   system('(cd skulpt; cat ext/env_ext.js >> env.js)')
   system('(cd skulpt; cat ext/builtin_ext.js >> builtin.js)')
-  system('(cd skulpt; cat ext/item.js >> object.js)')
+  system('(cd skulpt; cat ext/item.js >> builtindict.js)')
   system('(cd skulpt; cat ext/builtindict_ext.js >> builtindict.js)')
-  system('(cd skulpt; mv env.js base/src/env.js; mv object.js base/src/object.js)')
+
+  system('(cd skulpt; mv env.js base/src/env.js)')
+  #system('(cd skulpt; mv env.js base/src/env.js; mv object.js base/src/object.js)')
   system('(cd skulpt; mv builtin.js base/src/builtin.js; mv builtindict.js base/src/builtindict.js)')
 
   #build
@@ -56,11 +58,13 @@ task :build_skulpt do
   system('(cp skulpt/ext/constants.js app/assets/javascripts)')
 
   #move original files back into base folder
-  system('(cd skulpt/base/src; rm env.js builtin.js builtindict.js object.js)')
+  #system('(cd skulpt/base/src; rm env.js builtin.js builtindict.js object.js)')
+  system('(cd skulpt/base/src; rm env.js builtin.js builtindict.js)')
+
   system('(cd skulpt; mv env_original base/src/env.js)')
   system('(cd skulpt; mv builtin_original base/src/builtin.js)')
   system('(cd skulpt; mv builtindict_original base/src/builtindict.js)')
-  system('(cd skulpt; mv object_original base/src/object.js)')
+  #system('(cd skulpt; mv object_original base/src/object.js)')
   system('rm -rf skulpt_backup')
 
 end

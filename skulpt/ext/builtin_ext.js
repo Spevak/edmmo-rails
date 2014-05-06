@@ -387,18 +387,14 @@ Sk.builtin.dropFunction = function(name) {
  *         args = python string of arguments to the item's use function 
  * @suppress {missingProperties}
  */
-Sk.builtin.useFunction = function(name, args) {
+Sk.builtin.useFunction = function(id, args) {
   //Check arg count and types
   Sk.builtin.pyCheckArgs("useFunction", arguments, 2, 2);
-  Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
+  Sk.builtin.pyCheckType("id", "string", Sk.builtin.checkString(id));
   Sk.builtin.pyCheckType("args", "string", Sk.builtin.checkString(args));
 
   //get values from python representation
-  if (name.v in itemId) {
-    var item_id = itemId[name.v];
-  } else {
-    var item_id = name.v
-  }
+  var item_id = id.v;
   var use_args = args.v;
 
   var useFailure = failureFunction(USE_PATH);

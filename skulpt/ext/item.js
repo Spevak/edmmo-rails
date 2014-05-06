@@ -34,4 +34,50 @@ Sk.builtin.item.prototype['$r'] = function() {
 Sk.builtin.item.prototype.tp$getattr = Sk.builtin.object.prototype.GenericGetAttr;
 Sk.builtin.item.prototype.tp$hash = Sk.builtin.object.prototype.HashNotImplemented;
 
+Sk.builtin.item.prototype['id'] = new Sk.builtin.func(function(self) {
+    Sk.builtin.pyCheckArgs("id", arguments, 1, 1);
+    return new Sk.builtin.nmber(self.v['id'], Sk.builtin.nmber.int$);
+});
+
+Sk.builtin.item.prototype['name'] = new Sk.builtin.func(function(self) {
+    Sk.builtin.pyCheckArgs('name', arguments, 1, 1);
+    return new Sk.builtin.str(self.v['type']);
+});
+
+Sk.builtin.item.prototype['useItem'] = new Sk.builtin.func(function(self) {
+    Sk.builtin.pyCheckArgs('useItem', arguments, 1, 1);
+    var id = new Sk.builtin.str(self.v['id'].toString());
+    var args = new Sk.builtin.str("");
+    Sk.builtin.useFunction(id, args);
+    return Sk.builtin.none.none$;
+});
+
 goog.exportSymbol("Sk.builtin.item", Sk.builtin.item);
+
+
+/**
+ * @constructor
+ */
+Sk.builtin.inventory = function() {
+    if (!(this instanceof Sk.builtin.inventory)) return new Sk.builtin.inventory();
+
+    this.v = {}
+
+    this.__class__ = Sk.builtin.inventory;
+
+    this["v"] = this.v
+    return this;
+};
+
+Sk.builtin.inventory.prototype.ob$type = Sk.builtin.type.makeIntoTypeObj('inventory', Sk.builtin.inventory);
+
+Sk.builtin.inventory.tp$name = "inventory";
+Sk.builtin.inventory.prototype['$r'] = function () {
+    return new Sk.builtin.str("Inventory: ");
+}
+
+Sk.builtin.inventory.prototype.tp$getattr = Sk.builtin.object.prototype.GenericGetAttr;
+Sk.builtin.inventory.prototype.tp$hash = Sk.builtin.object.prototype.HashNotImplemented;
+Sk.builtin.inventory.inventory$ = new Sk.builtin.inventory();
+
+goog.exportSymbol("Sk.builtin.inventory", Sk.builtin.inventory);
