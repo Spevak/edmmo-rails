@@ -23,28 +23,28 @@ var tileSpritePaths = {
     0: '/assets/tiles/tile_dirt.png',
     1: '/assets/tiles/tile_sand.png',
     2: '/assets/tiles/tile_mud.png',
-    3: 'assets/tiles/tile_placeholder.png', //acid
-    4: 'assets/tiles/tile_placeholder.png', //wall
-    5: 'assets/tiles/tile_placeholder.png', //north-facing ledge
-    6: 'assets/tiles/tile_placeholder.png', //west-facing ledge
-    7: 'assets/tiles/tile_placeholder.png', //south-facing ledge
-    8: 'assets/tiles/tile_placeholder.png', //east-facing ledge
-    9: 'assets/tiles/tile_placeholder.png', //northeast-facing ledge
-    10: 'assets/tiles/tile_placeholder.png', //northwest-facing ledge
-    11: 'assets/tiles/tile_placeholder.png', //southwest-facing ledge
-    12: 'assets/tiles/tile_placeholder.png', //southeast-facing ledge
+    3: 'assets/tiles/tile_boulder.png', //acid
+    4: 'assets/tiles/tile_boulder.png', //wall
+    5: 'assets/tiles/tile_boulder.png', //north-facing ledge
+    6: 'assets/tiles/tile_boulder.png', //west-facing ledge
+    7: 'assets/tiles/tile_boulder.png', //south-facing ledge
+    8: 'assets/tiles/tile_boulder.png', //east-facing ledge
+    9: 'assets/tiles/tile_boulder.png', //northeast-facing ledge
+    10: 'assets/tiles/tile_boulder.png', //northwest-facing ledge
+    11: 'assets/tiles/tile_boulder.png', //southwest-facing ledge
+    12: 'assets/tiles/tile_boulder.png', //southeast-facing ledge
     13: 'assets/tiles/tile_portal.png', //portal
-    14: 'assets/tiles/tile_door_opened.png', //locked door
-    15: 'assets/tiles/tile_door_closed.png', //open door
+    14: 'assets/tiles/tile_door_closed.png', //locked door
+    15: 'assets/tiles/tile_door_opened.png', //open door
     16: 'assets/items/item_signPost.png',//sign
 
     //Representation of non-existant tile (off the map)
     50: 'assets/tiles/tile_placeholder.png',
     //Player character representations (one for each direction)
-    51: 'assets/robot.png',
-    52: 'assets/robot.png',
-    53: 'assets/robot.png',
-    54: 'assets/robot.png',
+    51: 'assets/robot_n.png',
+    52: 'assets/robot_s.png',
+    53: 'assets/robot_w.png',
+    54: 'assets/robot_e.png',
 
     //Use ascii values for Letters:
     65: 'assets/tiles/tile_placeholder.png',

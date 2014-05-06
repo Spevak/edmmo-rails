@@ -23,7 +23,7 @@ var tileSpritePaths = {
     0: '/assets/tiles/tile_dirt.png',
     1: '/assets/tiles/tile_sand.png',
     2: '/assets/tiles/tile_mud.png',
-    3: 'assets/tiles/tile_acid.png', //acid
+    3: 'assets/tiles/tile_boulder.png', //acid
     4: 'assets/tiles/tile_boulder.png', //wall
     5: 'assets/tiles/tile_boulder.png', //north-facing ledge
     6: 'assets/tiles/tile_boulder.png', //west-facing ledge
@@ -34,8 +34,8 @@ var tileSpritePaths = {
     11: 'assets/tiles/tile_boulder.png', //southwest-facing ledge
     12: 'assets/tiles/tile_boulder.png', //southeast-facing ledge
     13: 'assets/tiles/tile_portal.png', //portal
-    14: 'assets/tiles/tile_door_opened.png', //locked door
-    15: 'assets/tiles/tile_door_closed.png', //open door
+    14: 'assets/tiles/tile_door_closed.png', //locked door
+    15: 'assets/tiles/tile_door_opened.png', //open door
     16: 'assets/items/item_signPost.png',//sign
 
     //Representation of non-existant tile (off the map)
@@ -43,8 +43,8 @@ var tileSpritePaths = {
     //Player character representations (one for each direction)
     51: 'assets/robot_n.png',
     52: 'assets/robot_s.png',
-    53: 'assets/robot_e.png',
-    54: 'assets/robot_w.png',
+    53: 'assets/robot_w.png',
+    54: 'assets/robot_e.png',
 
     //Use ascii values for Letters:
     65: 'assets/tiles/tile_placeholder.png',
