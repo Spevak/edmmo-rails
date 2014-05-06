@@ -4,7 +4,7 @@
 //This is the distance of the edge of the map to the player character in all directions.
 //The player character is considered to be at (0, 0), and the corners of the map are 
 //(+/- MAP_MAX_INDEX, +/- MAP_MAX_INDEX). Therefore the side length of the map is 2*MAP_MAX_INDEX + 1
-var MAP_MAX_INDEX = 12;
+var MAP_MAX_INDEX = 7;
 
 //conversion of integer to string direction
 var direction = {0:'north', 1:'east',2:'south',3:'west'}
@@ -282,5 +282,5 @@ Bq.constants.direction = direction;
 Bq.constants.itemId = itemId;
 Bq.constants.tileChars = tileChars;
 Bq.constants.splashArt = splashArt;
-Bq.constants.cellHeight = 14;
-Bq.constants.cellWidth = 14;
+Bq.constants.cellHeight = 30;
+Bq.constants.cellWidth = 30;
