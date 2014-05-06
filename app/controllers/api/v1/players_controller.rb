@@ -26,18 +26,22 @@ class Api::V1::PlayersController < Api::V1::BaseController
   def move
     @user = current_user
     @character = @user.character
-
     direction = request[:direction] 
 
+    # if battery is <= 0 then dont bother calling move_direction
     if current_user.character.battery <= 0
       render json: { 'err' => 2 }, status: 200
       return
     end
-    if @character.move_direction(direction) then
-      render json: { 'err' => 0 }
-    else
-      render json: { 'err' => 1 }
-    end
+
+    # move_direction returns the proper error code
+    render json: { 'err' => @character.move_direction(direction) }
+
+    # if @character.move_direction(direction) then
+    #   render json: { 'err' => 0 }
+    # else
+    #   render json: { 'err' => 1 }
+    # end
   end
 
   def pickup

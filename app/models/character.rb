@@ -70,7 +70,7 @@ class Character < ActiveRecord::Base
 
     #The direction given was not one of the 4 cardinal directions
     if dx == 0 and dy == 0 then
-      return false
+      return 1
     end
 
     #find the tile to be moved to
@@ -79,7 +79,7 @@ class Character < ActiveRecord::Base
     target_tile = Tile.tile_at(x, y)
 
     if target_tile == nil then
-      return false
+      return 1
     end
 
     #Make sure it is valid to walk over the tile
@@ -90,7 +90,7 @@ class Character < ActiveRecord::Base
     if [3, 1].include? leaving_traversable or
       [2, 1].include? entering_traversable or
       !(target_tile.characters.select { |c| c.user.logged_in }).empty? then
-      return false
+      return 1
     end
 
     #update direction facing
@@ -106,17 +106,23 @@ class Character < ActiveRecord::Base
 
 
     # Make sure battery and health stay >= 0
-    new_battery = self.battery + TILE_PROPERTIES[target_tile.tile_type.to_s]["batteffect"][enter_dir]
-    new_health = self.health + TILE_PROPERTIES[target_tile.tile_type.to_s]["healtheffect"][enter_dir]
-    if new_battery < 0 or new_health < 0
-      return false
-    end
+    # new_battery = self.battery + TILE_PROPERTIES[target_tile.tile_type.to_s]["batteffect"][enter_dir]
+    # new_health = self.health + TILE_PROPERTIES[target_tile.tile_type.to_s]["healtheffect"][enter_dir]
+    # if new_battery < 0 or new_health < 0
+    #   return false
+    # end
     # Update battery & health
-    self.battery = new_battery
-    self.health = new_health
-    self.save!
+    # self.battery = new_battery
+    # self.health = new_health
+    # self.save!
+
+    # Use heal & charge to check if move is allowed
+    if !heal(TILE_PROPERTIES[target_tile.tile_type.to_s]["healtheffect"][enter_dir]) or !charge(TILE_PROPERTIES[target_tile.tile_type.to_s]["batteffect"][enter_dir])
+      return 2
+    end
+
     self.move_to(x, y)
-    return true
+    return 0
   end
 
   def move_to(x, y)
@@ -257,12 +263,24 @@ class Character < ActiveRecord::Base
   # Take damage, or heal me if the amount is negative.
   # Use this instead of directly setting so we can check if the player died.
   def heal(amount)
-    self.health += amount
+    # Make sure health stays >= 0 and <= 100
+    new_health = self.health + amount
+    if new_health < 0 or new_health > 100
+      return false
+    end
+    # Update health
+    self.health = new_health
     self.save!
   end
 
   def charge(amount)
-    self.battery += amount
+    # Make sure battery stays >= 0 and <= 100
+    new_battery = self.battery + amount
+    if new_battery < 0 or new_battery > 100
+      return false
+    end
+    # Update battery
+    self.battery = new_battery
     self.save!
   end
 
