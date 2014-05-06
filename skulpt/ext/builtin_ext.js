@@ -75,6 +75,8 @@ function dropSuccess(response) {
     log("Dropped item");
   if (response.err === 1)
     log("You don't have that item!");
+  if (response.err === 2)
+    log("An item is already on this tile, drop your item elsewhere!");
   //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
   return Sk.builtin.none.none$;
 
@@ -84,12 +86,17 @@ function dropSuccess(response) {
  * @suppress {missingProperties}
  */
 function useSuccess(response) {
+  // Update the health & battery indicators when use is called
+  Sk.builtin.statusFunction();
+
   if (response.err === 0)
     log("Used item.")
   if (response.err === 1)
     log("You don't have that item!");
   if (response.err === 2)
     log("Erm... I don't think you can do that with that item.");
+  if (response.err === 3)
+    log("Used item. Your Battery can not be charged anymore.");
   //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
   return Sk.builtin.none.none$;
 
@@ -346,7 +353,8 @@ Sk.builtin.pickupFunction = function(name) {
   //var y_val = Sk.builtin.asnum$(y);
   var x_val = Bq.playerData.x;
   var y_val = Bq.playerData.y;
-  var item_id = itemId[name.v];
+  // var item_id = itemId[name.v]; - Michel made this change
+  var item_id = name.v;
 
   var pickupFailure = failureFunction(PICKUP_PATH)
   return json_request('POST', PICKUP_PATH, pickupSuccess, pickupFailure, {'x': x_val, 'y': y_val, 'item_id': item_id});
