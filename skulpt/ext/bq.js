@@ -50,6 +50,7 @@ var Bq = (function() {
                 setPlayerData: function(data) { this.playerData = data; },
                 tileProperties: {},
                 setTileProperties: function(data) { this.tileProperties = data; },
+                localVars: {},
 		log: log
   }
 })(); 

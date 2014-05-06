@@ -145,9 +145,9 @@ function inspectSuccess(response) {
 function digSuccess(response) {
   var id = response.id.toString();
   log("You dig around for a while and find a potato with id " + id + ". This could make a good battery.");
-  //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
-    return Sk.builtin.none.none$;
 
+    var potato = new Sk.builtin.item("potato", response.id, {});
+    return potato;
 }
 
 /**
@@ -495,3 +495,21 @@ Sk.builtin.faceFunction = function(dir) {
   return json_request('POST', FACE_PATH, faceSuccess, faceFailure, {'direction': direction});
 }
 
+/**
+ * For maintaining state between separate runs of the compiler (between blocks the user enters)
+ * Not intended for use by User.
+ */
+
+Sk.builtin.saveLocalVar = function(variable, name) {
+    Sk.builtin.pyCheckArgs("saveLocalVars", arguments, 2, 2);
+    Bq.localVars[name.v] = variable;
+    return Sk.builtin.none.none$;
+}
+
+/**
+ * For maintaining state between separate runs of the compiler (between blocks the user enters)
+ * Not intended for use by User.
+ */
+Sk.builtin.loadLocalVar = function(name) {
+    return Bq.localVars[name.v];
+}
