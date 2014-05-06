@@ -1,6 +1,6 @@
 $(document).ready(function() {
-  var cellWidth = 14,
-  cellHeight = cellWidth,
+  var cellWidth = Bq.constants.cellHeight,
+  cellHeight = Bq.constants.cellWidth,
   cellBgColor = "#001600",//'black',
   cellFgColor =  "#00b500", // 'green',
   cellHighlightBgColor = 'yellow',
@@ -58,8 +58,8 @@ $(document).ready(function() {
       this.outer.setAttrs(options['outer']);
     if (options['inner'])
       this.inner.setAttrs(options['inner']);
-    if (options['sprite'])
-      this.inner = options['sprite'];
+    if (options['image'])
+	this.inner.image(options['image']);
     //inneficient to redraw everytime we update a cell if we will often update them all at the same time 
     //this.layer.draw();
   };

@@ -214,7 +214,7 @@ function tilesSuccess(response) {
     }
 
   }
-  Bq.map.render(Bq.Map.getIndices());
+  Bq.map.render();
   //return new Sk.builtin.nmber(0, Sk.builtin.int$);
   return Sk.builtin.none.none$;
 

@@ -20,7 +20,31 @@ Bq.Map = function(stage, fgLayer, bgLayer) {
   this.bgLayer = bgLayer;
 };
 
-Bq.Map.prototype.render = function(toUpdate) {
+
+Bq.Map.prototype.render = function() {
+    for (var x = -MAP_MAX_INDEX; x <= MAP_MAX_INDEX; x++) {
+	for (var y = -MAP_MAX_INDEX; y <= MAP_MAX_INDEX; y++) {
+	    var cell = Bq.Cell.getCell(x, y);
+	    var tileId = Bq.mapData.tileAt(x, y);
+	    if (tileId === -1) {
+		tileId = 50;
+	    }
+	    var imageRotation = 0;
+	    //var im = new Kinetic.Image({
+	//	x: 0,
+	//	y: 0,
+	//	image: Bq.images.tiles[tileId],
+	//	width: Bq.constants.cellWidth,
+	//	height: Bq.constants.cellHeight,
+	//	rotation: imageRotation
+	//    });
+	//    cell.update({"image": im});
+	    cell.inner.image(Bq.images.tiles[tileId]);
+	}
+    }
+
+/*
+
   var loc;
   while (loc = toUpdate.pop()) {
     var cell = Bq.Cell.getCellById(Bq.Cell.hashCellPair(loc[0] - 1, (Bq.mapData.n - loc[1])));
@@ -67,10 +91,13 @@ Bq.Map.prototype.render = function(toUpdate) {
     cell.update({"sprite": sprite});
     }
   //draw after updating all the tiles for efficiency when drawing updating entire map at once.
+
+*/
   this.fgLayer.draw();
 }
 
 //a list of all valid indecencies on map
+//DEPRICATED.  map.render no longer requires a list of indices
 Bq.Map.getIndices = function() {
   var mapIndices = [];
   for (var x = -MAP_MAX_INDEX; x <= MAP_MAX_INDEX; x++) {
@@ -97,5 +124,5 @@ Bq.Map.prototype.displayTileArray= function(arr) {
       Bq.mapData.setTile(x,y,row[j]);
     }
   }
-  this.render(Bq.Map.getIndices());
+  //this.render();
 }

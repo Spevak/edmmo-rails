@@ -282,3 +282,5 @@ Bq.constants.direction = direction;
 Bq.constants.itemId = itemId;
 Bq.constants.tileChars = tileChars;
 Bq.constants.splashArt = splashArt;
+Bq.constants.cellHeight = 14;
+Bq.constants.cellWidth = 14;

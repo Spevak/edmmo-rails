@@ -23,6 +23,11 @@ $(document).ready(function() {
 
   // Layers are set up; now let's make some cells.
 
+
+    //A default image for loading the map at first.
+  var im = new Image();
+  im.src = '/assets/tiles/tile_placeholder.png';
+
   // Create a 2d array of cells.
   // A cell is a Group, containing a Rect (bg) and a Text (fg). 
   // Later we can replace the Text object with a Sprite object if we want images.
@@ -34,9 +39,8 @@ $(document).ready(function() {
     for (var j = 0; j < Bq.mapData.n; j++) {
       // Just trust me
       var x = j,
-      y = i;
+          y = i; 
 
-      ( function(cells) { 
       var cell = new Kinetic.Group({
         x: (x * cellWidth),
         y: (y * cellHeight),
@@ -51,27 +55,21 @@ $(document).ready(function() {
         fill: cellBgColor
       });
 
-      var imageObject = new Image();
-      imageObject.onload = function() {
-        var cellFg = new Kinetic.Image({
-          width: cellWidth,
-          height: cellHeight,
-          x: 0,
-          y: 0,
-          image: imageObject
-        });
-        //console.log("cellfg: " + cellFg);
-        cell.add(cellFg);
-        //console.log("cell: " + cell.children);
-      }
-      imageObject.src = '/assets/tiles/tile_placeholder.png';
+      var cellFg = new Kinetic.Image({
+        width: cellWidth,
+        height: cellHeight,
+        x: 0,
+        y: 0,
+        image: im
+      });
+
       cell.add(cellBg);
+      cell.add(cellFg);
       fgLayer.add(cell);
-      } )(cells);
     }
   }
-  fgLayer.draw();
   Bq.map = new Bq.Map(stage, fgLayer, bgLayer);
+  //Bq.map.stage.draw();
 
   //////////////////////////////////////////
   //Get the page set up
