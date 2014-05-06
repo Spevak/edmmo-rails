@@ -104,18 +104,6 @@ class Character < ActiveRecord::Base
       self.facing = 3
     end
 
-
-    # Make sure battery and health stay >= 0
-    # new_battery = self.battery + TILE_PROPERTIES[target_tile.tile_type.to_s]["batteffect"][enter_dir]
-    # new_health = self.health + TILE_PROPERTIES[target_tile.tile_type.to_s]["healtheffect"][enter_dir]
-    # if new_battery < 0 or new_health < 0
-    #   return false
-    # end
-    # Update battery & health
-    # self.battery = new_battery
-    # self.health = new_health
-    # self.save!
-
     # Use heal & charge to check if move is allowed
     if !heal(TILE_PROPERTIES[target_tile.tile_type.to_s]["healtheffect"][enter_dir]) or !charge(TILE_PROPERTIES[target_tile.tile_type.to_s]["batteffect"][enter_dir])
       return 2
@@ -141,19 +129,10 @@ class Character < ActiveRecord::Base
   end
 
   def pick_up(item)
-
-    puts "********  IN pick_up  ********"
-
     if (self.item) then
       inventory = self.inventory
       inventory.items << item
       inventory.save
-      puts "I'M ALREADY HOLDING AN ITEM"
-      # self.item = item
-      # self.save!
-      puts item
-      puts inventory.items
-      # puts inventory.items.last
     else
       self.item = item
       self.save!
@@ -174,60 +153,41 @@ class Character < ActiveRecord::Base
 
   def drop(item_id)
     item = Item.find(item_id)
-    # puts "want to drop: " + item_id.to_s
-    # puts "start of drop inventory: ", inventory.items.map{|x| x.id}
-    # puts "in hand: " + self.item.id.to_s
+    # if item is in the inventory
     if self.inventory.items.map{|x| x.id == item_id}.include? true 
-      puts "i made it in the if"
       self.inventory.items.delete(item)
       self.inventory.save!
+    # if the item is the one in hand
     elsif !self.item.nil?
       if self.item.id == item_id 
-        puts "im in the elsif"
         self.item = nil
         self.save
       end
     end
-
-    puts "are you there?"
+    # put the dropped item on this tile
     if self.tile 
-      puts "honey im here."
       t = self.tile
       t.item = item
       t.save!
-      puts t.item.id
     end
   end
 
   def use_item(item, *args)
-
-    puts "********  IN use_item  ********"
-    # puts item.id
-
+    # if it's the item in-hand 
     if !self.item.nil? and self.item.id == item.id
-      puts "*** in if"
       item.character = self
       item.do_action
+    # if it's in the inventory
     elsif self.inventory.items.map{|x| x.id == item.id}.include? true #self.inventory.items.include? item
-      puts "*** in include ---- yea baby"
-      # put item currently in hand in the front of the inventory
+      # put item currently in hand in the inventory
       if !self.item.nil?
-        # puts "Add in hand item to front of inventory"
         inventory.items << self.item
-        puts "Add in hand item to front of inventory: ", inventory.items.map{|x| x.id}
       end
       self.item = item
       self.save!
       item.character = self
-      item.do_action
+      return item.do_action
     end
-      
-
-    # if self.inventory.items.include? item or
-    #   self.item == item then
-    #   item.character = self
-    #   item.do_action
-    # end
   end
 
   def status
@@ -271,6 +231,7 @@ class Character < ActiveRecord::Base
     # Update health
     self.health = new_health
     self.save!
+    return true
   end
 
   def charge(amount)
@@ -282,6 +243,7 @@ class Character < ActiveRecord::Base
     # Update battery
     self.battery = new_battery
     self.save!
+    return true
   end
 
 end

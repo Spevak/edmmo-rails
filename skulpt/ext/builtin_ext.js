@@ -95,6 +95,8 @@ function useSuccess(response) {
     log("You don't have that item!");
   if (response.err === 2)
     log("Erm... I don't think you can do that with that item.");
+  if (response.err === 3)
+    log("Used item. Your Battery can not be charged anymore.");
   //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
   return Sk.builtin.none.none$;
 
