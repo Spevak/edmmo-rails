@@ -20,7 +20,10 @@ $(function () {
         //test for empty line.
         emptyline = new RegExp("^\\s*$");
 
-        //matches a line containing a botquest builtin
+    //finds assignment operators but not comparison operators
+    assre = /[^=!]=(?!=)/;
+    
+    //matches a line containing a botquest builtin
     bqBuiltin = /go.*|pickup.*|drop.*|useItem.*|status.*|inspect.*|characters.*|tiles.*|dig.*/g
 
     repl.print("This is a terminal. You can enter commands here.");
@@ -59,17 +62,28 @@ $(function () {
                 return Sk.builtinFiles["files"][x];
             }
         });
-            
+
+        //load in local vars
+        var locals = []
+	var localVarNames = Object.keys(Bq.localVars);
+	for (i = 0; i < localVarNames.length; i++) {
+	    var varname = localVarNames[i];
+	    locals.push(varname + " = loadLocalVar('" + varname + "')");
+	}
+        var linesToCompile = compilableLines.concat(locals);
+
+
         //split lines on linefeed
-        var lines = code.split('\n'),
-            lines = lines.filter(function(str) { return !emptyline.test(str); }),
-            //concatenate them to the lines collected up till now
-            linesToCompile = compilableLines.concat(lines);
+        var lines = code.split('\n');
+        lines = lines.filter(function(str) { return !emptyline.test(str); });
+
+        //concatenate them to the lines collected up till now
+        linesToCompile = linesToCompile.concat(lines);
 
         //it's a onliner
         if (lines.length == 1) {
             //if it's a statement that should be printed (not containing an = or def or class or an empty line)
-            if (lines[0].indexOf('=') == -1 && !defre.test(lines[0]) && !importre.test(lines[0]) && lines[0].length > 0) {
+            if (!assre.test(lines[0]) && !defre.test(lines[0]) && !importre.test(lines[0]) && lines[0].length > 0) {
                 //if it doesn't contain print make sure it doesn't print None
                 if (!re.test(lines[0])) {
                     //remove the statement
@@ -82,6 +96,19 @@ $(function () {
                 //make sure it doesnt' end up in the list with lines to compile the next run
                 lines.pop();
             }
+	    //assignment, so we should save to local scope
+	    else if (assre.test(lines[0])) {
+		//find the name of the var from the assignment
+		var varName = lines[0].substring(0, lines[0].indexOf('=')).trim();
+		//Just need to give it some value so it will show up in the keys and we will remember to store
+                //the value at the end of evaluation
+		if (!Bq.localVars[varName]) {
+		    Bq.localVars[varName] = "";
+		}
+		//don't need to recompile the assignments every time now that we're putting it in the local scope
+		lines.pop();
+						 
+	    }
         }        
         
         //filter out empty lines
@@ -89,6 +116,15 @@ $(function () {
         
         //don't compile if there isn't anything to compile.
         if (linesToCompile.length === 0) { return; }
+
+	//at the end we want to save all the variables to the local scope
+	var saves = []
+	localVarNames = Object.keys(Bq.localVars);
+	for (i = 0; i < localVarNames.length; i++) {
+	    var varname = localVarNames[i];
+	    saves.push("saveLocalVar(" + varname + ", '" + varname + "')");
+	}
+        var linesToCompile = linesToCompile.concat(saves);
         
         try {
             //Evaluate

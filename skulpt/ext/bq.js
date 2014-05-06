@@ -52,6 +52,7 @@ var Bq = (function() {
                 setTileProperties: function(data) { this.tileProperties = data; },
                 tileSpritePaths: {},
                 setTileSpritePaths: function(data) { this.tileSpritePaths = data; },
+                localVars: {},
 		log: log
   }
 })(); 

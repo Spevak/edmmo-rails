@@ -11,4 +11,8 @@ Sk.builtins['dig'] = Sk.builtin.digFunction;
 Sk.builtins['face'] = Sk.builtin.faceFunction;
 //wrapper for tiles that is more intuitively named
 Sk.builtins['look'] = Sk.builtin.lookFunction;
+//Functions for implementing local scope that is stored between compilation of different lines
+//not for use by user
+Sk.builtins['saveLocalVar'] = Sk.builtin.saveLocalVar;
+Sk.builtins['loadLocalVar'] = Sk.builtin.loadLocalVar;
 goog.exportSymbol("Sk.builtins", Sk.builtins);

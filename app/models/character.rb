@@ -70,7 +70,7 @@ class Character < ActiveRecord::Base
 
     #The direction given was not one of the 4 cardinal directions
     if dx == 0 and dy == 0 then
-      return false
+      return 1
     end
 
     #find the tile to be moved to
@@ -79,7 +79,7 @@ class Character < ActiveRecord::Base
     target_tile = Tile.tile_at(x, y)
 
     if target_tile == nil then
-      return false
+      return 1
     end
 
     #Make sure it is valid to walk over the tile
@@ -90,7 +90,7 @@ class Character < ActiveRecord::Base
     if [3, 1].include? leaving_traversable or
       [2, 1].include? entering_traversable or
       !(target_tile.characters.select { |c| c.user.logged_in }).empty? then
-      return false
+      return 1
     end
 
     #update direction facing
@@ -104,14 +104,13 @@ class Character < ActiveRecord::Base
       self.facing = 3
     end
 
-
-    # update battery & health according to tile property
-    self.battery += TILE_PROPERTIES[target_tile.tile_type.to_s]["batteffect"][enter_dir]
-    self.health += TILE_PROPERTIES[target_tile.tile_type.to_s]["healtheffect"][enter_dir]
-    self.save!
+    # Use heal & charge to check if move is allowed
+    if !heal(TILE_PROPERTIES[target_tile.tile_type.to_s]["healtheffect"][enter_dir]) or !charge(TILE_PROPERTIES[target_tile.tile_type.to_s]["batteffect"][enter_dir])
+      return 2
+    end
 
     self.move_to(x, y)
-    return true
+    return 0
   end
 
   def move_to(x, y)
@@ -154,15 +153,19 @@ class Character < ActiveRecord::Base
 
   def drop(item_id)
     item = Item.find(item_id)
-    if self.inventory.items.include? item then
+    # if item is in the inventory
+    if self.inventory.items.map{|x| x.id == item_id}.include? true 
       self.inventory.items.delete(item)
       self.inventory.save!
-    elsif self.item.id == item_id then
-      self.item = nil
-      self.save
+    # if the item is the one in hand
+    elsif !self.item.nil?
+      if self.item.id == item_id 
+        self.item = nil
+        self.save
+      end
     end
-
-    if self.tile then
+    # put the dropped item on this tile
+    if self.tile 
       t = self.tile
       t.item = item
       t.save!
@@ -170,10 +173,20 @@ class Character < ActiveRecord::Base
   end
 
   def use_item(item, *args)
-    if self.inventory.items.include? item or
-      self.item == item then
+    # if it's the item in-hand 
+    if !self.item.nil? and self.item.id == item.id
       item.character = self
       item.do_action
+    # if it's in the inventory
+    elsif self.inventory.items.map{|x| x.id == item.id}.include? true #self.inventory.items.include? item
+      # put item currently in hand in the inventory
+      if !self.item.nil?
+        inventory.items << self.item
+      end
+      self.item = item
+      self.save!
+      item.character = self
+      return item.do_action
     end
   end
 
@@ -210,13 +223,27 @@ class Character < ActiveRecord::Base
   # Take damage, or heal me if the amount is negative.
   # Use this instead of directly setting so we can check if the player died.
   def heal(amount)
-    self.health += amount
+    # Make sure health stays >= 0 and <= 100
+    new_health = self.health + amount
+    if new_health < 0 or new_health > 100
+      return false
+    end
+    # Update health
+    self.health = new_health
     self.save!
+    return true
   end
 
   def charge(amount)
-    self.battery += amount
+    # Make sure battery stays >= 0 and <= 100
+    new_battery = self.battery + amount
+    if new_battery < 0 or new_battery > 100
+      return false
+    end
+    # Update battery
+    self.battery = new_battery
     self.save!
+    return true
   end
 
 end

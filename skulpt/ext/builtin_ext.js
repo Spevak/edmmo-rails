@@ -75,6 +75,8 @@ function dropSuccess(response) {
     log("Dropped item");
   if (response.err === 1)
     log("You don't have that item!");
+  if (response.err === 2)
+    log("An item is already on this tile, drop your item elsewhere!");
   //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
   return Sk.builtin.none.none$;
 
@@ -84,12 +86,17 @@ function dropSuccess(response) {
  * @suppress {missingProperties}
  */
 function useSuccess(response) {
+  // Update the health & battery indicators when use is called
+  Sk.builtin.statusFunction();
+
   if (response.err === 0)
     log("Used item.")
   if (response.err === 1)
     log("You don't have that item!");
   if (response.err === 2)
     log("Erm... I don't think you can do that with that item.");
+  if (response.err === 3)
+    log("Used item. Your Battery can not be charged anymore.");
   //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
   return Sk.builtin.none.none$;
 
@@ -145,9 +152,9 @@ function inspectSuccess(response) {
 function digSuccess(response) {
   var id = response.id.toString();
   log("You dig around for a while and find a potato with id " + id + ". This could make a good battery.");
-  //return new Sk.builtin.nmber(response.err, Sk.builtin.nmber.int$);
-    return Sk.builtin.none.none$;
 
+    var potato = new Sk.builtin.item("potato", response.id, {});
+    return potato;
 }
 
 /**
@@ -346,7 +353,8 @@ Sk.builtin.pickupFunction = function(name) {
   //var y_val = Sk.builtin.asnum$(y);
   var x_val = Bq.playerData.x;
   var y_val = Bq.playerData.y;
-  var item_id = itemId[name.v];
+  // var item_id = itemId[name.v]; - Michel made this change
+  var item_id = name.v;
 
   var pickupFailure = failureFunction(PICKUP_PATH)
   return json_request('POST', PICKUP_PATH, pickupSuccess, pickupFailure, {'x': x_val, 'y': y_val, 'item_id': item_id});
@@ -379,18 +387,14 @@ Sk.builtin.dropFunction = function(name) {
  *         args = python string of arguments to the item's use function 
  * @suppress {missingProperties}
  */
-Sk.builtin.useFunction = function(name, args) {
+Sk.builtin.useFunction = function(id, args) {
   //Check arg count and types
   Sk.builtin.pyCheckArgs("useFunction", arguments, 2, 2);
-  Sk.builtin.pyCheckType("name", "string", Sk.builtin.checkString(name));
+  Sk.builtin.pyCheckType("id", "string", Sk.builtin.checkString(id));
   Sk.builtin.pyCheckType("args", "string", Sk.builtin.checkString(args));
 
   //get values from python representation
-  if (name.v in itemId) {
-    var item_id = itemId[name.v];
-  } else {
-    var item_id = name.v
-  }
+  var item_id = id.v;
   var use_args = args.v;
 
   var useFailure = failureFunction(USE_PATH);
@@ -495,3 +499,21 @@ Sk.builtin.faceFunction = function(dir) {
   return json_request('POST', FACE_PATH, faceSuccess, faceFailure, {'direction': direction});
 }
 
+/**
+ * For maintaining state between separate runs of the compiler (between blocks the user enters)
+ * Not intended for use by User.
+ */
+
+Sk.builtin.saveLocalVar = function(variable, name) {
+    Sk.builtin.pyCheckArgs("saveLocalVars", arguments, 2, 2);
+    Bq.localVars[name.v] = variable;
+    return Sk.builtin.none.none$;
+}
+
+/**
+ * For maintaining state between separate runs of the compiler (between blocks the user enters)
+ * Not intended for use by User.
+ */
+Sk.builtin.loadLocalVar = function(name) {
+    return Bq.localVars[name.v];
+}

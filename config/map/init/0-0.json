@@ -284,7 +284,7 @@
     {"x": 11, "y": 6, "id": 4, "state": ""},
     {"x": 11, "y": 7, "id": 0, "state": ""},
     {"x": 11, "y": 8, "id": 0, "state": ""},
-    {"x": 11, "y": 9, "id": 16, "state": "Your rover only has so much battery. If it runs out, use dig() to try and find something to restore it."},
+    {"x": 11, "y": 9, "id": 16, "state": "Your rover only has so much battery. If it runs out, use dig() to try and find something to restore it. Pay attention to the item id! You can then 'useItem('id', '')' to replenish your battery!"},
     {"x": 11, "y": 10, "id": 0, "state": ""},
     {"x": 11, "y": 11, "id": 16, "state": "Use face('direction') to change where your rover faces. inspect() to see what lies around you. Try reading all of the signs around you that way."},
     {"x": 11, "y": 12, "id": 0, "state": ""},
