@@ -80,8 +80,6 @@ $(function () {
         //concatenate them to the lines collected up till now
         linesToCompile = linesToCompile.concat(lines);
 
-        console.log(linesToCompile);
-
         //it's a onliner
         if (lines.length == 1) {
             //if it's a statement that should be printed (not containing an = or def or class or an empty line)

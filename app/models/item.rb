@@ -58,8 +58,11 @@ class Item < ActiveRecord::Base
         end
       end
 
-      self.character.heal(self.health_effect)
-      self.character.charge(self.battery_effect)
+      if self.character.heal(self.health_effect) and self.character.charge(self.battery_effect)
+        return true
+      else 
+        return false
+      end
     end
 
     if self.consumable then
